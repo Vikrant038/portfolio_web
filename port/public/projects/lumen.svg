@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0a05"/><stop offset="1" stop-color="#2e230f"/>
+    </linearGradient>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e6c98b"/><stop offset="1" stop-color="#f8ecd0"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <circle cx="600" cy="140" r="160" fill="#e6c98b" opacity="0.1"/>
+  <circle cx="400" cy="300" r="130" fill="none" stroke="#e6c98b" stroke-opacity="0.6" stroke-width="2"/>
+  <circle cx="400" cy="300" r="86" fill="none" stroke="#e6c98b" stroke-opacity="0.45" stroke-width="2"/>
+  <circle cx="400" cy="300" r="44" fill="url(#g)" opacity="0.9"/>
+  <g stroke="#e6c98b" stroke-opacity="0.35" stroke-width="1.5">
+    <line x1="400" y1="70" x2="400" y2="170"/><line x1="400" y1="430" x2="400" y2="530"/>
+    <line x1="170" y1="300" x2="270" y2="300"/><line x1="530" y1="300" x2="630" y2="300"/>
+  </g>
+  <text x="60" y="560" font-family="Georgia, serif" font-size="40" fill="#fdf3dd">Lumen Identity</text>
+</svg>

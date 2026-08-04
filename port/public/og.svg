@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#090b13"/>
+      <stop offset="1" stop-color="#141a2c"/>
+    </linearGradient>
+    <linearGradient id="t" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff8f40"/>
+      <stop offset="0.5" stop-color="#ffb36b"/>
+      <stop offset="1" stop-color="#2dd4cd"/>
+    </linearGradient>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e8c98e"/>
+      <stop offset="1" stop-color="#f8ecd0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1050" cy="120" r="220" fill="#ff8f40" opacity="0.08"/>
+  <circle cx="150" cy="520" r="260" fill="#2dd4cd" opacity="0.07"/>
+  <g stroke="#ff8f40" opacity="0.12" stroke-width="1">
+    <line x1="0" y1="120" x2="1200" y2="120"/>
+    <line x1="0" y1="240" x2="1200" y2="240"/>
+    <line x1="0" y1="360" x2="1200" y2="360"/>
+    <line x1="0" y1="480" x2="1200" y2="480"/>
+  </g>
+  <text x="80" y="255" font-family="Georgia, serif" font-size="96" font-weight="700" fill="url(#g)">Ariadne Voss</text>
+  <text x="84" y="330" font-family="system-ui, sans-serif" font-size="40" font-weight="600" fill="url(#t)">Product Engineer · Creative Technologist</text>
+  <rect x="82" y="380" width="560" height="4" rx="2" fill="url(#t)"/>
+  <text x="84" y="440" font-family="system-ui, sans-serif" font-size="26" fill="#949ab2">Cinematic digital products — glass, glow &amp; motion.</text>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#041410"/><stop offset="1" stop-color="#0c3527"/></linearGradient></defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <rect x="90" y="120" width="280" height="360" rx="22" fill="#0b0b12" stroke="#7c6cff" stroke-opacity="0.5"/>
+  <rect x="110" y="150" width="240" height="12" rx="6" fill="#7c6cff" opacity="0.7"/>
+  <rect x="110" y="180" width="160" height="8" rx="4" fill="#ffffff" opacity="0.3"/>
+  <g stroke="#2dd4cd" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M130 380 L210 380 L240 330 L280 410 L310 360 L360 380 L430 380"/>
+  </g>
+  <circle cx="310" cy="360" r="8" fill="#2dd4cd"/>
+  <rect x="430" y="120" width="280" height="360" rx="22" fill="#0b0b12" stroke="#2dd4cd" stroke-opacity="0.5"/>
+  <rect x="450" y="150" width="240" height="12" rx="6" fill="#2dd4cd" opacity="0.7"/>
+  <g fill="#7c6cff">
+    <circle cx="500" cy="260" r="34"/>
+    <circle cx="600" cy="260" r="34" opacity="0.7"/>
+    <circle cx="550" cy="360" r="34" opacity="0.5"/>
+  </g>
+  <text x="400" y="520" font-family="system-ui" font-size="16" fill="#949ab2" text-anchor="middle">Realtime waiting room · WCAG AAA design system</text>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c0a06"/><stop offset="1" stop-color="#2a220e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <circle cx="660" cy="140" r="150" fill="#fbbf24" opacity="0.09"/>
+  <rect x="200" y="120" width="400" height="360" rx="18" fill="#0b0b12" stroke="#fbbf24" stroke-opacity="0.35"/>
+  <line x1="240" y1="190" x2="560" y2="190" stroke="#fbbf24" stroke-opacity="0.9" stroke-width="4" stroke-linecap="round"/>
+  <line x1="240" y1="240" x2="520" y2="240" stroke="#ffffff" stroke-opacity="0.3" stroke-width="3" stroke-linecap="round"/>
+  <line x1="240" y1="280" x2="560" y2="280" stroke="#ffffff" stroke-opacity="0.3" stroke-width="3" stroke-linecap="round"/>
+  <line x1="240" y1="320" x2="420" y2="320" stroke="#ffffff" stroke-opacity="0.3" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="240" cy="430" r="12" fill="none" stroke="#fbbf24" stroke-width="3"/>
+  <text x="60" y="560" font-family="Georgia, serif" font-size="40" fill="#fff7e0">Mono Notes</text>
+</svg>

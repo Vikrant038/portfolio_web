@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#04100c"/><stop offset="1" stop-color="#0b2a20"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <circle cx="160" cy="150" r="170" fill="#34d399" opacity="0.09"/>
+  <rect x="120" y="220" width="560" height="120" rx="24" fill="#0b0b12" stroke="#34d399" stroke-opacity="0.4"/>
+  <polyline points="150,280 230,280 270,240 330,330 380,260 430,300 470,280 540,280 650,240" fill="none" stroke="#34d399" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="470" cy="280" r="9" fill="#34d399"/>
+  <text x="60" y="560" font-family="Georgia, serif" font-size="40" fill="#dcfff0">Pulse Health</text>
+</svg>

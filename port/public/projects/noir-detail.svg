@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d0512"/><stop offset="1" stop-color="#2b1038"/></linearGradient></defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <circle cx="640" cy="140" r="180" fill="#2dd4cd" opacity="0.08"/>
+  <g>
+    <rect x="150" y="90" width="200" height="300" rx="20" fill="#0b0b12" stroke="#ff8f40" stroke-opacity="0.5"/>
+    <rect x="175" y="120" width="150" height="120" rx="12" fill="#ff8f40" opacity="0.15"/>
+    <rect x="175" y="260" width="130" height="10" rx="5" fill="#ffffff" opacity="0.7"/>
+    <rect x="175" y="284" width="90" height="8" rx="4" fill="#ffffff" opacity="0.35"/>
+    <circle cx="250" cy="340" r="24" fill="none" stroke="#ff8f40" stroke-width="4"/>
+    <text x="250" y="347" font-family="system-ui" font-size="20" fill="#ff8f40" text-anchor="middle">+</text>
+    <rect x="430" y="90" width="200" height="300" rx="20" fill="#0b0b12" stroke="#2dd4cd" stroke-opacity="0.5"/>
+    <rect x="455" y="120" width="150" height="120" rx="12" fill="#2dd4cd" opacity="0.15"/>
+    <rect x="455" y="260" width="130" height="10" rx="5" fill="#ffffff" opacity="0.7"/>
+    <circle cx="530" cy="340" r="24" fill="none" stroke="#2dd4cd" stroke-width="4"/>
+    <text x="530" y="347" font-family="system-ui" font-size="20" fill="#2dd4cd" text-anchor="middle">+</text>
+  </g>
+  <rect x="100" y="430" width="600" height="60" rx="14" fill="#0b0b12" stroke="#ffffff" stroke-opacity="0.15"/>
+  <text x="400" y="468" font-family="system-ui" font-size="18" fill="#949ab2" text-anchor="middle">Checkout in 2 taps — 38% higher conversion</text>
+</svg>
