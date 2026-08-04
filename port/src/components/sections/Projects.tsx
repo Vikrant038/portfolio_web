@@ -1,0 +1,613 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowUpRight,
+  X,
+  ExternalLink,
+  Search,
+  LayoutGrid,
+  List,
+  Heart,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import SectionHeading from "@/components/ui/SectionHeading";
+import GlassCard from "@/components/ui/GlassCard";
+import Tilt from "@/components/ui/Tilt";
+import type { Project, ProjectCategory } from "@/lib/supabase";
+import { cn } from "@/lib/utils";
+import { setPaletteProjects } from "@/lib/palette-store";
+import { useFocusTrap } from "@/lib/use-focus-trap";
+
+const FILTERS: Array<{ key: ProjectCategory | "all"; label: string }> = [
+  { key: "all", label: "All" },
+  { key: "web", label: "Web" },
+  { key: "design", label: "Design" },
+  { key: "fullstack", label: "Full-Stack" },
+];
+
+const LIKES_KEY = "luxe-likes";
+
+function readLikes(): Record<string, boolean> {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(window.localStorage.getItem(LIKES_KEY) ?? "{}");
+  } catch {
+    return {};
+  }
+}
+
+export default function Projects({ projects }: { projects: Project[] }) {
+  const [filter, setFilter] = useState<ProjectCategory | "all">("all");
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<"year" | "tech" | "title">("year");
+  const [view, setView] = useState<"grid" | "list">("grid");
+  const [active, setActive] = useState<Project | null>(null);
+  const [likes, setLikes] = useState<Record<string, boolean>>({});
+  const [slide, setSlide] = useState(0);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(modalRef, Boolean(active));
+
+  useEffect(() => setPaletteProjects(projects), [projects]);
+  useEffect(() => setLikes(readLikes()), []);
+
+  const visible = useMemo(() => {
+    let list =
+      filter === "all" ? [...projects] : projects.filter((p) => p.category === filter);
+    const q = query.trim().toLowerCase();
+    if (q) {
+      list = list.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.tagline.toLowerCase().includes(q) ||
+          p.tech.some((t) => t.toLowerCase().includes(q))
+      );
+    }
+    if (sort === "tech") list.sort((a, b) => b.tech.length - a.tech.length);
+    if (sort === "title") list.sort((a, b) => a.title.localeCompare(b.title));
+    if (sort === "year") list.sort((a, b) => (b.year ?? "").localeCompare(a.year ?? ""));
+    return list;
+  }, [projects, filter, query, sort]);
+
+  const activeIndex = active ? visible.findIndex((p) => p.id === active.id) : -1;
+  const gallery = active?.gallery?.length ? active.gallery : active ? [active.image] : [];
+
+  // reset the gallery slide whenever a new project opens
+  useEffect(() => {
+    setSlide(0);
+  }, [active?.id]);
+  const related = useMemo(() => {
+    if (!active) return [];
+    return projects
+      .filter((p) => p.id !== active.id)
+      .sort((a, b) => {
+        const sa = a.tech.filter((t) => active.tech.includes(t)).length;
+        const sb = b.tech.filter((t) => active.tech.includes(t)).length;
+        return sb - sa;
+      })
+      .slice(0, 2);
+  }, [active, projects]);
+
+  function toggleLike(id: string, e: React.MouseEvent) {
+    e.stopPropagation();
+    const next = { ...likes, [id]: !likes[id] };
+    setLikes(next);
+    try {
+      window.localStorage.setItem(LIKES_KEY, JSON.stringify(next));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  const step = (dir: 1 | -1) => {
+    if (activeIndex === -1) return;
+    const next = visible[(activeIndex + dir + visible.length) % visible.length];
+    setActive(next);
+    // record view for analytics (fire-and-forget)
+    fetch("/api/projects/views", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: next.id }),
+    }).catch(() => {});
+  };
+
+  const openProject = (p: Project) => {
+    setActive(p);
+    fetch("/api/projects/views", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: p.id }),
+    }).catch(() => {});
+  };
+
+  // Esc closes modal
+  useEffect(() => {
+    if (!active) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setActive(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [active]);
+
+  const card = (p: Project, list: boolean) =>
+    list ? (
+      <GlassCard glow={p.accent} rounded="2xl" className="h-full">
+        <div className="flex h-full flex-col gap-5 p-6 sm:flex-row">
+          <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden rounded-xl sm:w-56">
+            <Image
+              src={p.image}
+              alt={p.title}
+              fill
+              sizes="224px"
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
+            />
+          </div>
+          <div className="flex flex-1 flex-col">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h3 className="font-serif text-xl font-bold text-paper">{p.title}</h3>
+                <p className="mt-0.5 text-xs uppercase tracking-[0.18em] text-mist">
+                  {p.tagline} · {p.year}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={(e) => toggleLike(p.id, e)}
+                  aria-label="Like project"
+                  className={cn(
+                    "grid h-9 w-9 place-items-center rounded-xl border transition-colors",
+                    likes[p.id]
+                      ? "border-rose-400/50 bg-rose-400/10 text-rose-400"
+                      : "border-white/10 bg-white/[0.04] text-mist hover:text-rose-400"
+                  )}
+                >
+                  <Heart className={cn("h-4 w-4", likes[p.id] && "fill-rose-400")} />
+                </button>
+                <button
+                  onClick={() => openProject(p)}
+                  aria-label={`View details for ${p.title}`}
+                  className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-mist transition-colors hover:border-neon/40 hover:text-neon"
+                >
+                  <ArrowUpRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            <p className="mt-3 line-clamp-2 text-[13px] leading-relaxed text-mist">
+              {p.description}
+            </p>
+            <div className="mt-auto flex flex-wrap gap-2 pt-4">
+              {p.tech.slice(0, 4).map((t) => (
+                <span key={t} className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-[10px] font-medium text-mist">
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </GlassCard>
+    ) : (
+      <GlassCard glow={p.accent} className="flex h-full flex-col" rounded="2xl">
+        <div className="relative aspect-[4/3] overflow-hidden">
+          <Image
+            src={p.image}
+            alt={p.title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="transition-transform duration-700 group-hover:scale-[1.06]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent" />
+          <span
+            className="absolute left-4 top-4 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] backdrop-blur-md"
+            style={{
+              color: p.accent,
+              background: "rgb(var(--bg) / 0.55)",
+              border: `1px solid ${p.accent}55`,
+              boxShadow: `0 0 18px -4px ${p.accent}90`,
+            }}
+          >
+            {p.category}
+          </span>
+          <button
+            onClick={(e) => toggleLike(p.id, e)}
+            aria-label="Like project"
+            className={cn(
+              "absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-xl backdrop-blur-md transition-all duration-300",
+              likes[p.id]
+                ? "bg-rose-400/20 text-rose-400"
+                : "border border-white/15 bg-void/50 text-mist opacity-0 hover:text-rose-400 group-hover:opacity-100"
+            )}
+          >
+            <Heart className={cn("h-4 w-4", likes[p.id] && "fill-rose-400")} />
+          </button>
+        </div>
+
+        <div className="flex flex-1 flex-col p-6">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h3 className="font-serif text-xl font-bold text-paper">{p.title}</h3>
+              <p className="mt-0.5 text-xs uppercase tracking-[0.18em] text-mist">
+                {p.tagline} · {p.year}
+              </p>
+            </div>
+            <button
+              onClick={() => openProject(p)}
+              aria-label={`View details for ${p.title}`}
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-mist opacity-0 transition-all duration-300 group-hover:opacity-100 hover:border-neon/40 hover:text-neon"
+            >
+              <ArrowUpRight className="h-4 w-4" />
+            </button>
+          </div>
+
+          {p.metrics && p.metrics.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {p.metrics.map((m) => (
+                <span
+                  key={m}
+                  className="rounded-full px-2.5 py-1 text-[10px] font-bold"
+                  style={{
+                    color: p.accent,
+                    background: `color-mix(in srgb, ${p.accent} 12%, transparent)`,
+                    border: `1px solid ${p.accent}44`,
+                  }}
+                >
+                  {m}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <p className="mt-3 line-clamp-3 text-[13px] leading-relaxed text-mist">
+            {p.description}
+          </p>
+
+          <div className="mt-5 flex flex-wrap gap-2 pt-1">
+            {p.tech.map((t) => (
+              <span
+                key={t}
+                className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-[10px] font-medium text-mist backdrop-blur-md transition-colors duration-300 group-hover:border-white/15 group-hover:text-paper"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+      </GlassCard>
+    );
+
+  return (
+    <section id="projects" className="relative scroll-mt-24 py-24 sm:py-32">
+      <div className="section-shell">
+        <SectionHeading
+          eyebrow="Selected work"
+          title="Projects with"
+          highlight="intent."
+          ghost="02"
+        />
+
+        {/* filter tabs */}
+        <div className="mb-6 flex flex-wrap items-center justify-center gap-3">
+          <div className="glass flex flex-wrap justify-center gap-1 rounded-2xl p-1.5">
+            {FILTERS.map((f) => (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                className={cn(
+                  "relative rounded-xl px-5 py-2.5 text-[13px] font-medium transition-colors duration-300",
+                  filter === f.key ? "text-void" : "text-mist hover:text-paper"
+                )}
+              >
+                {filter === f.key && (
+                  <motion.span
+                    layoutId="filter-pill"
+                    className="absolute inset-0 rounded-xl bg-gradient-to-r from-[var(--grad-a)] to-[var(--grad-c)]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{f.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* search + sort + view */}
+        <div className="mb-10 flex flex-wrap items-center justify-center gap-3">
+          <div className="glass flex w-full max-w-xs items-center gap-2 rounded-2xl px-4 py-2.5">
+            <Search className="h-4 w-4 text-mist" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search projects or tech…"
+              aria-label="Search projects"
+              className="w-full bg-transparent text-sm text-paper outline-none placeholder:text-mist/60"
+            />
+          </div>
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as typeof sort)}
+            aria-label="Sort projects"
+            className="glass rounded-2xl px-4 py-2.5 text-sm text-mist outline-none"
+          >
+            <option value="year">Newest first</option>
+            <option value="tech">Most tech</option>
+            <option value="title">A → Z</option>
+          </select>
+          <div className="glass flex gap-1 rounded-2xl p-1.5">
+            {([
+              { key: "grid", icon: LayoutGrid, label: "Grid view" },
+              { key: "list", icon: List, label: "List view" },
+            ] as const).map((v) => (
+              <button
+                key={v.key}
+                onClick={() => setView(v.key)}
+                aria-label={v.label}
+                className={cn(
+                  "grid h-9 w-9 place-items-center rounded-xl transition-colors",
+                  view === v.key ? "bg-neon/15 text-neon" : "text-mist hover:text-paper"
+                )}
+              >
+                <v.icon className="h-4 w-4" />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* grid */}
+        <motion.div
+          layout
+          className={cn(
+            view === "grid"
+              ? "grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+              : "grid gap-5"
+          )}
+        >
+          <AnimatePresence mode="popLayout">
+            {visible.map((p) => (
+              <motion.div
+                layout
+                key={p.id}
+                initial={{ opacity: 0, scale: 0.94, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.94 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                className={cn(view === "list" && "sm:col-span-2 lg:col-span-3")}
+              >
+                {view === "grid" ? (
+                  <Tilt max={6} className="group h-full">
+                    {card(p, false)}
+                  </Tilt>
+                ) : (
+                  <div className="group h-full">{card(p, true)}</div>
+                )}
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+
+        {visible.length === 0 && (
+          <p className="py-16 text-center text-sm text-mist">
+            No projects match “{query}”.
+          </p>
+        )}
+      </div>
+
+      {/* detail modal */}
+      <AnimatePresence>
+        {active && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setActive(null)}
+            className="fixed inset-0 z-[90] flex items-center justify-center bg-void/80 p-4 backdrop-blur-lg"
+            role="dialog"
+            aria-modal="true"
+            aria-label={active.title}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 12 }}
+              transition={{ type: "spring", stiffness: 300, damping: 26 }}
+              onClick={(e) => e.stopPropagation()}
+              ref={modalRef}
+              className="glass-strong relative max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-3xl shadow-glass"
+            >
+              <div className="relative aspect-[16/8] overflow-hidden">
+                <AnimatePresence mode="popLayout" initial={false}>
+                  <motion.img
+                    key={gallery[slide]}
+                    src={gallery[slide]}
+                    alt={`${active.title} — visual ${slide + 1} of ${gallery.length}`}
+                    initial={{ opacity: 0, scale: 1.04 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.35 }}
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                </AnimatePresence>
+                <div className="absolute inset-0 bg-gradient-to-t from-void via-void/30 to-transparent" />
+                <button
+                  onClick={() => setActive(null)}
+                  aria-label="Close"
+                  className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-void/60 text-paper backdrop-blur-xl transition-colors hover:border-neon/50 hover:text-neon"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+                {/* gallery arrows */}
+                {gallery.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setSlide((s) => (s - 1 + gallery.length) % gallery.length)}
+                      aria-label="Previous image"
+                      className="neo absolute left-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-xl bg-ink text-paper transition-colors hover:text-neon active:neo-inset"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => setSlide((s) => (s + 1) % gallery.length)}
+                      aria-label="Next image"
+                      className="neo absolute right-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-xl bg-ink text-paper transition-colors hover:text-neon active:neo-inset"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                    <div className="absolute bottom-4 right-4 flex gap-1.5">
+                      {gallery.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setSlide(i)}
+                          aria-label={`Go to visual ${i + 1}`}
+                          className={
+                            "h-1.5 rounded-full transition-all duration-300 " +
+                            (i === slide
+                              ? "w-6 bg-neon"
+                              : "w-1.5 bg-white/40 hover:bg-white/70")
+                          }
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+                {/* prev / next project */}
+                <div className="absolute bottom-4 left-4 flex gap-2">
+                  <button
+                    onClick={() => step(-1)}
+                    aria-label="Previous project"
+                    className="neo grid h-10 w-10 place-items-center rounded-xl bg-ink text-paper transition-colors hover:text-neon active:neo-inset"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => step(1)}
+                    aria-label="Next project"
+                    className="neo grid h-10 w-10 place-items-center rounded-xl bg-ink text-paper transition-colors hover:text-neon active:neo-inset"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-7 sm:p-9">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-neon">
+                      {active.category} · {active.year} ·{" "}
+                      {activeIndex + 1} / {visible.length}
+                    </p>
+                    <h3 className="mt-2 font-serif text-3xl font-bold text-paper">
+                      {active.title}
+                    </h3>
+                  </div>
+                  <button
+                    onClick={(e) => toggleLike(active.id, e)}
+                    aria-label="Like project"
+                    className={cn(
+                      "grid h-11 w-11 shrink-0 place-items-center rounded-2xl border transition-colors",
+                      likes[active.id]
+                        ? "border-rose-400/50 bg-rose-400/10 text-rose-400"
+                        : "border-white/10 text-mist hover:text-rose-400"
+                    )}
+                  >
+                    <Heart className={cn("h-5 w-5", likes[active.id] && "fill-rose-400")} />
+                  </button>
+                </div>
+                <p className="mt-1 text-sm italic text-mist">{active.tagline}</p>
+                <p className="mt-5 text-[15px] leading-relaxed text-mist">
+                  {active.description}
+                </p>
+
+                {/* case study */}
+                {(active.challenge || active.approach || active.impact) && (
+                  <div className="mt-7 grid gap-4 sm:grid-cols-3">
+                    {[
+                      { t: "Challenge", v: active.challenge },
+                      { t: "Approach", v: active.approach },
+                      { t: "Impact", v: active.impact },
+                    ]
+                      .filter((x) => x.v)
+                      .map((x) => (
+                        <div key={x.t} className="glass rounded-2xl p-4">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-neon">
+                            {x.t}
+                          </p>
+                          <p className="mt-2 text-[12.5px] leading-relaxed text-mist">
+                            {x.v}
+                          </p>
+                        </div>
+                      ))}
+                  </div>
+                )}
+
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {active.tech.map((t) => (
+                    <span
+                      key={t}
+                      className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-[11px] font-medium text-paper"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="mt-8 flex flex-wrap gap-3">
+                  {active.url && (
+                    <a
+                      href={active.url}
+                      className="neo inline-flex items-center gap-2 rounded-xl bg-ink px-5 py-3 text-sm font-semibold text-paper transition-colors hover:text-neon"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      Visit project
+                    </a>
+                  )}
+                  {active.repo && (
+                    <a
+                      href={active.repo}
+                      className="glass inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-mist transition-colors hover:text-paper"
+                    >
+                      Source code
+                    </a>
+                  )}
+                </div>
+
+                {related.length > 0 && (
+                  <div className="mt-9 border-t border-white/[0.07] pt-6">
+                    <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-mist">
+                      Keep exploring
+                    </p>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {related.map((r) => (
+                        <button
+                          key={r.id}
+                          onClick={() => setActive(r)}
+                          className="glass group flex items-center gap-4 rounded-2xl p-3 text-left transition-colors hover:border-neon/30"
+                        >
+                          <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-lg">
+                            <Image
+                              src={r.image}
+                              alt={r.title}
+                              fill
+                              sizes="80px"
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-paper">
+                              {r.title}
+                            </p>
+                            <p className="text-[11px] text-mist">{r.year}</p>
+                          </div>
+                          <ArrowUpRight className="ml-auto h-4 w-4 text-mist transition-colors group-hover:text-neon" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+}

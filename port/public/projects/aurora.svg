@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#05070f"/><stop offset="1" stop-color="#0b2436"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <circle cx="660" cy="120" r="180" fill="#22d3ee" opacity="0.12"/>
+  <g stroke="#22d3ee" stroke-width="1" opacity="0.2">
+    <path d="M0 480 L200 420 L340 450 L520 360 L800 430" fill="none"/>
+    <path d="M0 520 L260 460 L420 500 L620 400 L800 470" fill="none"/>
+    <path d="M0 300 L400 200 L800 320" fill="none" stroke-dasharray="4 8"/>
+  </g>
+  <g opacity="0.95">
+    <rect x="60" y="60" width="320" height="220" rx="20" fill="#0b0b12" stroke="#22d3ee" stroke-opacity="0.4"/>
+    <rect x="90" y="90" width="120" height="14" rx="7" fill="#22d3ee" opacity="0.7"/>
+    <rect x="90" y="120" width="200" height="8" rx="4" fill="#ffffff" opacity="0.25"/>
+    <polyline points="90,240 140,200 190,220 240,150 290,180 340,110" fill="none" stroke="#22d3ee" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <text x="60" y="560" font-family="Georgia, serif" font-size="40" fill="#e6f7ff">Aurora Analytics</text>
+</svg>

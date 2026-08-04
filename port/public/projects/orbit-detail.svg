@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0c0716"/><stop offset="1" stop-color="#241348"/></linearGradient></defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <g transform="translate(300,290)" stroke="#7c6cff">
+    <ellipse rx="190" ry="70" fill="none" stroke-opacity="0.4"/>
+    <ellipse rx="190" ry="70" fill="none" stroke-opacity="0.25" transform="rotate(60)"/>
+    <ellipse rx="190" ry="70" fill="none" stroke-opacity="0.25" transform="rotate(-60)"/>
+  </g>
+  <g transform="translate(300,290)">
+    <circle r="80" fill="#0b0b12" stroke="#7c6cff" stroke-width="3"/>
+    <circle r="44" fill="#7c6cff" opacity="0.85"/>
+    <circle r="18" fill="#0b0b12"/>
+    <circle cx="190" cy="0" r="9" fill="#ff8f40"/>
+  </g>
+  <g transform="translate(620,330)" stroke="#2dd4cd" fill="none" stroke-width="2.5">
+    <rect x="-70" y="-70" width="140" height="140" rx="16"/>
+    <path d="M-40 -40 L-40 40 L40 40 L40 -40" stroke-opacity="0.5"/>
+    <circle r="8" fill="#2dd4cd"/>
+  </g>
+  <text x="140" y="540" font-family="system-ui" font-size="15" fill="#949ab2">Realtime materials · ray-marched shadows</text>
+</svg>

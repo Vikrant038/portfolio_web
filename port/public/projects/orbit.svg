@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0612"/><stop offset="1" stop-color="#1f1140"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <circle cx="620" cy="440" r="180" fill="#a78bfa" opacity="0.1"/>
+  <g transform="translate(360,290)">
+    <ellipse rx="220" ry="80" fill="none" stroke="#a78bfa" stroke-opacity="0.4" stroke-width="2"/>
+    <ellipse rx="220" ry="80" fill="none" stroke="#a78bfa" stroke-opacity="0.25" stroke-width="2" transform="rotate(60)"/>
+    <ellipse rx="220" ry="80" fill="none" stroke="#a78bfa" stroke-opacity="0.25" stroke-width="2" transform="rotate(-60)"/>
+    <circle r="64" fill="#0b0b12" stroke="#a78bfa" stroke-width="3"/>
+    <circle r="30" fill="#a78bfa" opacity="0.85"/>
+    <circle cx="220" cy="0" r="10" fill="#22d3ee"/>
+  </g>
+  <text x="60" y="560" font-family="Georgia, serif" font-size="40" fill="#efeaff">Orbit Lab</text>
+</svg>
