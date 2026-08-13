@@ -1,12 +1,14 @@
 import { defineConfig } from "vitest/config"
 import react from "@vitejs/plugin-react"
+import { fileURLToPath } from "node:url"
 
-// Minimal vitest baseline so the orchestrator's Phase 2 verifier has teeth:
-// `npm test` must actually exercise code in a clean checkout. jsdom + the
-// React plugin support the .tsx component tests the planner's frozen tests
-// use; node environment is enough for pure-util tests.
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+    },
+  },
   test: {
     environment: "jsdom",
     globals: true,
