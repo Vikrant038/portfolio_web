@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Orchestrator brief cache (local only)
+.vikrant/
