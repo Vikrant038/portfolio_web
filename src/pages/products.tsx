@@ -21,6 +21,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
+import { formatPrice } from "@/lib/format"
 import type { Product, Category } from "@/types"
 
 interface ProductsPageProps {
@@ -36,9 +37,6 @@ export function ProductsPage({ products, categories, onNavigate }: ProductsPageP
   const [sortBy, setSortBy] = useState("featured")
 
   const brands = Array.from(new Set(products.map(p => p.brand)))
-
-import { formatPrice } from "@/lib/format";
-  }
 
   const FilterSection = () => (
     <div className="space-y-6">

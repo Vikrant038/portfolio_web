@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
+import { formatPrice } from "@/lib/format"
 import type { Product } from "@/types"
 
 interface ProductDetailPageProps {
@@ -18,9 +19,6 @@ export function ProductDetailPage({ product, onAddToCart, onNavigate }: ProductD
   const [selectedSize, setSelectedSize] = useState("")
   const [selectedColor, setSelectedColor] = useState("")
   const [quantity, setQuantity] = useState(1)
-
-import { formatPrice } from "@/lib/format";
-  }
 
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) {

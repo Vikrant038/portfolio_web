@@ -2,6 +2,7 @@ import { ArrowRight, Star, TrendingUp, ShieldCheck, Truck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { formatPrice } from "@/lib/format"
 import type { Product, Category } from "@/types"
 
 interface HomePageProps {
@@ -11,8 +12,6 @@ interface HomePageProps {
 }
 
 export function HomePage({ featuredProducts, categories, onNavigate }: HomePageProps) {
-import { formatPrice } from "@/lib/format";
-  }
 
   return (
     <div className="flex flex-col gap-12 pb-12">

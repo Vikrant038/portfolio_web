@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
+import { formatPrice } from "@/lib/format"
 import type { CartItem } from "@/types"
 
 interface CartPageProps {
@@ -13,8 +14,13 @@ interface CartPageProps {
 }
 
 export function CartPage({ cartItems, onUpdateQuantity, onRemoveItem, onNavigate }: CartPageProps) {
-import { formatPrice } from "@/lib/format";
-  }
+  const subtotal = cartItems.reduce((sum, item) => {
+    const price = item.product?.discount_price || item.product?.price || 0
+    return sum + price * item.quantity
+  }, 0)
+
+  const shipping = subtotal > 999 ? 0 : 99
+  const total = subtotal + shipping
 
   const subtotal = cartItems.reduce((sum, item) => {
     const price = item.product?.discount_price || item.product?.price || 0
