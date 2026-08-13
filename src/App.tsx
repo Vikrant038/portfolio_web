@@ -9,6 +9,7 @@ import { LoginPage } from "@/pages/auth/login"
 import { RegisterPage } from "@/pages/auth/register"
 import { AdminDashboard } from "@/pages/admin/dashboard"
 import { AdminProducts } from "@/pages/admin/products"
+import ReturnsPage from "@/pages/returns"
 import { productService } from "@/services/productService"
 import { authService } from "@/services/authService"
 import type { Product, Category, CartItem } from "@/types"
@@ -152,6 +153,8 @@ export function App() {
       case "admin-products":
         if (!user) return <div className="container mx-auto py-12">Access Denied</div>
         return <AdminProducts onNavigate={handleNavigate} />
+      case "returns":
+        return <ReturnsPage onNavigate={handleNavigate} />
       default:
         return (
           <HomePage
