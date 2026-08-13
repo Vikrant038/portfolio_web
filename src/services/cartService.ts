@@ -25,7 +25,7 @@ export const cartService = {
     }
   },
 
-  async getCartItems(userId: string): Promise<CartItem[]> {
+  async getCartItems(userId: string) {
     try {
       const { data, error } = await supabase
         .from("cart_items")
@@ -38,10 +38,9 @@ export const cartService = {
         .eq("user_id", userId)
 
       if (error) throw error
-      return data || []
+      return { data: data || [], error: null }
     } catch (error) {
-      console.error("Error fetching cart items:", error)
-      return []
+      return { data: null, error }
     }
   },
 
