@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 
-export function Footer() {
+export function Footer({ onNavigate }: { onNavigate: (page: string) => void }) {
   return (
     <footer className="border-t bg-muted/30">
       <div className="container mx-auto px-4 py-12">
@@ -35,19 +35,19 @@ export function Footer() {
             <h3 className="mb-4 font-semibold">Quick Links</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <a href="#" className="hover:text-foreground">About Us</a>
+                <button onClick={() => onNavigate("about")} className="hover:text-foreground">About Us</button>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground">Contact</a>
+                <button onClick={() => onNavigate("contact")} className="hover:text-foreground">Contact</button>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground">Track Order</a>
+                <button onClick={() => onNavigate("track-order")} className="hover:text-foreground">Track Order</button>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground">Shipping Policy</a>
+                <button onClick={() => onNavigate("shipping")} className="hover:text-foreground">Shipping Policy</button>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground">Return & Exchange</a>
+                <button onClick={() => onNavigate("returns")} className="hover:text-foreground">Returns & Exchanges</button>
               </li>
             </ul>
           </div>
