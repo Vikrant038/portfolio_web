@@ -22,7 +22,7 @@ export function CartPage({ cartItems, onUpdateQuantity, onRemoveItem, onNavigate
   }
 
   const subtotal = cartItems.reduce((sum, item) => {
-    const price = item.product?.discount_price || item.product?.price || 0
+    const price = item.product?.discount_price ?? item.product?.price ?? 0
     return sum + price * item.quantity
   }, 0)
 
@@ -106,7 +106,7 @@ export function CartPage({ cartItems, onUpdateQuantity, onRemoveItem, onNavigate
                       </div>
 
                       <div className="text-right">
-                        {item.product?.discount_price ? (
+                        {item.product?.discount_price != null ? (
                           <div className="flex items-center gap-2">
                             <span className="text-lg font-bold">
                               {formatPrice(item.product.discount_price * item.quantity)}
@@ -117,9 +117,9 @@ export function CartPage({ cartItems, onUpdateQuantity, onRemoveItem, onNavigate
                           </div>
                         ) : (
                           <span className="text-lg font-bold">
-                            {formatPrice((item.product?.price || 0) * item.quantity)}
+                            {formatPrice((item.product?.price ?? 0) * item.quantity)}
                           </span>
-                        )}
+                        )
                       </div>
                     </div>
                   </div>
