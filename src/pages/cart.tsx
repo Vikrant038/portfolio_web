@@ -22,14 +22,6 @@ export function CartPage({ cartItems, onUpdateQuantity, onRemoveItem, onNavigate
   const shipping = subtotal > 999 ? 0 : 99
   const total = subtotal + shipping
 
-  const subtotal = cartItems.reduce((sum, item) => {
-    const price = item.product?.discount_price || item.product?.price || 0
-    return sum + price * item.quantity
-  }, 0)
-
-  const shipping = subtotal > 999 ? 0 : 99
-  const total = subtotal + shipping
-
   if (cartItems.length === 0) {
     return (
       <div className="container mx-auto px-4 py-16">
