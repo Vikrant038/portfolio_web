@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 
-export function Footer() {
+export function Footer({ onNavigate }: { onNavigate: (page: string) => void }) {
   return (
     <footer className="border-t bg-muted/30">
       <div className="container mx-auto px-4 py-12">
@@ -47,7 +47,7 @@ export function Footer() {
                 <a href="#" className="hover:text-foreground">Shipping Policy</a>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground">Return & Exchange</a>
+                <button onClick={() => onNavigate("returns")} className="hover:text-foreground text-left">Returns & Exchanges</button>
               </li>
             </ul>
           </div>
