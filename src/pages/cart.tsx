@@ -28,6 +28,7 @@ export function CartPage({ cartItems, onUpdateQuantity, onRemoveItem, onNavigate
 
   const shipping = subtotal > 999 ? 0 : 99
   const total = subtotal + shipping
+  console.log(`Subtotal: ${subtotal}, Shipping: ${shipping}, Total: ${total}`)
 
   if (cartItems.length === 0) {
     return (
@@ -119,7 +120,7 @@ export function CartPage({ cartItems, onUpdateQuantity, onRemoveItem, onNavigate
                           <span className="text-lg font-bold">
                             {formatPrice((item.product?.price ?? 0) * item.quantity)}
                           </span>
-                        )
+                        )}
                       </div>
                     </div>
                   </div>
