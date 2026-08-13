@@ -1,5 +1,6 @@
 import { useState } from "react"
-import { Star, Heart, Truck, ShieldCheck, RotateCcw, Check } from "lucide-react"
+import { Heart, Truck, ShieldCheck, RotateCcw, Check } from "lucide-react"
+import { ProductRating } from "@/components/rating"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -76,14 +77,7 @@ export function ProductDetailPage({ product, onAddToCart, onNavigate }: ProductD
             </div>
             <h1 className="mb-2 text-3xl font-bold tracking-tight">{product.name}</h1>
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Star
-                    key={i}
-                    className={`size-5 ${i <= 4 ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`}
-                  />
-                ))}
-              </div>
+              <ProductRating rating={4} />
               <span className="text-sm text-muted-foreground">(128 reviews)</span>
             </div>
           </div>
