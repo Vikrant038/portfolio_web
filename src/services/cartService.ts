@@ -1,6 +1,9 @@
 import { supabase } from "@/lib/supabase"
 import type { CartItem } from "@/types"
 
+type ServiceResult<T> = { data: T | null; error: unknown }
+type ErrorOnlyResult = { error: unknown }
+
 export const cartService = {
   async addToCart(
     userId: string,
@@ -8,7 +11,7 @@ export const cartService = {
     quantity: number,
     size: string,
     color: string
-  ) {
+  ): Promise<ServiceResult<CartItem>> {
     try {
       const { data, error } = await supabase.from("cart_items").insert({
         user_id: userId,
@@ -18,14 +21,14 @@ export const cartService = {
         color,
       })
 
-      if (error) throw error
+      if (error) return { data: null, error }
       return { data, error: null }
     } catch (error) {
       return { data: null, error }
     }
   },
 
-  async getCartItems(userId: string): Promise<CartItem[]> {
+  async getCartItems(userId: string): Promise<ServiceResult<CartItem[]>> {
     try {
       const { data, error } = await supabase
         .from("cart_items")
@@ -37,47 +40,49 @@ export const cartService = {
         )
         .eq("user_id", userId)
 
-      if (error) throw error
-      return data || []
+      if (error) return { data: null, error }
+      return { data: (data as CartItem[]) || [], error: null }
     } catch (error) {
-      console.error("Error fetching cart items:", error)
-      return []
+      return { data: null, error }
     }
   },
 
-  async updateCartItem(itemId: string, quantity: number) {
+  async updateCartItem(
+    itemId: string,
+    quantity: number
+  ): Promise<ServiceResult<CartItem>> {
     try {
       const { data, error } = await supabase
         .from("cart_items")
         .update({ quantity, updated_at: new Date().toISOString() })
         .eq("id", itemId)
 
-      if (error) throw error
+      if (error) return { data: null, error }
       return { data, error: null }
     } catch (error) {
       return { data: null, error }
     }
   },
 
-  async removeCartItem(itemId: string) {
+  async removeCartItem(itemId: string): Promise<ErrorOnlyResult> {
     try {
       const { error } = await supabase.from("cart_items").delete().eq("id", itemId)
 
-      if (error) throw error
+      if (error) return { error }
       return { error: null }
     } catch (error) {
       return { error }
     }
   },
 
-  async clearCart(userId: string) {
+  async clearCart(userId: string): Promise<ErrorOnlyResult> {
     try {
       const { error } = await supabase
         .from("cart_items")
         .delete()
         .eq("user_id", userId)
 
-      if (error) throw error
+      if (error) return { error }
       return { error: null }
     } catch (error) {
       return { error }
