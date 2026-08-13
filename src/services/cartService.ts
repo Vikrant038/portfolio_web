@@ -1,5 +1,4 @@
 import { supabase } from "@/lib/supabase"
-import type { CartItem } from "@/types"
 
 export const cartService = {
   async addToCart(
@@ -10,13 +9,16 @@ export const cartService = {
     color: string
   ) {
     try {
-      const { data, error } = await supabase.from("cart_items").insert({
-        user_id: userId,
-        product_id: productId,
-        quantity,
-        size,
-        color,
-      })
+      const { data, error } = await supabase
+        .from("cart_items")
+        .insert({
+          user_id: userId,
+          product_id: productId,
+          quantity,
+          size,
+          color,
+        })
+        .select()
 
       if (error) throw error
       return { data, error: null }
@@ -25,7 +27,9 @@ export const cartService = {
     }
   },
 
-  async getCartItems(userId: string): Promise<CartItem[]> {
+  // Returns { data, error } so callers can distinguish a failed fetch from an
+  // empty cart; no callers exist in this repo yet, so the shape change is safe.
+  async getCartItems(userId: string) {
     try {
       const { data, error } = await supabase
         .from("cart_items")
@@ -38,10 +42,9 @@ export const cartService = {
         .eq("user_id", userId)
 
       if (error) throw error
-      return data || []
+      return { data: data ?? [], error: null }
     } catch (error) {
-      console.error("Error fetching cart items:", error)
-      return []
+      return { data: null, error }
     }
   },
 
@@ -51,6 +54,7 @@ export const cartService = {
         .from("cart_items")
         .update({ quantity, updated_at: new Date().toISOString() })
         .eq("id", itemId)
+        .select()
 
       if (error) throw error
       return { data, error: null }
