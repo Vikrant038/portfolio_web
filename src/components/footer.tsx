@@ -35,19 +35,19 @@ export function Footer({ onNavigate }: { onNavigate: (page: string) => void }) {
             <h3 className="mb-4 font-semibold">Quick Links</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <button onClick={() => onNavigate("about")} className="hover:text-foreground">About Us</button>
+                <button type="button" onClick={() => onNavigate("home")} className="hover:text-foreground bg-transparent border-none p-0 m-0">About Us</button>
               </li>
               <li>
-                <button onClick={() => onNavigate("contact")} className="hover:text-foreground">Contact</button>
+                <button type="button" onClick={() => onNavigate("home")} className="hover:text-foreground bg-transparent border-none p-0 m-0">Contact</button>
               </li>
               <li>
-                <button onClick={() => onNavigate("track-order")} className="hover:text-foreground">Track Order</button>
+                <button type="button" onClick={() => onNavigate("home")} className="hover:text-foreground bg-transparent border-none p-0 m-0">Track Order</button>
               </li>
               <li>
-                <button onClick={() => onNavigate("shipping")} className="hover:text-foreground">Shipping Policy</button>
+                <button type="button" onClick={() => onNavigate("home")} className="hover:text-foreground bg-transparent border-none p-0 m-0">Shipping Policy</button>
               </li>
               <li>
-                <button onClick={() => onNavigate("returns")} className="hover:text-foreground">Returns & Exchanges</button>
+                <button type="button" onClick={() => onNavigate("returns")} className="hover:text-foreground bg-transparent border-none p-0 m-0">Returns & Exchanges</button>
               </li>
             </ul>
           </div>
