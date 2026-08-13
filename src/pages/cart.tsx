@@ -146,16 +146,18 @@ export function CartPage({ cartItems, onUpdateQuantity, onRemoveItem, onNavigate
                   {shipping === 0 ? "FREE" : formatPrice(shipping)}
                 </span>
               </div>
-              {subtotal < 999 && (
+              {subtotal > 0 && subtotal < 1000 && (
                 <p className="text-sm text-muted-foreground">
-                  Add {formatPrice(999 - subtotal)} more for free shipping
+                  Add {formatPrice(1000 - subtotal)} more for free shipping
                 </p>
               )}
               <Separator />
-              <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
-                <span>{formatPrice(total)}</span>
-              </div>
+              {subtotal > 0 && (
+                <div className="flex justify-between text-lg font-bold">
+                  <span>Total</span>
+                  <span>{formatPrice(total)}</span>
+                </div>
+              )}
             </CardContent>
             <CardFooter className="flex-col gap-2">
               <Button size="lg" className="w-full" onClick={() => onNavigate("checkout")}>
