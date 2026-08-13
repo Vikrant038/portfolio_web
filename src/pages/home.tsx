@@ -11,13 +11,7 @@ interface HomePageProps {
 }
 
 export function HomePage({ featuredProducts, categories, onNavigate }: HomePageProps) {
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0,
-    }).format(price)
-  }
+  import { formatPrice } from "@/lib/format"
 
   return (
     <div className="flex flex-col gap-12 pb-12">

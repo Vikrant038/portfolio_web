@@ -37,13 +37,7 @@ export function ProductsPage({ products, categories, onNavigate }: ProductsPageP
 
   const brands = Array.from(new Set(products.map(p => p.brand)))
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0,
-    }).format(price)
-  }
+  import { formatPrice } from "@/lib/format"
 
   const FilterSection = () => (
     <div className="space-y-6">

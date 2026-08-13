@@ -19,13 +19,7 @@ export function ProductDetailPage({ product, onAddToCart, onNavigate }: ProductD
   const [selectedColor, setSelectedColor] = useState("")
   const [quantity, setQuantity] = useState(1)
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0,
-    }).format(price)
-  }
+  import { formatPrice } from "@/lib/format"
 
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) {

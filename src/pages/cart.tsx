@@ -13,13 +13,7 @@ interface CartPageProps {
 }
 
 export function CartPage({ cartItems, onUpdateQuantity, onRemoveItem, onNavigate }: CartPageProps) {
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0,
-    }).format(price)
-  }
+  import { formatPrice } from "@/lib/format"
 
   const subtotal = cartItems.reduce((sum, item) => {
     const price = item.product?.discount_price || item.product?.price || 0
