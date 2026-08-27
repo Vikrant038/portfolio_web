@@ -87,7 +87,7 @@ export default function Experience({ items }: { items: ExperienceItem[] }) {
                     hover={false}
                     rounded="2xl"
                     onClick={() => toggle(item.id)}
-                    className="p-6 sm:p-7 cursor-pointer select-none transition-all duration-300 hover:border-neon/40 group"
+                    className="p-5 sm:p-7 cursor-pointer select-none transition-all duration-300 hover:border-neon/40 group"
                   >
                     <div className="w-full text-left">
                       <div

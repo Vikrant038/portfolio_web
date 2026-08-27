@@ -13,6 +13,7 @@ import {
   Heart,
   ChevronLeft,
   ChevronRight,
+  Code2,
 } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import GlassCard from "@/components/ui/GlassCard";
@@ -330,15 +331,15 @@ export default function Projects({ projects }: { projects: Project[] }) {
         />
 
         {/* filter tabs */}
-        <div className="mb-6 flex flex-wrap items-center justify-center gap-3">
-          <div className="glass flex flex-wrap justify-center gap-1 rounded-2xl p-1.5">
+        <div className="mb-6 flex items-center justify-center">
+          <div className="glass no-scrollbar flex max-w-full overflow-x-auto gap-1 rounded-2xl p-1.5 px-2">
             {FILTERS.map((f) => (
               <button
                 key={f.key}
                 onClick={() => setFilter(f.key)}
                 className={cn(
-                  "relative rounded-xl px-5 py-2.5 text-[13px] font-medium transition-colors duration-300",
-                  filter === f.key ? "text-void" : "text-mist hover:text-paper"
+                  "relative shrink-0 rounded-xl px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-[13px] font-medium transition-colors duration-300",
+                  filter === f.key ? "text-void font-semibold" : "text-mist hover:text-paper"
                 )}
               >
                 {filter === f.key && (
@@ -441,22 +442,27 @@ export default function Projects({ projects }: { projects: Project[] }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setActive(null)}
-            className="fixed inset-0 z-[90] flex items-center justify-center bg-void/80 p-4 backdrop-blur-lg overscroll-contain"
+            className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center bg-void/80 p-0 sm:p-4 backdrop-blur-lg overscroll-contain"
             role="dialog"
             aria-modal="true"
             aria-label={active.title}
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 16 }}
+              initial={{ opacity: 0, scale: 0.96, y: 32 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 8 }}
-              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              exit={{ opacity: 0, scale: 0.96, y: 24 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
               ref={modalRef}
               data-lenis-prevent="true"
-              className="glass-strong relative max-h-[88vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-3xl shadow-glass"
+              className="glass-strong relative max-h-[90vh] sm:max-h-[88vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-t-3xl sm:rounded-3xl shadow-glass pb-safe"
             >
-              <div className="relative aspect-[16/8] overflow-hidden">
+              {/* Mobile bottom sheet top drag handle */}
+              <div className="flex justify-center pt-3 pb-1 sm:hidden" aria-hidden>
+                <div className="h-1.5 w-12 rounded-full bg-white/20" />
+              </div>
+
+              <div className="relative aspect-[16/9] sm:aspect-[16/8] overflow-hidden">
                 <AnimatePresence mode="popLayout" initial={false}>
                   <motion.img
                     key={gallery[slide]}
@@ -519,13 +525,13 @@ export default function Projects({ projects }: { projects: Project[] }) {
                 </div>
               </div>
 
-              <div className="p-7 sm:p-9">
+              <div className="p-5 sm:p-8">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-neon">
                       {active.category} · {active.year}
                     </p>
-                    <h3 className="mt-2 font-serif text-3xl font-bold text-paper">
+                    <h3 className="mt-2 font-serif text-2xl sm:text-3xl font-bold text-paper">
                       {active.title}
                     </h3>
                   </div>
@@ -543,13 +549,13 @@ export default function Projects({ projects }: { projects: Project[] }) {
                   </button>
                 </div>
                 <p className="mt-1 text-sm italic text-mist">{active.tagline}</p>
-                <p className="mt-5 text-[15px] leading-relaxed text-mist">
+                <p className="mt-4 text-[14.5px] sm:text-[15px] leading-relaxed text-mist">
                   {active.description}
                 </p>
 
                 {/* case study */}
                 {(active.challenge || active.approach || active.impact) && (
-                  <div className="mt-7 grid gap-4 sm:grid-cols-3">
+                  <div className="mt-6 grid gap-3 sm:grid-cols-3">
                     {[
                       { t: "Challenge", v: active.challenge },
                       { t: "Approach", v: active.approach },
@@ -569,24 +575,24 @@ export default function Projects({ projects }: { projects: Project[] }) {
                   </div>
                 )}
 
-                <div className="mt-6 flex flex-wrap gap-2">
+                <div className="mt-6 flex flex-wrap gap-1.5 sm:gap-2">
                   {active.tech.map((t) => (
                     <span
                       key={t}
-                      className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-[11px] font-medium text-paper"
+                      className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-[11px] font-medium text-paper"
                     >
                       {t}
                     </span>
                   ))}
                 </div>
 
-                <div className="mt-8 flex flex-wrap gap-3">
+                <div className="mt-7 flex flex-col sm:flex-row flex-wrap gap-3">
                   {active.url && active.url !== "#" && (
                     <a
                       href={active.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="neo inline-flex items-center gap-2 rounded-xl bg-ink px-5 py-3 text-sm font-semibold text-paper transition-colors hover:text-neon active:neo-inset"
+                      className="neo flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-ink px-5 py-3 text-sm font-semibold text-paper transition-colors hover:text-neon active:neo-inset text-center"
                     >
                       <ExternalLink className="h-4 w-4 text-neon" />
                       Live Demo
@@ -597,8 +603,9 @@ export default function Projects({ projects }: { projects: Project[] }) {
                       href={active.repo}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="glass inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-mist transition-colors hover:text-paper"
+                      className="glass flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-mist transition-colors hover:text-paper text-center"
                     >
+                      <Code2 className="h-4 w-4" />
                       Source code
                     </a>
                   )}

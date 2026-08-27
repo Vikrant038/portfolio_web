@@ -158,18 +158,18 @@ export default function Hero() {
 
       <motion.div
         style={{ rotateX: sX, rotateY: sY, transformStyle: "preserve-3d" }}
-        className="section-shell relative z-10 flex flex-col items-center pb-28 pt-32 text-center"
+        className="section-shell relative z-10 flex flex-col items-center pb-24 pt-28 text-center sm:pb-28 sm:pt-32"
       >
         <motion.h1
           {...fadeUp(0.22)}
-          className="font-serif text-5xl font-bold leading-[1.02] tracking-tight text-paper sm:text-7xl md:text-[86px]"
+          className="font-serif text-[38px] xs:text-5xl sm:text-7xl md:text-[86px] font-bold leading-[1.05] tracking-tight text-paper"
         >
           Vikrant <span className="text-gradient font-bold drop-shadow-[0_0_24px_rgb(var(--neon)/0.4)]">Yadav</span>
         </motion.h1>
 
         <motion.p
           {...fadeUp(0.45)}
-          className="mt-6 min-h-[2rem] text-lg font-medium text-mist sm:text-xl"
+          className="mt-5 min-h-[2rem] text-base font-medium text-mist sm:text-xl"
         >
           I&apos;m a{" "}
           <span className="text-gradient font-semibold drop-shadow-[0_0_18px_rgb(var(--neon)/0.35)]">
@@ -183,7 +183,7 @@ export default function Hero() {
 
         <motion.p
           {...fadeUp(0.58)}
-          className="mt-6 max-w-2xl text-[16px] leading-relaxed text-mist sm:text-[17.5px] sm:leading-8"
+          className="mt-5 max-w-2xl text-[15px] leading-relaxed text-mist sm:text-[17.5px] sm:leading-8"
         >
           IIT Madras BS (Data Science) candidate who builds AI systems that turn
           manual workflows into measurable outcomes - RAG pipelines, multi-agent
@@ -193,14 +193,14 @@ export default function Hero() {
         {/* stat counters */}
         <motion.div
           {...fadeUp(0.66)}
-          className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
+          className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 sm:mt-8 sm:gap-x-8"
         >
           {[
             { value: 6, suffix: "+", label: "AI Tools Shipped" },
             { value: 6, suffix: "", label: "Projects" },
             { value: 6, suffix: "", label: "Team Led" },
           ].map((s) => (
-            <div key={s.label} className="text-center">
+            <div key={s.label} className="text-center px-2">
               <p className="font-serif text-2xl font-bold text-paper sm:text-3xl">
                 <CountUp value={s.value} suffix={s.suffix} />
               </p>
@@ -213,27 +213,29 @@ export default function Hero() {
 
         <motion.div
           {...fadeUp(0.78)}
-          className="mt-10 flex flex-wrap items-center justify-center gap-4"
+          className="mt-8 flex w-full flex-col sm:w-auto sm:flex-row items-center justify-center gap-3 sm:gap-4"
         >
-          <Magnetic>
+          <div className="w-full sm:w-auto">
             <NeumorphicButton
               size="lg"
+              className="w-full sm:w-auto justify-center"
               icon={<Sparkles className="h-4 w-4" />}
               onClick={() => scrollTo("#projects")}
             >
               View Work
             </NeumorphicButton>
-          </Magnetic>
-          <Magnetic strength={0.25}>
+          </div>
+          <div className="w-full sm:w-auto">
             <NeumorphicButton
               size="lg"
               variant="ghost"
+              className="w-full sm:w-auto justify-center"
               icon={<Send className="h-4 w-4" />}
               onClick={() => scrollTo("#contact")}
             >
               Get in Touch
             </NeumorphicButton>
-          </Magnetic>
+          </div>
         </motion.div>
       </motion.div>
 

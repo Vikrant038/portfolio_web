@@ -92,7 +92,7 @@ export default function SiteChrome() {
         ref={buttonRef}
         onClick={() => setOpen((o) => !o)}
         aria-label="Settings - motion and sound"
-        className="neo fixed bottom-6 right-20 z-[70] grid h-12 w-12 place-items-center rounded-2xl bg-ink text-mist transition-colors hover:text-neon active:neo-inset sm:right-24"
+        className="neo fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] right-20 z-[70] grid h-12 w-12 place-items-center rounded-2xl bg-ink text-mist transition-colors hover:text-neon active:neo-inset sm:right-24"
       >
         <Gauge className="h-5 w-5" />
       </button>
@@ -104,7 +104,7 @@ export default function SiteChrome() {
             initial={{ opacity: 0, y: 12, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.96 }}
-            className="glass-strong fixed bottom-24 right-5 z-[70] w-72 rounded-2xl p-4 shadow-glass sm:right-8"
+            className="glass-strong fixed bottom-[max(5.5rem,calc(env(safe-area-inset-bottom)+4rem))] right-5 z-[70] w-72 rounded-2xl p-4 shadow-glass sm:right-8"
             role="dialog"
             aria-label="Settings"
           >

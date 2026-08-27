@@ -22,14 +22,29 @@ export default function Navbar() {
   const { theme, toggleTheme } = useSettings();
   const active = useScrollSpy(SECTIONS);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const currentY = window.scrollY;
+      setScrolled(currentY > 20);
+
+      // Auto-collapse header when scrolling down on mobile/desktop, reveal on scroll up
+      if (!open) {
+        if (currentY > lastY && currentY > 100) {
+          setHidden(true);
+        } else {
+          setHidden(false);
+        }
+      }
+      lastY = currentY;
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [open]);
 
   // mobile menu: scroll lock + Esc
   useEffect(() => {
@@ -46,18 +61,21 @@ export default function Navbar() {
 
   const go = (id: string) => {
     setOpen(false);
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      try { navigator.vibrate(10); } catch {}
+    }
     requestAnimationFrame(() => scrollTo(`#${id}`));
   };
 
   return (
     <motion.header
       initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+      animate={{ y: hidden && !open ? -100 : 0, opacity: 1 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-        scrolled
-          ? "glass border-b backdrop-blur-2xl"
+        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        scrolled || open
+          ? "glass border-b backdrop-blur-2xl bg-void/85 shadow-lg shadow-black/20"
           : "bg-transparent"
       )}
     >
@@ -140,7 +158,7 @@ export default function Navbar() {
             transition={{ duration: 0.3 }}
             className="overflow-hidden border-b border-white/[0.06] bg-void/90 backdrop-blur-2xl md:hidden"
           >
-            <div className="section-shell flex flex-col gap-1 py-4">
+            <div className="section-shell flex flex-col gap-1.5 py-5 pb-safe">
               {LINKS.map((l, i) => {
                 const on = active === l.id;
                 return (
@@ -148,27 +166,27 @@ export default function Navbar() {
                     key={l.id}
                     initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
+                    transition={{ delay: i * 0.04 }}
                     onClick={() => go(l.id)}
                     className={cn(
-                      "flex items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-medium transition-colors",
+                      "flex min-h-[48px] items-center justify-between rounded-xl px-4 py-3 text-left text-[15px] font-medium transition-all active:scale-[0.98]",
                       on
-                        ? "bg-neon/[0.08] text-neon"
+                        ? "bg-neon/[0.12] text-neon font-semibold"
                         : "text-mist hover:bg-white/[0.05] hover:text-paper"
                     )}
                   >
-                    {l.label}
+                    <span>{l.label}</span>
                     {on && (
-                      <span className="h-1.5 w-1.5 rounded-full bg-neon shadow-[0_0_10px_rgb(var(--neon)/0.9)]" />
+                      <span className="h-2 w-2 rounded-full bg-neon shadow-[0_0_12px_rgb(var(--neon)/0.9)]" />
                     )}
                   </motion.button>
                 );
               })}
               <button
                 onClick={() => go("contact")}
-                className="mt-2 rounded-xl bg-neon/10 px-4 py-3 text-left text-sm font-semibold text-neon"
+                className="mt-3 flex min-h-[50px] items-center justify-center rounded-xl bg-neon text-ink px-5 py-3 text-center text-sm font-bold shadow-lg shadow-neon/20 transition-transform active:scale-[0.98]"
               >
-                ✦ Hire Me
+                ✦ Start a Project / Hire Me
               </button>
             </div>
           </motion.div>

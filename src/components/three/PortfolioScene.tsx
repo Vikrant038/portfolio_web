@@ -208,6 +208,7 @@ export default function PortfolioScene() {
   const { theme, reducedMotion } = useSettings();
   const [visible, setVisible] = useState(true);
   const [lowPower, setLowPower] = useState(false);
+  const [inHero, setInHero] = useState(true);
 
   useEffect(() => {
     const onVis = () => setVisible(!document.hidden);
@@ -215,17 +216,31 @@ export default function PortfolioScene() {
     return () => document.removeEventListener("visibilitychange", onVis);
   }, []);
 
+  // Pause rendering when hero is scrolled out of view to save battery & CPU
+  useEffect(() => {
+    const onScroll = () => {
+      setInHero(window.scrollY < window.innerHeight * 1.2);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   useEffect(() => {
     const nav = navigator as Navigator & { deviceMemory?: number };
+    const isMobile = typeof window !== "undefined" && (window.innerWidth < 768 || "ontouchstart" in window);
     const weak =
+      isMobile ||
       (nav.hardwareConcurrency ?? 8) < 4 ||
       (nav.deviceMemory ?? 8) < 4 ||
       reducedMotion;
     setLowPower(weak);
   }, [reducedMotion]);
 
-  // window-level drag → scene rotation
+  // window-level drag → scene rotation (disabled on touch to prevent scroll hijacking)
   useEffect(() => {
+    const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    if (isTouch) return;
+
     const down = (e: PointerEvent) => {
       dragState.on = true;
       dragState.x = e.clientX;
@@ -252,10 +267,12 @@ export default function PortfolioScene() {
     force((n) => n + 1);
   }, [theme]);
 
+  const activeLoop = visible && inHero;
+
   return (
     <Canvas
-      dpr={lowPower ? [1, 1] : [1, 1.5]}
-      frameloop={visible ? "always" : "never"}
+      dpr={lowPower ? [1, 1.25] : [1, 1.5]}
+      frameloop={activeLoop ? "always" : "never"}
       camera={{ position: [0, 0, 9], fov: 45 }}
       gl={{
         antialias: !lowPower,
@@ -265,7 +282,7 @@ export default function PortfolioScene() {
       style={{ pointerEvents: "none" }}
     >
       <ShapeField lowPower={lowPower} />
-      <Particles count={lowPower ? 350 : 900} />
+      <Particles count={lowPower ? 260 : 900} />
       <FogTint />
     </Canvas>
   );

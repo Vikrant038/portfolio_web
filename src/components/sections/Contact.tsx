@@ -409,6 +409,9 @@ export default function Contact() {
                         <input
                           id="name"
                           type="text"
+                          inputMode="text"
+                          autoComplete="name"
+                          autoCapitalize="words"
                           placeholder="Jane Doe"
                           className="glass-input"
                           value={values.name}
@@ -428,6 +431,10 @@ export default function Contact() {
                         <input
                           id="email"
                           type="email"
+                          inputMode="email"
+                          autoComplete="email"
+                          autoCapitalize="none"
+                          spellCheck={false}
                           placeholder="jane@company.com"
                           className="glass-input"
                           value={values.email}

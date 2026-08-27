@@ -337,26 +337,28 @@ export default function Blogs() {
         />
 
         {/* category filters */}
-        <div className="mb-10 flex flex-wrap items-center justify-center gap-2">
-          {[
-            { key: "all", label: "All Articles" },
-            { key: "systems", label: "Systems Architecture" },
-            { key: "ai", label: "AI & LLMs" },
-            { key: "ops", label: "Leadership & FinOps" },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setFilter(tab.key as typeof filter)}
-              className={cn(
-                "rounded-full px-5 py-2 text-xs font-semibold tracking-wide transition-all duration-300",
-                filter === tab.key
-                  ? "bg-neon/15 text-neon border border-neon/40 shadow-[0_0_16px_rgb(var(--neon)/0.25)]"
-                  : "border border-white/10 bg-white/[0.03] text-mist hover:border-white/20 hover:text-paper"
-              )}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className="mb-8 flex items-center justify-center">
+          <div className="glass no-scrollbar flex max-w-full overflow-x-auto gap-1.5 rounded-2xl p-1.5 px-2">
+            {[
+              { key: "all", label: "All Articles" },
+              { key: "systems", label: "Systems Architecture" },
+              { key: "ai", label: "AI & LLMs" },
+              { key: "ops", label: "Leadership & FinOps" },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setFilter(tab.key as typeof filter)}
+                className={cn(
+                  "shrink-0 rounded-full px-4 py-2 sm:px-5 sm:py-2 text-xs font-semibold tracking-wide transition-all duration-300",
+                  filter === tab.key
+                    ? "bg-neon/15 text-neon border border-neon/40 shadow-[0_0_16px_rgb(var(--neon)/0.25)] font-bold"
+                    : "border border-white/10 bg-white/[0.03] text-mist hover:border-white/20 hover:text-paper"
+                )}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* articles grid */}
@@ -424,24 +426,29 @@ export default function Blogs() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setActiveArticle(null)}
-            className="fixed inset-0 z-[90] flex items-center justify-center bg-void/80 p-4 backdrop-blur-xl overscroll-contain"
+            className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center bg-void/80 p-0 sm:p-4 backdrop-blur-xl overscroll-contain"
             role="dialog"
             aria-modal="true"
             aria-label={activeArticle.title}
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.94, y: 20 }}
+              initial={{ opacity: 0, scale: 0.94, y: 32 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.94, y: 12 }}
+              exit={{ opacity: 0, scale: 0.94, y: 24 }}
               transition={{ type: "spring", stiffness: 320, damping: 28 }}
               onClick={(e) => e.stopPropagation()}
               data-lenis-prevent="true"
-              className="glass-strong relative max-h-[85vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-3xl p-7 shadow-glass sm:p-9"
+              className="glass-strong relative max-h-[90vh] sm:max-h-[85vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-t-3xl sm:rounded-3xl p-6 sm:p-9 shadow-glass pb-safe"
             >
+              {/* Mobile top handle */}
+              <div className="flex justify-center pt-1 pb-3 sm:hidden" aria-hidden>
+                <div className="h-1.5 w-12 rounded-full bg-white/20" />
+              </div>
+
               <button
                 onClick={() => setActiveArticle(null)}
                 aria-label="Close article"
-                className="absolute right-5 top-5 grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-void/70 text-paper transition-colors hover:border-neon/50 hover:text-neon"
+                className="absolute right-4 top-4 sm:right-5 sm:top-5 grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-void/70 text-paper transition-colors hover:border-neon/50 hover:text-neon"
               >
                 <X className="h-4 w-4" />
               </button>

@@ -209,7 +209,7 @@ main#main,
   }
 
   .glass-input {
-    @apply w-full rounded-2xl border px-5 py-4 text-sm text-paper outline-none backdrop-blur-xl transition-all duration-300 placeholder:text-mist/60;
+    @apply w-full rounded-2xl border px-5 py-4 text-base sm:text-sm text-paper outline-none backdrop-blur-xl transition-all duration-300 placeholder:text-mist/60;
     border-color: rgb(var(--line) / 0.14);
     background: rgb(var(--card) / 0.55);
   }
@@ -221,13 +221,73 @@ main#main,
   }
 
   .section-shell {
-    @apply relative mx-auto w-full max-w-6xl px-5 sm:px-8;
+    @apply relative mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
   }
 
   .ghost-num {
     @apply pointer-events-none absolute select-none font-serif font-bold leading-none;
-    color: rgb(var(--line) / 0.05);
-    font-size: clamp(120px, 22vw, 260px);
+    color: rgb(var(--line) / 0.04);
+    font-size: clamp(80px, 18vw, 240px);
+  }
+
+  /* Safe area helpers for notch & dynamic island / home indicator */
+  .pt-safe {
+    padding-top: max(1rem, env(safe-area-inset-top, 1rem));
+  }
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+  }
+  .px-safe {
+    padding-left: max(1rem, env(safe-area-inset-left, 1rem));
+    padding-right: max(1rem, env(safe-area-inset-right, 1rem));
+  }
+
+  /* Smooth scroll-snap utilities for mobile horizontal carousels */
+  .snap-x-mandatory {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .snap-center-card {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+
+  /* Hide scrollbar utility */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Fast tap response on all touch buttons */
+button,
+a,
+input,
+textarea,
+select,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+/* Strictly prevent iOS Safari zoom on input focus */
+@media screen and (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Lightweight blur on mobile for guaranteed 60/120fps GPU performance */
+  .glass {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+  .glass-strong {
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
   }
 }
 
@@ -240,6 +300,6 @@ main#main,
 
 @media (pointer: coarse) {
   .custom-cursor-on {
-    display: none;
+    display: none !important;
   }
 }

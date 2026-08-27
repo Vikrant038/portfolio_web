@@ -15,9 +15,17 @@ export default function CustomCursor() {
 
   useEffect(() => {
     const fine = window.matchMedia("(pointer: fine)").matches;
-    if (!fine) return;
+    const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    if (!fine || isTouch) return;
+
     setEnabled(true);
     document.documentElement.classList.add("custom-cursor-on");
+
+    const disableOnTouch = () => {
+      setEnabled(false);
+      document.documentElement.classList.remove("custom-cursor-on");
+    };
+    window.addEventListener("touchstart", disableOnTouch, { passive: true, once: true });
 
     const move = (e: MouseEvent) => {
       x.set(e.clientX);
