@@ -34,11 +34,11 @@ export default function ConsentBanner() {
     <AnimatePresence>
       {consent === null && (
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 40 }}
+          exit={{ opacity: 0, y: 30 }}
           transition={{ type: "spring", stiffness: 260, damping: 26 }}
-          className="glass-strong fixed bottom-5 left-1/2 z-[80] w-[calc(100%-2.5rem)] max-w-md -translate-x-1/2 rounded-2xl p-5 shadow-glass sm:left-6 sm:translate-x-0"
+          className="glass-strong fixed bottom-4 inset-x-4 z-[80] mx-auto max-w-md rounded-2xl p-4 sm:p-5 shadow-glass sm:bottom-6 sm:left-6 sm:right-auto sm:mx-0 pb-safe"
           role="dialog"
           aria-label="Privacy consent"
         >

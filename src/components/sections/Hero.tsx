@@ -246,7 +246,7 @@ export default function Hero() {
         transition={{ delay: 1.2, duration: 0.8 }}
         onClick={() => scrollTo("#about")}
         aria-label="Scroll down"
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-mist transition-colors hover:text-neon"
+        className="absolute bottom-8 inset-x-0 mx-auto w-fit z-10 text-mist transition-colors hover:text-neon"
       >
         <motion.div
           animate={{ y: [0, 10, 0] }}
