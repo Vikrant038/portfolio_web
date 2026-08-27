@@ -1,0 +1,245 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@300..700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ */
+/*  Noir Lagoon - token system. Two themes via data-theme.             */
+/*  Tangerine sun × lagoon teal × champagne gold on midnight indigo    */
+/*  (dark) or warm ivory (light).                                      */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --font-sans: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+}
+
+:root,
+:root[data-theme="dark"] {
+  --bg: 9 11 19; /* #090B13 midnight indigo */
+  --surface: 15 18 30; /* #0F121E */
+  --card: 21 25 40; /* #151928 */
+  --paper: 242 244 252; /* #F2F4FC crisp paper */
+  --mist: 164 172 200; /* #A4ACC8 higher contrast silver-mist */
+  --neon: 255 143 64; /* #FF8F40 tangerine */
+  --neon2: 45 212 205; /* #2DD4CD lagoon */
+  --gold: 232 201 142; /* #E8C98E champagne */
+  --line: 255 255 255;
+  --sh-dark: rgba(0, 0, 0, 0.55);
+  --sh-light: rgba(255, 255, 255, 0.08);
+  --grad-a: #ff8f40;
+  --grad-b: #ffb36b;
+  --grad-c: #2dd4cd;
+  --grad-d: #67e8f9;
+  --orb-a: 255 143 64;
+  --orb-b: 45 212 205;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: 246 244 238; /* #F6F4EE warm ivory */
+  --surface: 255 255 252; /* #FFFFFC */
+  --card: 255 255 255; /* #FFFFFF */
+  --paper: 20 23 32; /* #141720 ink */
+  --mist: 78 85 104; /* #4E5568 higher contrast slate */
+  --neon: 211 87 26; /* #D3571A deep tangerine */
+  --neon2: 8 138 133; /* #088A85 deep teal */
+  --gold: 168 118 44; /* #A8762C bronze */
+  --line: 24 27 38;
+  --sh-dark: rgba(24, 27, 38, 0.14);
+  --sh-light: rgba(255, 255, 255, 0.95);
+  --grad-a: #d3571a;
+  --grad-b: #e8814f;
+  --grad-c: #088a85;
+  --grad-d: #3ec7c0;
+  --orb-a: 211 87 26;
+  --orb-b: 8 138 133;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto; /* Lenis handles smoothing */
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  background: rgb(var(--bg));
+  color: rgb(var(--paper));
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* native View Transitions for route changes (fallback: Framer) */
+main#main,
+.career-page,
+.section-shell:has(main) {
+  view-transition-name: page;
+}
+@supports (view-transition-name: root) {
+  ::view-transition-old(page),
+  ::view-transition-new(page) {
+    animation-duration: 0.35s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.4s;
+  }
+}
+
+::selection {
+  background: rgb(var(--neon) / 0.35);
+  color: rgb(var(--paper));
+}
+
+/* ---- visible focus rings (a11y) ---- */
+:where(a, button, input, textarea, select, [role="button"], [tabindex]):focus-visible {
+  outline: 2px solid rgb(var(--neon));
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ---- skip link ---- */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 16px;
+  z-index: 200;
+  padding: 12px 20px;
+  border-radius: 14px;
+  background: rgb(var(--surface));
+  color: rgb(var(--paper));
+  border: 1px solid rgb(var(--neon) / 0.5);
+  font-size: 14px;
+  font-weight: 600;
+  transition: top 0.25s ease;
+}
+.skip-link:focus {
+  top: 16px;
+}
+
+/* ---- scrollbar ---- */
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: rgb(var(--bg));
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--card));
+  border-radius: 99px;
+  border: 2px solid rgb(var(--bg));
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgb(var(--neon)), rgb(var(--neon2)));
+}
+
+/* ---- utilities ---- */
+@layer components {
+  .glass {
+    @apply border backdrop-blur-xl;
+    border-color: rgb(var(--line) / 0.12);
+    background: rgb(var(--card) / 0.5);
+    box-shadow: 0 24px 60px -24px var(--sh-dark);
+  }
+
+  .glass-strong {
+    @apply border backdrop-blur-2xl;
+    border-color: rgb(var(--line) / 0.14);
+    background: rgb(var(--card) / 0.72);
+    box-shadow: 0 24px 60px -24px var(--sh-dark);
+  }
+
+  .neo {
+    box-shadow:
+      6px 6px 14px var(--sh-dark),
+      -6px -6px 14px var(--sh-light);
+  }
+
+  .neo-inset {
+    box-shadow:
+      inset 3px 3px 8px var(--sh-dark),
+      inset -3px -3px 8px var(--sh-light);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      100deg,
+      var(--grad-a) 0%,
+      var(--grad-b) 30%,
+      var(--grad-c) 66%,
+      var(--grad-d) 90%
+    );
+  }
+
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(100deg, var(--gold), #e8c98e 60%, #c9a35e);
+  }
+
+  .cyber-grid {
+    background-image:
+      linear-gradient(rgb(var(--neon) / 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--neon) / 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .glass-input {
+    @apply w-full rounded-2xl border px-5 py-4 text-sm text-paper outline-none backdrop-blur-xl transition-all duration-300 placeholder:text-mist/60;
+    border-color: rgb(var(--line) / 0.14);
+    background: rgb(var(--card) / 0.55);
+  }
+  .glass-input:focus {
+    border-color: rgb(var(--neon) / 0.5);
+    box-shadow:
+      0 0 0 4px rgb(var(--neon) / 0.12),
+      0 0 30px -8px rgb(var(--neon) / 0.4);
+  }
+
+  .section-shell {
+    @apply relative mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+
+  .ghost-num {
+    @apply pointer-events-none absolute select-none font-serif font-bold leading-none;
+    color: rgb(var(--line) / 0.05);
+    font-size: clamp(120px, 22vw, 260px);
+  }
+}
+
+@media (pointer: fine) {
+  .custom-cursor-on,
+  .custom-cursor-on * {
+    cursor: none !important;
+  }
+}
+
+@media (pointer: coarse) {
+  .custom-cursor-on {
+    display: none;
+  }
+}

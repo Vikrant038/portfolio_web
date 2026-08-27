@@ -1,0 +1,224 @@
+.career-page {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 104px 24px 80px;
+  color: rgb(var(--paper));
+  font-family: var(--font-sans);
+}
+
+.career-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgb(var(--line) / 0.1);
+}
+
+.career-back-btn {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgb(var(--neon));
+  letter-spacing: 0.05em;
+  transition: opacity 0.2s ease;
+}
+.career-back-btn:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.career-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.career-download-btn,
+.career-link {
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgb(var(--surface));
+  border: 1px solid rgb(var(--line) / 0.14);
+  color: rgb(var(--paper));
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.career-download-btn:hover,
+.career-link:hover {
+  border-color: rgb(var(--neon) / 0.5);
+  color: rgb(var(--neon));
+}
+
+.career-header {
+  padding: 48px 0 32px;
+  border-bottom: 2px solid rgb(var(--line) / 0.12);
+}
+.career-header h1 {
+  font-family: var(--font-serif);
+  font-size: 48px;
+  line-height: 1.05;
+  margin: 0;
+}
+.career-role {
+  color: rgb(var(--neon));
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+.career-contact {
+  color: rgb(var(--mist));
+  font-size: 14px;
+  margin: 0;
+}
+.career-now {
+  margin-top: 12px;
+  font-size: 14px;
+  color: rgb(var(--mist));
+}
+
+.career-section {
+  margin-top: 36px;
+}
+.career-section h2 {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  margin: 0 0 16px;
+  color: rgb(var(--gold));
+}
+.career-item {
+  margin-bottom: 22px;
+}
+.career-item-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.career-item h3 {
+  font-size: 17px;
+  margin: 0;
+}
+.career-period {
+  font-size: 12px;
+  color: rgb(var(--mist));
+  letter-spacing: 0.06em;
+}
+.career-company {
+  color: rgb(var(--neon));
+  font-weight: 600;
+  font-size: 14px;
+  margin: 2px 0 6px;
+}
+.career-desc {
+  color: rgb(var(--mist));
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0 0 8px;
+}
+.career-highlights {
+  margin: 0;
+  padding-left: 18px;
+  color: rgb(var(--paper) / 0.85);
+  font-size: 13.5px;
+}
+.career-tag {
+  display: inline-block;
+  border-radius: 9999px;
+  border: 1px solid rgb(var(--line) / 0.1);
+  background: rgb(var(--line) / 0.04);
+  padding: 2px 8px;
+  font-size: 11px;
+  color: rgb(var(--mist));
+}
+
+.career-skills {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+.career-skill-group h3 {
+  font-size: 14px;
+  margin: 0 0 8px;
+  color: rgb(var(--neon2));
+}
+.career-skill-group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.career-skill-group li {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid rgb(var(--line) / 0.07);
+  font-size: 13.5px;
+}
+.career-skill-group em {
+  color: rgb(var(--mist));
+  font-style: normal;
+}
+.career-certs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.career-certs li {
+  padding-left: 18px;
+  position: relative;
+  font-size: 14px;
+}
+.career-certs li::before {
+  content: "◆";
+  position: absolute;
+  left: 0;
+  color: rgb(var(--gold));
+  font-size: 10px;
+  top: 3px;
+}
+
+@media print {
+  .career-nav {
+    display: none;
+  }
+  .career-page {
+    padding: 0;
+    color: #181b26;
+    font-size: 12px;
+  }
+  .career-header {
+    border-bottom-color: #181b26;
+  }
+  .career-header h1 {
+    font-size: 34px;
+  }
+  .career-section h2 {
+    color: #a8762c;
+    font-size: 20px;
+  }
+  .career-item {
+    break-inside: avoid;
+  }
+  .career-company {
+    color: #0a8a85;
+  }
+  .career-skill-group h3 {
+    color: #0a8a85;
+  }
+  .career-desc,
+  .career-contact,
+  .career-now,
+  .career-period {
+    color: #4a4f5e;
+  }
+  body {
+    background: #ffffff;
+  }
+}
