@@ -36,7 +36,7 @@ interface SkillsProps {
 
 export default function Skills({ groups, now }: SkillsProps) {
   return (
-    <section id="skills" className="relative scroll-mt-24 py-24 sm:py-32">
+    <section id="skills" className="relative scroll-mt-24 py-24 sm:py-32 overflow-hidden">
       <div
         className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[130px]"
         style={{ background: "rgb(var(--neon2) / 0.05)" }}

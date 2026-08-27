@@ -19,7 +19,7 @@ export default function Footer() {
   return (
     <>
       {/* end card */}
-      <section className="relative py-20">
+      <section className="relative py-20 overflow-hidden">
         <div className="section-shell">
           <Reveal>
             <div className="glass-strong relative overflow-hidden rounded-[2.5rem] px-6 py-16 text-center sm:px-12">
@@ -69,7 +69,7 @@ export default function Footer() {
         </div>
       </section>
 
-      <footer className="relative border-t border-white/[0.06] py-10">
+      <footer className="relative border-t border-white/[0.06] py-10 overflow-hidden">
         <div className="section-shell flex flex-col items-center justify-between gap-6 sm:flex-row">
           <p className="text-[12px] tracking-wide text-mist">
             © {new Date().getFullYear()} Vikrant Yadav. Designed &amp; engineered

@@ -141,7 +141,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
     : "5.0";
 
   return (
-    <section id="testimonials" className="relative scroll-mt-24 py-24 sm:py-32">
+    <section id="testimonials" className="relative scroll-mt-24 py-24 sm:py-32 overflow-hidden">
       <div
         className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 mx-auto h-[380px] max-w-3xl -translate-y-1/2 rounded-full blur-[120px]"
         style={{ background: "rgb(var(--neon) / 0.05)" }}
@@ -201,7 +201,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
         {items.length > 0 && (
           <div
             ref={carouselRef}
-            className="relative"
+            className="relative overflow-hidden"
             onMouseEnter={() => setPaused(true)}
             onMouseLeave={() => setPaused(false)}
             onTouchStart={() => setPaused(true)}

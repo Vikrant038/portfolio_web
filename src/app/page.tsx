@@ -44,7 +44,7 @@ export default async function Home() {
   };
 
   return (
-    <main id="main" className="relative">
+    <main id="main" className="relative w-full max-w-full overflow-x-hidden">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

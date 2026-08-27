@@ -18,7 +18,7 @@ export default function Experience({ items }: { items: ExperienceItem[] }) {
   };
 
   return (
-    <section id="experience" className="relative scroll-mt-24 py-24 sm:py-32">
+    <section id="experience" className="relative scroll-mt-24 py-24 sm:py-32 overflow-hidden">
       <div className="section-shell">
         <SectionHeading
           eyebrow="Career"

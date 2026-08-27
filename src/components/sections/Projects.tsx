@@ -321,7 +321,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
     );
 
   return (
-    <section id="projects" className="relative scroll-mt-24 py-24 sm:py-32">
+    <section id="projects" className="relative scroll-mt-24 py-24 sm:py-32 overflow-hidden">
       <div className="section-shell">
         <SectionHeading
           eyebrow="Selected work"

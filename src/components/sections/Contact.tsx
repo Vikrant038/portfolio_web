@@ -206,7 +206,7 @@ export default function Contact() {
   );
 
   return (
-    <section id="contact" className="relative scroll-mt-4 pt-12 pb-24 sm:pt-16 sm:pb-32">
+    <section id="contact" className="relative scroll-mt-24 py-24 sm:py-32 overflow-hidden">
       <div
         className="pointer-events-none absolute left-1/2 top-1/3 -z-10 h-[460px] w-[460px] -translate-x-1/2 rounded-full blur-[130px]"
         style={{ background: "rgb(var(--neon2) / 0.06)" }}

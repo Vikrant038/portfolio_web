@@ -19,7 +19,7 @@ const CERTS = ["Oracle Generative AI Professional", "Oracle Data Science", "McKi
 export default function About() {
   const { scrollTo } = useSmoothScroll();
   return (
-    <section id="about" className="relative scroll-mt-24 py-24 sm:py-32">
+    <section id="about" className="relative scroll-mt-24 py-24 sm:py-32 overflow-hidden">
       <div className="section-shell">
         <SectionHeading
           eyebrow="About me"
