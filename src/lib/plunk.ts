@@ -45,7 +45,9 @@ export async function sendContactEmail(payload: ContactPayload) {
   }
 
   const recipient =
-    process.env.CONTACT_EMAIL ?? process.env.PLUNK_RECIPIENT ?? payload.email;
+    process.env.CONTACT_EMAIL ??
+    process.env.PLUNK_RECIPIENT ??
+    "yadavvikrant3006@gmail.com";
   const subject = `New portfolio message from ${payload.name}`;
   const meta = [
     payload.projectType && `Project type: ${payload.projectType}`,
