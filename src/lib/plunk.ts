@@ -4,6 +4,8 @@
  * Needs a PLUNK_API_KEY in the environment; without it the API route logs
  * the message instead so the demo keeps working.
  */
+import { SITE_CONFIG } from "@/lib/constants";
+
 export interface ContactPayload {
   name: string;
   email: string;
@@ -47,7 +49,7 @@ export async function sendContactEmail(payload: ContactPayload) {
   const recipient =
     process.env.CONTACT_EMAIL ??
     process.env.PLUNK_RECIPIENT ??
-    "yadavvikrant3006@gmail.com";
+    SITE_CONFIG.email;
   const subject = `New portfolio message from ${payload.name}`;
   const meta = [
     payload.projectType && `Project type: ${payload.projectType}`,

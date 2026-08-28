@@ -5,14 +5,18 @@ import { AnimatePresence, motion } from "framer-motion";
 import { markAppReady } from "@/lib/app-ready";
 import { useSettings } from "@/lib/settings";
 
+import { SITE_CONFIG } from "@/lib/constants";
+
 const VISITED_KEY = "luxe-visited";
 
 export default function Preloader() {
   const { reducedMotion } = useSettings();
+  const [mounted, setMounted] = useState(false);
   const [done, setDone] = useState(false);
   const [returning, setReturning] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const visited = window.localStorage.getItem(VISITED_KEY) === "1";
     setReturning(visited);
     try {
@@ -27,6 +31,8 @@ export default function Preloader() {
     }, dur);
     return () => window.clearTimeout(t);
   }, [reducedMotion]);
+
+  if (!mounted) return null;
 
   return (
     <AnimatePresence>
@@ -74,8 +80,11 @@ export default function Preloader() {
             transition={{ delay: 0.2 }}
             className="absolute bottom-[16%] left-1/2 -translate-x-1/2 text-center"
           >
-            <p className="font-serif text-sm tracking-[0.35em] text-paper/90 uppercase">
-              VIKRANT YADAV
+            <p
+              suppressHydrationWarning
+              className="font-serif text-sm tracking-[0.35em] text-paper/90 uppercase"
+            >
+              {SITE_CONFIG.name}
             </p>
             <div className="mx-auto mt-3 h-px w-24 overflow-hidden bg-white/10">
               <motion.div

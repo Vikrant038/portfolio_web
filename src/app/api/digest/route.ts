@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabase } from "@/lib/supabase";
+import { SITE_CONFIG } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
 
@@ -51,8 +52,8 @@ export async function POST(req: Request) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      to: process.env.CONTACT_EMAIL ?? "yadavvikrant3006@gmail.com",
-      from: `Vikrant Yadav Portfolio <${process.env.PLUNK_FROM ?? "no-reply@vikrantyadav.dev"}>`,
+      to: process.env.CONTACT_EMAIL ?? SITE_CONFIG.email,
+      from: `${SITE_CONFIG.name} Portfolio <${process.env.PLUNK_FROM ?? "no-reply@vikrantyadav.dev"}>`,
       subject: `Weekly digest - ${rows.length} new lead${rows.length === 1 ? "" : "s"}`,
       body,
     }),

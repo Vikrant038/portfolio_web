@@ -18,6 +18,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import GlassCard from "@/components/ui/GlassCard";
 import type { Testimonial } from "@/lib/supabase";
 import { toast } from "sonner";
+import { SITE_CONFIG } from "@/lib/constants";
 
 const CARD_W = 336;
 const GAP = 24;
@@ -94,21 +95,17 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
     goTo(Math.max(0, Math.min(idx, pages - 1)));
   };
 
-  async function share(t: Testimonial) {
-    try {
-      await navigator.clipboard.writeText(
-        `“${t.quote}” - ${t.name}, ${t.role}\n\nvia vikrantyadav.dev`
-      );
-      toast.success("Quote copied to clipboard");
-    } catch {
-      toast.error("Couldn't copy - your browser blocked it");
+  const share = (t: Testimonial) => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(`"${t.quote}" - ${t.name}, ${t.role}`);
+      toast.success("Quote copied to clipboard!");
     }
-  }
+  };
 
   async function submitFeedback(e: React.FormEvent) {
     e.preventDefault();
-    if (fb.quote.trim().length < 10) {
-      toast.error("Please write at least a sentence of feedback.");
+    if (!fb.quote.trim()) {
+      toast.error("Please add a short quote first.");
       return;
     }
     setSending(true);
@@ -116,21 +113,13 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: fb.name.trim() || "Anonymous",
-          quote: fb.quote.trim(),
-        }),
+        body: JSON.stringify(fb),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Failed");
-      toast.success(
-        data.mock
-          ? "Thanks! (Feedback storage needs Supabase - logged server-side.)"
-          : "Thanks! Your feedback is queued for review."
-      );
+      if (!res.ok) throw new Error();
+      toast.success("Thank you! Feedback submitted for review.");
       setFb({ name: "", quote: "" });
     } catch {
-      toast.error("Something went wrong. Try again.");
+      toast.error("Couldn't submit feedback right now.");
     } finally {
       setSending(false);
     }
@@ -169,7 +158,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
               from {items.length} recommendations
             </p>
             <a
-              href="https://linkedin.com/in/vikrant-yadav3012"
+              href={SITE_CONFIG.socials.linkedin}
               target="_blank"
               rel="noreferrer"
               className="text-[12px] font-semibold text-neon underline-offset-4 hover:underline"
@@ -188,7 +177,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
               Gathering peer reviews from Deep Thought Analytics and project collaborators.
             </p>
             <a
-              href="https://linkedin.com/in/vikrant-yadav3012"
+              href={SITE_CONFIG.socials.linkedin}
               target="_blank"
               rel="noreferrer"
               className="mt-2 text-xs font-semibold text-neon underline-offset-4 hover:underline"
@@ -271,7 +260,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
                       <button
                         onClick={() => setVideo(t.video ?? null)}
                         aria-label="Play video testimonial"
-                        className="grid h-8 w-8 place-items-center rounded-full border border-neon/40 bg-neon/10 text-neon transition-transform hover:scale-110"
+                        className="grid h-8 w-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-full border border-neon/40 bg-neon/10 text-neon transition-transform hover:scale-110"
                       >
                         <Play className="h-3.5 w-3.5 fill-neon" />
                       </button>
@@ -300,7 +289,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
                     <button
                       onClick={() => share(t)}
                       aria-label="Share quote"
-                      className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 text-mist transition-colors hover:border-neon/40 hover:text-neon"
+                      className="grid h-9 w-9 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-xl border border-white/10 text-mist transition-colors hover:border-neon/40 hover:text-neon"
                     >
                       <Share2 className="h-4 w-4" />
                     </button>

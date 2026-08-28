@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
+import { SITE_CONFIG } from "@/lib/constants";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://vikrant-yadav.vercel.app";
+  const base = SITE_CONFIG.url;
   return [
     {
       url: base,

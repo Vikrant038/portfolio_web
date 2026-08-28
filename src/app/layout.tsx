@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Space_Grotesk, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import SettingsProvider, { themeBootScript } from "@/lib/settings";
 import SmoothScrollProvider from "@/components/providers/SmoothScroll";
@@ -17,6 +18,20 @@ import ConsentBanner from "@/components/ui/ConsentBanner";
 import SiteChrome from "@/components/ui/SiteChrome";
 import { Toaster } from "sonner";
 import { SITE_CONFIG } from "@/lib/constants";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
 
 const siteUrl = SITE_CONFIG.url;
 
@@ -79,16 +94,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="bg-void"
+      className={`bg-void ${spaceGrotesk.variable} ${playfairDisplay.variable}`}
       suppressHydrationWarning
     >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@300..700&display=swap"
-        />
         <link rel="preconnect" href="https://vitals.vercel-insights.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://scripts.clarity.ms" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://vitals.vercel-insights.com" />

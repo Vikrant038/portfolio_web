@@ -9,8 +9,7 @@
 /* ------------------------------------------------------------------ */
 
 :root {
-  --font-sans: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-serif: "Playfair Display", Georgia, serif;
+  /* --font-sans and --font-serif are injected by next/font via the <html> className */
 }
 
 :root,
@@ -303,12 +302,29 @@ select,
 
 /* Performance: Skip layout & render of offscreen deep sections until near viewport */
 #skills,
+#skills,
 #experience,
 #blogs,
 #testimonials,
 #contact {
   content-visibility: auto;
+}
+
+/* Tune intrinsic sizes per section to prevent scrollbar jitter on fast scroll */
+#skills {
   contain-intrinsic-size: auto 600px;
+}
+#experience {
+  contain-intrinsic-size: auto 900px;
+}
+#blogs {
+  contain-intrinsic-size: auto 800px;
+}
+#testimonials {
+  contain-intrinsic-size: auto 600px;
+}
+#contact {
+  contain-intrinsic-size: auto 850px;
 }
 
 @media (pointer: coarse) {

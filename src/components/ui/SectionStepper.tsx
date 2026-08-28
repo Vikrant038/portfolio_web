@@ -1,7 +1,7 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { motion, useScroll, useSpring } from "framer-motion";
 import { useScrollSpy, SECTIONS } from "@/lib/use-scroll-spy";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
 import { cn } from "@/lib/utils";
@@ -20,8 +20,31 @@ export default function SectionStepper() {
   const pathname = usePathname();
   const active = useScrollSpy(SECTIONS);
   const { scrollTo } = useSmoothScroll();
-  const { scrollYProgress } = useScroll();
-  const scaleY = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
+  const lineRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const doc = document.documentElement;
+          const total = doc.scrollHeight - window.innerHeight;
+          const p = total > 0 ? window.scrollY / total : 0;
+          if (lineRef.current) {
+            lineRef.current.style.transform = `scaleY(${Math.min(1, Math.max(0, p))})`;
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [pathname]);
 
   if (pathname !== "/") return null;
 
@@ -57,9 +80,10 @@ export default function SectionStepper() {
           );
         })}
         <span className="mt-1 h-16 w-px overflow-hidden bg-mist/20">
-          <motion.span
-            style={{ scaleY }}
-            className="block h-full w-full origin-top bg-gradient-to-b from-[var(--grad-a)] to-[var(--grad-c)]"
+          <span
+            ref={lineRef}
+            style={{ transform: "scaleY(0)" }}
+            className="block h-full w-full origin-top bg-gradient-to-b from-[var(--grad-a)] to-[var(--grad-c)] transition-transform duration-75 ease-out will-change-transform"
           />
         </span>
       </div>

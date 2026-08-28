@@ -246,19 +246,25 @@ export default function Contact() {
 
               <div className="w-full space-y-3 text-left">
                 {[
-                  { icon: Mail, label: "yadavvikrant3006@gmail.com" },
-                  { icon: MapPin, label: "New Delhi, India · Remote worldwide" },
+                  { icon: Mail, label: SITE_CONFIG.email, href: `mailto:${SITE_CONFIG.email}` },
+                  { icon: MapPin, label: SITE_CONFIG.location },
                 ].map((r) => (
                   <div
                     key={r.label}
                     className="glass flex items-center gap-4 rounded-2xl px-5 py-3.5"
                   >
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-neon/[0.08] text-neon">
-                      <r.icon size={17} />
+                    <span className="grid h-11 w-11 min-h-[44px] min-w-[44px] shrink-0 place-items-center rounded-xl bg-neon/[0.08] text-neon">
+                      <r.icon size={18} />
                     </span>
-                    <span className="text-sm font-medium text-paper">
-                      {r.label}
-                    </span>
+                    {r.href ? (
+                      <a href={r.href} className="text-sm font-medium text-paper hover:text-neon transition-colors">
+                        {r.label}
+                      </a>
+                    ) : (
+                      <span className="text-sm font-medium text-paper">
+                        {r.label}
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -300,7 +306,7 @@ export default function Contact() {
                       type="button"
                       onClick={() => i < step && setStep(i)}
                       className={cn(
-                        "grid h-8 w-8 shrink-0 place-items-center rounded-full border text-[11px] font-bold transition-all",
+                        "grid h-8 w-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 shrink-0 place-items-center rounded-full border text-[11px] font-bold transition-all",
                         i < step
                           ? "border-neon bg-neon/15 text-neon"
                           : i === step
