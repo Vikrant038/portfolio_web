@@ -48,6 +48,19 @@ function Particles({ count = 900 }: { count?: number }) {
     ref.current.rotation.x += delta * 0.004;
   });
 
+  useEffect(() => {
+    return () => {
+      if (ref.current) {
+        ref.current.geometry?.dispose();
+        if (Array.isArray(ref.current.material)) {
+          ref.current.material.forEach((m) => m.dispose());
+        } else {
+          ref.current.material?.dispose();
+        }
+      }
+    };
+  }, []);
+
   return (
     <points ref={ref}>
       <bufferGeometry>

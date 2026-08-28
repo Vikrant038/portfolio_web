@@ -249,7 +249,9 @@ export async function getProjects(): Promise<Project[]> {
     try {
       const { data, error } = await supabase
         .from("projects")
-        .select("*")
+        .select(
+          "id, title, tagline, description, category, tech, image, gallery, url, repo, year, accent, metrics, challenge, approach, impact"
+        )
         .order("year", { ascending: false });
       if (!error && data && data.length > 0) return data as Project[];
     } catch {
@@ -265,7 +267,7 @@ export async function getSkillGroups(): Promise<SkillGroup[]> {
     try {
       const { data, error } = await supabase
         .from("skills")
-        .select("*")
+        .select("category, icon, accent, items, sort")
         .order("sort", { ascending: true });
       if (!error && data && data.length > 0) {
         return data.map((row: any) => ({
@@ -288,7 +290,7 @@ export async function getExperience(): Promise<ExperienceItem[]> {
     try {
       const { data, error } = await supabase
         .from("experience")
-        .select("*")
+        .select("id, role, company, period, description, highlights, current, sort")
         .order("sort", { ascending: true });
       if (!error && data && data.length > 0) return data as ExperienceItem[];
     } catch {
@@ -304,7 +306,9 @@ export async function getTestimonials(): Promise<Testimonial[]> {
     try {
       const { data, error } = await supabase
         .from("testimonials")
-        .select("*")
+        .select(
+          "id, name, role, company, quote, rating, avatar, project, linkedin, video, status, created_at"
+        )
         .eq("status", "approved")
         .order("created_at", { ascending: true });
       if (!error && data && data.length > 0) return data as Testimonial[];

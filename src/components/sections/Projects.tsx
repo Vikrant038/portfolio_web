@@ -147,7 +147,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
               src={p.image}
               alt={p.title}
               fill
-              sizes="224px"
+              sizes="(max-width: 640px) 100vw, 224px"
               className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
             />
           </div>
