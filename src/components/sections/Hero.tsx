@@ -11,6 +11,7 @@ import CountUp from "@/components/ui/CountUp";
 import AmbientGlow from "@/components/ui/AmbientGlow";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
 import { useAppReady } from "@/lib/app-ready";
+import { useSettings } from "@/lib/settings";
 
 const PortfolioScene = dynamic(
   () => import("@/components/three/PortfolioScene"),
@@ -105,6 +106,7 @@ function useClickBurst(containerRef: React.RefObject<HTMLElement>) {
 
 export default function Hero() {
   const { scrollTo } = useSmoothScroll();
+  const { reducedMotion } = useSettings();
   const ready = useAppReady();
   const typed = useTypewriter(ROLES, ready);
   const sectionRef = useRef<HTMLElement>(null);
@@ -117,11 +119,15 @@ export default function Hero() {
   const sY = useSpring(tiltY, { stiffness: 120, damping: 18 });
 
   const fadeUp = (delay: number) => ({
-    initial: { opacity: 0, y: 26, filter: "blur(10px)" },
-    animate: ready
-      ? { opacity: 1, y: 0, filter: "blur(0px)" }
-      : { opacity: 0, y: 26, filter: "blur(10px)" },
-    transition: { duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] as const },
+    initial: reducedMotion ? false : { opacity: 0, y: 24, filter: "blur(6px)" },
+    animate: ready || reducedMotion
+      ? { opacity: 1, y: 0, filter: "none" }
+      : { opacity: 0, y: 24, filter: "blur(6px)" },
+    transition: {
+      duration: reducedMotion ? 0.2 : 0.75,
+      delay: reducedMotion ? 0 : delay,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
   });
 
   return (

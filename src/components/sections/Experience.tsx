@@ -7,10 +7,12 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import GlassCard from "@/components/ui/GlassCard";
 import CountUp from "@/components/ui/CountUp";
 import AmbientGlow from "@/components/ui/AmbientGlow";
+import { useSettings } from "@/lib/settings";
 import type { ExperienceItem } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
 export default function Experience({ items }: { items: ExperienceItem[] }) {
+  const { reducedMotion } = useSettings();
   // Collapsed by default
   const [openIds, setOpenIds] = useState<Record<string, boolean>>({});
 
@@ -40,16 +42,17 @@ export default function Experience({ items }: { items: ExperienceItem[] }) {
         </div>
 
         <div className="relative mx-auto max-w-4xl">
-          {/* gradient spine */}
+          {/* animated vertical spine */}
           <div
             className="absolute left-5 top-0 bottom-0 w-10 -translate-x-1/2 md:left-1/2 pointer-events-none"
             aria-hidden
           >
             <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2">
               <motion.div
-                initial={{ scaleY: 0 }}
-                whileInView={{ scaleY: 1 }}
-                viewport={{ once: true, margin: "-100px" }}
+                initial={reducedMotion ? false : { scaleY: 0 }}
+                animate={reducedMotion ? { scaleY: 1 } : undefined}
+                whileInView={reducedMotion ? undefined : { scaleY: 1 }}
+                viewport={{ once: true, margin: "0px" }}
                 transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
                 className="h-full w-full origin-top bg-gradient-to-b from-[var(--grad-a)] via-[var(--grad-c)] to-gold"
                 style={{ boxShadow: "0 0 18px rgb(var(--neon) / 0.5)" }}
@@ -64,9 +67,10 @@ export default function Experience({ items }: { items: ExperienceItem[] }) {
               return (
                 <motion.div
                   key={item.id}
-                  initial={{ opacity: 0, y: 36 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-80px" }}
+                  initial={reducedMotion ? false : { opacity: 0, y: 36 }}
+                  animate={reducedMotion ? { opacity: 1, y: 0 } : undefined}
+                  whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "0px" }}
                   transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   className={cn(
                     "relative pl-14 md:w-1/2 md:py-6",

@@ -2,6 +2,7 @@
 import { MapPin, GraduationCap, Coffee, Award } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
+import AmbientGlow from "@/components/ui/AmbientGlow";
 import TiltMonogram from "@/components/sections/about/TiltMonogram";
 import AboutButtons from "@/components/sections/about/AboutButtons";
 
@@ -16,6 +17,7 @@ const CERTS = ["Oracle Generative AI Professional", "Oracle Data Science", "McKi
 export default function About() {
   return (
     <section id="about" className="relative scroll-mt-24 py-24 sm:py-32 overflow-hidden">
+      <AmbientGlow color="neon" className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" size={480} opacity={0.04} />
       <div className="section-shell">
         <SectionHeading
           eyebrow="About me"
@@ -29,14 +31,8 @@ export default function About() {
           <TiltMonogram>
             <div className="glass relative aspect-square overflow-hidden rounded-[2.5rem] shadow-glass">
               <div className="cyber-grid absolute inset-0 opacity-30" />
-              <div
-                className="absolute -right-10 -top-10 h-52 w-52 rounded-full blur-[70px]"
-                style={{ background: "rgb(var(--neon) / 0.12)" }}
-              />
-              <div
-                className="absolute -bottom-12 -left-12 h-52 w-52 rounded-full blur-[70px]"
-                style={{ background: "rgb(var(--neon2) / 0.12)" }}
-              />
+              <AmbientGlow color="neon" className="-right-10 -top-10" size={200} opacity={0.12} blur={70} />
+              <AmbientGlow color="neon2" className="-bottom-12 -left-12" size={200} opacity={0.12} blur={70} />
 
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 p-8 text-center">
                 {/* colorful line-art - connected nodes in the brand palette */}

@@ -74,25 +74,32 @@ export default function Modal({
             exit={{ opacity: 0, scale: 0.96, y: 20 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            data-lenis-prevent="true"
             className={cn(
-              "glass-strong relative h-full max-h-[100dvh] sm:h-auto sm:max-h-[88vh] w-full overflow-y-auto overscroll-contain rounded-none sm:rounded-3xl shadow-glass pb-safe touch-pan-y",
-              MAX_WIDTHS[maxWidth],
-              contentClassName
+              "glass-strong relative flex flex-col h-full max-h-[100dvh] sm:h-auto sm:max-h-[88vh] w-full overflow-hidden rounded-none sm:rounded-3xl shadow-glass pb-safe",
+              MAX_WIDTHS[maxWidth]
             )}
-            style={{ WebkitOverflowScrolling: "touch" }}
           >
             {showCloseButton && (
               <button
                 type="button"
                 onClick={onClose}
                 aria-label="Close dialog"
-                className="absolute right-4 top-4 sm:right-5 sm:top-5 z-40 grid h-10 w-10 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-full border border-white/15 bg-void/70 text-paper backdrop-blur-xl transition-all hover:border-neon/50 hover:text-neon active:scale-95"
+                className="absolute right-3.5 top-3.5 sm:right-5 sm:top-5 z-50 grid h-10 w-10 min-h-[44px] min-w-[44px] sm:min-h-[40px] sm:min-w-[40px] place-items-center rounded-full border border-white/20 bg-void/85 text-paper backdrop-blur-2xl transition-all hover:border-neon/60 hover:text-neon active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
               >
                 <X className="h-4 w-4" />
               </button>
             )}
-            {children}
+
+            <div
+              data-lenis-prevent="true"
+              className={cn(
+                "flex-1 overflow-y-auto overscroll-contain touch-pan-y",
+                contentClassName
+              )}
+              style={{ WebkitOverflowScrolling: "touch" }}
+            >
+              {children}
+            </div>
           </motion.div>
         </motion.div>
       )}
