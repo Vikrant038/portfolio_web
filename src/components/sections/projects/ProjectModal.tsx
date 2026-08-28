@@ -72,25 +72,21 @@ export default function ProjectModal({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
-      className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center bg-void/80 p-0 sm:p-4 backdrop-blur-lg overscroll-contain"
+      className="fixed inset-0 z-[90] flex items-start sm:items-center justify-center bg-void/85 p-0 sm:p-4 backdrop-blur-lg overscroll-contain overflow-y-auto"
       role="dialog"
       aria-modal="true"
       aria-label={project.title}
     >
       <motion.div
-        initial={{ opacity: 0, scale: 0.96, y: 32 }}
+        initial={{ opacity: 0, scale: 0.96, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.96, y: 24 }}
+        exit={{ opacity: 0, scale: 0.96, y: 20 }}
         transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
         ref={modalRef}
         data-lenis-prevent="true"
-        className="glass-strong relative max-h-[90vh] sm:max-h-[88vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-t-3xl sm:rounded-3xl shadow-glass pb-safe"
+        className="glass-strong relative min-h-[100dvh] sm:min-h-0 sm:max-h-[88vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-none sm:rounded-3xl shadow-glass pb-safe"
       >
-        {/* Mobile bottom sheet top drag handle */}
-        <div className="flex justify-center pt-3 pb-1 sm:hidden" aria-hidden>
-          <div className="h-1.5 w-12 rounded-full bg-white/20" />
-        </div>
 
         {/* Gallery */}
         <div className="relative aspect-[16/9] sm:aspect-[16/8] overflow-hidden">

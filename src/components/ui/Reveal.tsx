@@ -15,7 +15,7 @@ interface RevealProps {
 export default function Reveal({
   children,
   delay = 0,
-  y = 28,
+  y = 20,
   className,
   once = true,
 }: RevealProps) {
@@ -23,10 +23,11 @@ export default function Reveal({
 
   return (
     <motion.div
-      initial={reducedMotion ? false : { opacity: 0, y, filter: "blur(8px)" }}
-      whileInView={reducedMotion ? undefined : { opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once, margin: "-60px" }}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      initial={reducedMotion ? false : { opacity: 0, y }}
+      animate={reducedMotion ? { opacity: 1, y: 0, filter: "none" } : undefined}
+      whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once, margin: "0px" }}
+      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}

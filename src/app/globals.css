@@ -283,33 +283,6 @@ select,
   }
 }
 
-/* Performance: Skip layout & render of offscreen deep sections until near viewport */
-#skills,
-#skills,
-#experience,
-#blogs,
-#testimonials,
-#contact {
-  content-visibility: auto;
-}
-
-/* Tune intrinsic sizes per section to prevent scrollbar jitter on fast scroll */
-#skills {
-  contain-intrinsic-size: auto 600px;
-}
-#experience {
-  contain-intrinsic-size: auto 900px;
-}
-#blogs {
-  contain-intrinsic-size: auto 800px;
-}
-#testimonials {
-  contain-intrinsic-size: auto 600px;
-}
-#contact {
-  contain-intrinsic-size: auto 850px;
-}
-
 @media (pointer: coarse) {
   .custom-cursor-on {
     display: none !important;

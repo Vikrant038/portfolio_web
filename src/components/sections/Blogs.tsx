@@ -51,7 +51,7 @@ export default function Blogs() {
           active={filter}
           onChange={setFilter}
           layoutId="blogs-filter-pill"
-          className="justify-center mb-8"
+          className="justify-start sm:justify-center mb-8"
         />
 
         {/* articles grid */}
@@ -119,25 +119,21 @@ export default function Blogs() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setActiveArticle(null)}
-            className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center bg-void/80 p-0 sm:p-4 backdrop-blur-xl overscroll-contain"
+            className="fixed inset-0 z-[90] flex items-start sm:items-center justify-center bg-void/85 p-0 sm:p-4 backdrop-blur-xl overscroll-contain overflow-y-auto"
             role="dialog"
             aria-modal="true"
             aria-label={activeArticle.title}
           >
             <motion.div
               ref={modalRef}
-              initial={{ opacity: 0, scale: 0.94, y: 32 }}
+              initial={{ opacity: 0, scale: 0.96, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.94, y: 24 }}
-              transition={{ type: "spring", stiffness: 320, damping: 28 }}
+              exit={{ opacity: 0, scale: 0.96, y: 20 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
               data-lenis-prevent="true"
-              className="glass-strong relative max-h-[90vh] sm:max-h-[85vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-t-3xl sm:rounded-3xl p-6 sm:p-9 shadow-glass pb-safe"
+              className="glass-strong relative min-h-[100dvh] sm:min-h-0 sm:max-h-[85vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-none sm:rounded-3xl p-6 sm:p-9 shadow-glass pt-8 sm:pt-9 pb-safe"
             >
-              {/* Mobile top handle */}
-              <div className="flex justify-center pt-1 pb-3 sm:hidden" aria-hidden>
-                <div className="h-1.5 w-12 rounded-full bg-white/20" />
-              </div>
 
               <button
                 onClick={() => setActiveArticle(null)}

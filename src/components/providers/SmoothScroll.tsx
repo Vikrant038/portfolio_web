@@ -36,8 +36,8 @@ export default function SmoothScrollProvider({
       typeof window !== "undefined" &&
       (window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768);
 
-    // On mobile touch with reduced motion, use 100% native 120Hz hardware scrolling
-    if (isTouch && motion === "reduced") {
+    // On all mobile touch devices, use 100% native 120Hz GPU hardware scrolling
+    if (isTouch) {
       setReady(true);
       return;
     }
