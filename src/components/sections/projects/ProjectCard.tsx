@@ -26,11 +26,11 @@ function GridCard({ project: p, liked, onToggleLike, onOpen }: Omit<ProjectCardP
   return (
     <GlassCard
       glow={p.accent}
-      className="flex h-full flex-col cursor-pointer transition-transform duration-300 hover:scale-[1.01]"
+      className="flex h-full flex-col cursor-pointer transition-transform duration-300 hover:scale-[1.01] border border-white/10 shadow-lg shadow-black/40"
       rounded="2xl"
     >
-      <div onClick={() => onOpen(p)} className="flex h-full flex-col p-6">
-        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl">
+      <div onClick={() => onOpen(p)} className="flex h-full flex-col p-4 sm:p-6">
+        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-void/50">
           <Image
             src={p.image}
             alt={p.title}
@@ -39,18 +39,18 @@ function GridCard({ project: p, liked, onToggleLike, onOpen }: Omit<ProjectCardP
             className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent pointer-events-none" />
-          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-            <span className="rounded-md bg-void/80 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-mist backdrop-blur-md">
+          <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
+            <span className="rounded-md bg-void/80 px-2 py-0.5 font-mono text-[9.5px] sm:text-[10px] uppercase tracking-wider text-mist backdrop-blur-md">
               {p.category}
             </span>
-            <span className="rounded-md bg-void/80 px-2 py-0.5 font-mono text-[10px] text-mist backdrop-blur-md">
+            <span className="rounded-md bg-void/80 px-2 py-0.5 font-mono text-[9.5px] sm:text-[10px] text-mist backdrop-blur-md">
               {p.year}
             </span>
           </div>
         </div>
-        <div className="flex flex-1 flex-col pt-5">
+        <div className="flex flex-1 flex-col pt-4 sm:pt-5">
           <div className="flex items-start justify-between gap-3">
-            <h3 className="font-serif text-xl font-bold text-paper transition-colors group-hover:text-neon">
+            <h3 className="font-serif text-lg sm:text-xl font-bold text-paper transition-colors group-hover:text-neon">
               {p.title}
             </h3>
             <div className="relative z-30 flex items-center gap-1.5 pointer-events-auto">
@@ -61,7 +61,7 @@ function GridCard({ project: p, liked, onToggleLike, onOpen }: Omit<ProjectCardP
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   aria-label={`Open live demo for ${p.title}`}
-                  className="grid h-8 w-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-lg border border-neon/40 bg-neon/10 text-neon transition-all hover:bg-neon/20 hover:scale-105 active:scale-95"
+                  className="grid h-8 w-8 min-h-[40px] min-w-[40px] sm:min-h-0 sm:min-w-0 place-items-center rounded-lg border border-neon/40 bg-neon/10 text-neon transition-all hover:bg-neon/20 hover:scale-105 active:scale-95"
                   title="Live Demo"
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
@@ -72,7 +72,7 @@ function GridCard({ project: p, liked, onToggleLike, onOpen }: Omit<ProjectCardP
                 onClick={(e) => onToggleLike(p.id, e)}
                 aria-label="Like project"
                 className={cn(
-                  "grid h-8 w-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-lg border transition-colors active:scale-95",
+                  "grid h-8 w-8 min-h-[40px] min-w-[40px] sm:min-h-0 sm:min-w-0 place-items-center rounded-lg border transition-colors active:scale-95",
                   liked
                     ? "border-rose-400/50 bg-rose-400/10 text-rose-400"
                     : "border-white/10 bg-white/[0.04] text-mist hover:text-rose-400",
@@ -83,18 +83,24 @@ function GridCard({ project: p, liked, onToggleLike, onOpen }: Omit<ProjectCardP
             </div>
           </div>
           <p className="mt-1 text-xs uppercase tracking-[0.16em] text-mist">{p.tagline}</p>
-          <p className="mt-3 line-clamp-2 text-[14.5px] leading-relaxed text-mist">{p.description}</p>
-          <div className="mt-auto flex flex-wrap gap-1.5 pt-5">
+          <p className="mt-2.5 line-clamp-2 text-[13.5px] sm:text-[14.5px] leading-relaxed text-mist">{p.description}</p>
+          
+          <div className="mt-auto flex flex-wrap gap-1.5 pt-4">
             {p.tech.slice(0, 3).map((t) => (
-              <span key={t} className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 text-[10.5px] font-medium text-mist">
+              <span key={t} className="rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium text-mist">
                 {t}
               </span>
             ))}
             {p.tech.length > 3 && (
-              <span className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 text-[10.5px] font-medium text-mist">
+              <span className="rounded-md border border-white/[0.08] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-medium text-mist">
                 +{p.tech.length - 3}
               </span>
             )}
+          </div>
+
+          <div className="mt-3.5 pt-3 border-t border-white/[0.07] flex items-center justify-between text-xs text-mist font-medium">
+            <span className="group-hover:text-neon transition-colors">Explore system</span>
+            <ArrowUpRight className="h-3.5 w-3.5 text-mist group-hover:text-neon transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </div>
         </div>
       </div>

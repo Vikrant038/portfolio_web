@@ -54,7 +54,7 @@ export default function GlassCard({
             "radial-gradient(360px circle at var(--gx,50%) var(--gy,50%), color-mix(in srgb, var(--glow) 14%, transparent), transparent 70%)",
         }}
       />
-      <div className="relative z-10">{children}</div>
+      <div className="relative z-10 h-full flex flex-col flex-1">{children}</div>
     </motion.div>
   );
 }
