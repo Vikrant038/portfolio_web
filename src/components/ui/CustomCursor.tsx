@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
+import { isTouchDevice } from "@/lib/device";
 
 export default function CustomCursor() {
   const [enabled, setEnabled] = useState(false);
@@ -15,8 +16,7 @@ export default function CustomCursor() {
 
   useEffect(() => {
     const fine = window.matchMedia("(pointer: fine)").matches;
-    const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-    if (!fine || isTouch) return;
+    if (!fine || isTouchDevice()) return;
 
     setEnabled(true);
     document.documentElement.classList.add("custom-cursor-on");

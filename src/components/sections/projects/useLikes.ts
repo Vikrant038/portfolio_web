@@ -1,34 +1,24 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { getStorageItem, setStorageItem } from "@/lib/storage";
 
 const LIKES_KEY = "luxe-likes";
-
-function readLikes(): Record<string, boolean> {
-  if (typeof window === "undefined") return {};
-  try {
-    return JSON.parse(window.localStorage.getItem(LIKES_KEY) ?? "{}");
-  } catch {
-    return {};
-  }
-}
 
 /** Persists project likes to localStorage. */
 export function useLikes() {
   const [likes, setLikes] = useState<Record<string, boolean>>({});
 
-  useEffect(() => setLikes(readLikes()), []);
+  useEffect(() => {
+    setLikes(getStorageItem<Record<string, boolean>>(LIKES_KEY, {}));
+  }, []);
 
   const toggleLike = useCallback(
     (id: string, e: React.MouseEvent) => {
       e.stopPropagation();
       setLikes((prev) => {
         const next = { ...prev, [id]: !prev[id] };
-        try {
-          window.localStorage.setItem(LIKES_KEY, JSON.stringify(next));
-        } catch {
-          /* ignore */
-        }
+        setStorageItem(LIKES_KEY, next);
         return next;
       });
     },

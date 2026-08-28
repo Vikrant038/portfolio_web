@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 import Link from "next/link";
+import NeumorphicButton from "@/components/ui/NeumorphicButton";
 
 export default function GlobalRouteError({
   error,
@@ -39,13 +40,12 @@ export default function GlobalRouteError({
         )}
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <button
+          <NeumorphicButton
             onClick={() => reset()}
-            className="neo inline-flex items-center gap-2 rounded-xl bg-ink px-5 py-3 text-sm font-semibold text-paper transition-colors hover:text-neon active:neo-inset"
+            icon={<RefreshCw className="h-4 w-4" />}
           >
-            <RefreshCw className="h-4 w-4" />
             Try again
-          </button>
+          </NeumorphicButton>
 
           <Link
             href="/"

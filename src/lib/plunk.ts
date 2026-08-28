@@ -35,6 +35,36 @@ async function plunkSend(body: Record<string, unknown>) {
   return res.json();
 }
 
+export interface SendEmailOptions {
+  to: string;
+  subject: string;
+  body: string;
+  html?: string;
+  from?: string;
+}
+
+export async function sendEmail(opts: SendEmailOptions) {
+  const apiKey = process.env.PLUNK_API_KEY;
+  if (!apiKey) {
+    console.log("[plunk] PLUNK_API_KEY not set - skipping send:", opts.subject);
+    return { ok: true, mock: true };
+  }
+
+  const from =
+    opts.from ??
+    `${SITE_CONFIG.name} Portfolio <${process.env.PLUNK_FROM ?? "no-reply@vikrantyadav.dev"}>`;
+
+  const res = await plunkSend({
+    to: opts.to,
+    from,
+    subject: opts.subject,
+    body: opts.body,
+    html: opts.html,
+  });
+
+  return { ok: true, data: res };
+}
+
 export async function sendContactEmail(payload: ContactPayload) {
   const apiKey = process.env.PLUNK_API_KEY;
 

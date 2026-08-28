@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Cookie } from "lucide-react";
+import { getStorageItem, setStorageItem } from "@/lib/storage";
 
 export const CONSENT_KEY = "luxe-consent";
 export type Consent = "accepted" | "declined" | null;
 
 export function readConsent(): Consent {
-  if (typeof window === "undefined") return null;
-  const v = window.localStorage.getItem(CONSENT_KEY);
+  const v = getStorageItem<string | null>(CONSENT_KEY, null);
   return v === "accepted" || v === "declined" ? v : null;
 }
 
@@ -21,13 +21,11 @@ export default function ConsentBanner() {
   }, []);
 
   const choose = (c: "accepted" | "declined") => {
-    try {
-      window.localStorage.setItem(CONSENT_KEY, c);
-    } catch {
-      /* ignore */
-    }
+    setStorageItem(CONSENT_KEY, c);
     setConsent(c);
-    window.dispatchEvent(new CustomEvent("luxe:consent"));
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("luxe:consent"));
+    }
   };
 
   return (

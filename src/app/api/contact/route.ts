@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
 import { z } from "zod";
 import { sendContactEmail } from "@/lib/plunk";
 import { getSupabase } from "@/lib/supabase";
+import { parseJsonBody, apiSuccess, apiError } from "@/lib/api-utils";
 
 const schema = z.object({
   name: z.string().min(2).max(100),
@@ -25,39 +25,29 @@ function rateLimited(key: string, limit = 3, windowMs = 10 * 60 * 1000) {
 }
 
 export async function POST(req: Request) {
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-  }
+  const { data: body, error: jsonError } = await parseJsonBody(req);
+  if (jsonError) return jsonError;
 
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Validation failed", issues: parsed.error.flatten() },
-      { status: 422 }
-    );
+    return apiError("Validation failed", 422, { issues: parsed.error.flatten() });
   }
 
   // honeypot - bots fill the hidden "company" field
   const raw = body as Record<string, unknown>;
-  if (typeof raw.company === "string" && raw.company.length > 0) {
-    return NextResponse.json({ ok: true, mock: true }); // pretend success
+  if (typeof raw?.company === "string" && raw.company.length > 0) {
+    return apiSuccess({ mock: true }); // pretend success
   }
 
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   if (rateLimited(ip)) {
-    return NextResponse.json(
-      { error: "Too many messages - please try again in a few minutes." },
-      { status: 429 }
-    );
+    return apiError("Too many messages - please try again in a few minutes.", 429);
   }
 
   const result = await sendContactEmail(parsed.data);
   if (!result.ok) {
-    return NextResponse.json({ error: "Failed to send message" }, { status: 502 });
+    return apiError("Failed to send message", 502);
   }
 
   // store the lead for the admin dashboard when Supabase is configured
@@ -78,5 +68,5 @@ export async function POST(req: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true, mock: result.mock });
+  return apiSuccess({ mock: result.mock });
 }

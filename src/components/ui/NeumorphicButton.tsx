@@ -7,10 +7,13 @@ import { cn } from "@/lib/utils";
 interface NeumorphicButtonProps {
   children?: ReactNode;
   variant?: "primary" | "ghost";
-  size?: "icon" | "md" | "lg";
+  size?: "icon" | "sm" | "md" | "lg";
   icon?: ReactNode;
   href?: string;
-  onClick?: () => void;
+  download?: string | boolean;
+  target?: string;
+  rel?: string;
+  onClick?: (e: React.MouseEvent) => void;
   type?: "button" | "submit";
   className?: string;
   ariaLabel?: string;
@@ -23,6 +26,9 @@ export default function NeumorphicButton({
   size = "md",
   icon,
   href,
+  download,
+  target,
+  rel,
   onClick,
   type = "button",
   className,
@@ -33,6 +39,8 @@ export default function NeumorphicButton({
     "group relative inline-flex select-none items-center justify-center tracking-wide transition-colors duration-300",
     size === "icon"
       ? "h-10 w-10 min-h-[44px] min-w-[44px] sm:min-h-[40px] sm:min-w-[40px] rounded-xl p-0"
+      : size === "sm"
+      ? "px-4 py-2 text-xs rounded-xl font-medium gap-2"
       : size === "lg"
       ? "px-8 py-4 text-[15px] rounded-2xl font-medium gap-2.5"
       : "px-6 py-3 text-sm rounded-2xl font-medium gap-2.5",
@@ -73,7 +81,12 @@ export default function NeumorphicButton({
     return (
       <motion.a
         href={href}
+        download={download}
+        target={target}
+        rel={target === "_blank" ? (rel ?? "noopener noreferrer") : rel}
         aria-label={ariaLabel}
+        title={title}
+        onClick={onClick}
         whileTap={{ scale: 0.97 }}
         className={cn(base, classes)}
       >
@@ -87,6 +100,7 @@ export default function NeumorphicButton({
       type={type}
       onClick={onClick}
       aria-label={ariaLabel}
+      title={title}
       whileTap={{ scale: 0.97 }}
       className={cn(base, classes)}
     >

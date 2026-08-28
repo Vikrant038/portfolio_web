@@ -6,6 +6,7 @@ import { Briefcase, ChevronRight, ChevronDown } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import GlassCard from "@/components/ui/GlassCard";
 import CountUp from "@/components/ui/CountUp";
+import AmbientGlow from "@/components/ui/AmbientGlow";
 import type { ExperienceItem } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +20,7 @@ export default function Experience({ items }: { items: ExperienceItem[] }) {
 
   return (
     <section id="experience" className="relative scroll-mt-24 py-24 sm:py-32 overflow-hidden">
+      <AmbientGlow className="left-0 top-1/2 -translate-y-1/2" size={460} opacity={0.04} />
       <div className="section-shell">
         <SectionHeading
           eyebrow="Career"

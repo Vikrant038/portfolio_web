@@ -3,9 +3,10 @@
 import { ArrowUp, FileDown, ArrowRight } from "lucide-react";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
 import { usePathname, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import Reveal from "@/components/ui/Reveal";
-import { downloadResume } from "@/lib/utils";
+import NeumorphicButton from "@/components/ui/NeumorphicButton";
+import AmbientGlow from "@/components/ui/AmbientGlow";
+import { SITE_CONFIG } from "@/lib/constants";
 
 const LINKS = [
   { label: "About", id: "about" },
@@ -28,25 +29,19 @@ export default function Footer() {
     }
     scrollTo(id === "top" ? "#top" : `#${id}`);
   };
+
   return (
     <>
-      {/* end card */}
-      <section className="relative py-20 overflow-hidden">
+      <section className="relative py-20 sm:py-28 overflow-hidden">
+        <AmbientGlow color="neon" className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" size={500} opacity={0.05} />
         <div className="section-shell">
           <Reveal>
             <div className="glass-strong relative overflow-hidden rounded-[2.5rem] px-6 py-16 text-center sm:px-12">
-              <div
-                className="pointer-events-none absolute -left-24 top-0 h-64 w-64 rounded-full blur-[90px]"
-                style={{ background: "rgb(var(--neon) / 0.1)" }}
-              />
-              <div
-                className="pointer-events-none absolute -right-24 bottom-0 h-64 w-64 rounded-full blur-[90px]"
-                style={{ background: "rgb(var(--neon2) / 0.1)" }}
-              />
-              <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-neon">
-                Let&apos;s talk
-              </p>
-              <h2 className="mx-auto mt-4 max-w-2xl font-serif text-4xl font-bold leading-tight text-paper sm:text-5xl">
+              <span className="eyebrow mx-auto mb-4 inline-flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-neon shadow-[0_0_10px_rgb(var(--neon)/0.9)]" />
+                Available for New Roles & Contracts
+              </span>
+              <h2 className="font-serif text-3xl font-bold leading-tight text-paper sm:text-4xl md:text-5xl">
                 Have a project or opportunity?{" "}
                 <span className="text-gradient">Let&apos;s connect.</span>
               </h2>
@@ -54,22 +49,22 @@ export default function Footer() {
                 Whether you need a RAG pipeline, workflow automation, or an AI engineer on your team.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-                <motion.button
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
+                <NeumorphicButton
+                  size="lg"
+                  icon={<ArrowRight className="h-4 w-4 text-neon" />}
                   onClick={() => scrollTo("#contact")}
-                  className="neo inline-flex items-center gap-2 rounded-2xl bg-ink px-7 py-4 text-[15px] font-semibold text-paper transition-colors hover:text-neon active:neo-inset"
                 >
                   Start a project
-                  <ArrowRight className="h-4 w-4 text-neon" />
-                </motion.button>
-                <button
-                  onClick={downloadResume}
-                  className="glass inline-flex items-center gap-2 rounded-2xl px-7 py-4 text-[15px] font-semibold text-mist transition-colors hover:text-paper"
+                </NeumorphicButton>
+                <NeumorphicButton
+                  variant="ghost"
+                  size="lg"
+                  icon={<FileDown className="h-4 w-4" />}
+                  href={SITE_CONFIG.resumePath}
+                  download={SITE_CONFIG.resumeFileName}
                 >
-                  <FileDown className="h-4 w-4" />
                   Grab my resume
-                </button>
+                </NeumorphicButton>
               </div>
             </div>
           </Reveal>

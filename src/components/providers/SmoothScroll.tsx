@@ -11,6 +11,7 @@ import {
 import Lenis from "lenis";
 import type { ReactNode } from "react";
 import { useSettings } from "@/lib/settings";
+import { isTouchDevice } from "@/lib/device";
 
 interface SmoothScrollCtx {
   scrollTo: (target: string | HTMLElement, offset?: number) => void;
@@ -32,19 +33,15 @@ export default function SmoothScrollProvider({
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const isTouch =
-      typeof window !== "undefined" &&
-      (window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768);
-
     // On all mobile touch devices, use 100% native 120Hz GPU hardware scrolling
-    if (isTouch) {
+    if (isTouchDevice()) {
       setReady(true);
       return;
     }
 
     const lenis = new Lenis({
       lerp: motion === "reduced" ? 1 : 0.09,
-      smoothWheel: motion !== "reduced" && !isTouch,
+      smoothWheel: motion !== "reduced",
       wheelMultiplier: 1,
       touchMultiplier: 1,
     });

@@ -15,8 +15,11 @@ import {
   X,
 } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
+import CountUp from "@/components/ui/CountUp";
+import AmbientGlow from "@/components/ui/AmbientGlow";
 import GlassCard from "@/components/ui/GlassCard";
 import type { Testimonial } from "@/lib/supabase";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { SITE_CONFIG } from "@/lib/constants";
 
@@ -131,10 +134,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
 
   return (
     <section id="testimonials" className="relative scroll-mt-24 py-24 sm:py-32 overflow-hidden">
-      <div
-        className="pointer-events-none absolute inset-x-0 top-1/2 -z-10 mx-auto h-[380px] max-w-3xl -translate-y-1/2 rounded-full blur-[120px]"
-        style={{ background: "rgb(var(--neon) / 0.05)" }}
-      />
+      <AmbientGlow className="inset-x-0 top-1/2 mx-auto -translate-y-1/2" size="100%" blur={120} />
       <div className="section-shell">
         <SectionHeading
           eyebrow="Recommendations"

@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { ArrowLeft, Compass } from "lucide-react";
+import NeumorphicButton from "@/components/ui/NeumorphicButton";
+import AmbientGlow from "@/components/ui/AmbientGlow";
 
 export default function NotFound() {
   return (
     <main className="relative flex min-h-[85vh] items-center justify-center overflow-hidden px-6 py-24 text-center">
-      <div
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[450px] w-[450px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[130px]"
-        style={{ background: "rgb(var(--neon) / 0.08)" }}
-      />
+      <AmbientGlow className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" size={450} opacity={0.08} />
       <div className="glass-strong relative mx-auto max-w-lg rounded-3xl p-8 sm:p-12 shadow-glass">
         <span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-neon/10 text-neon shadow-[0_0_24px_-4px_rgb(var(--neon)/0.7)]">
           <Compass className="h-8 w-8 animate-pulse" />
@@ -26,13 +25,12 @@ export default function NotFound() {
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link
+          <NeumorphicButton
             href="/"
-            className="neo inline-flex items-center gap-2 rounded-xl bg-ink px-6 py-3 text-sm font-semibold text-paper transition-all hover:text-neon active:neo-inset"
+            icon={<ArrowLeft className="h-4 w-4" />}
           >
-            <ArrowLeft className="h-4 w-4" />
-            <span>Return to Portfolio</span>
-          </Link>
+            Return to Portfolio
+          </NeumorphicButton>
           <Link
             href="/career"
             className="glass inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-medium text-mist transition-colors hover:text-paper"

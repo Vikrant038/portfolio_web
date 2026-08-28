@@ -10,6 +10,8 @@ import {
 } from "react";
 import type { ReactNode } from "react";
 import { setSoundEnabled } from "@/lib/sound";
+import { getStorageItem, setStorageItem } from "@/lib/storage";
+import { isMobileViewport, isTouchDevice } from "@/lib/device";
 
 export type Theme = "dark" | "light";
 export type MotionPref = "full" | "reduced";
@@ -53,23 +55,21 @@ export default function SettingsProvider({ children }: { children: ReactNode }) 
 
   // hydrate from DOM/localStorage once mounted
   useEffect(() => {
-    const stored = localStorage.getItem(THEME_KEY);
-    const sys =
+    const sysTheme =
+      typeof window !== "undefined" &&
       window.matchMedia("(prefers-color-scheme: light)").matches
         ? "light"
         : "dark";
-    setTheme((stored as Theme) || sys);
+    const storedTheme = getStorageItem<Theme>(THEME_KEY, sysTheme);
+    setTheme(storedTheme);
 
-    const m = localStorage.getItem(MOTION_KEY);
-    const isMobile =
-      window.innerWidth < 768 ||
-      window.matchMedia("(pointer: coarse)").matches ||
-      window.matchMedia("(max-width: 768px)").matches;
+    const isMobile = isMobileViewport() || isTouchDevice();
+    const storedMotion = getStorageItem<MotionPref | null>(MOTION_KEY, null);
 
-    if (m === "full" || m === "reduced") {
-      setMotionState(m);
+    if (storedMotion === "full" || storedMotion === "reduced") {
+      setMotionState(storedMotion);
       const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      setReducedMotion(rm || m === "reduced");
+      setReducedMotion(rm || storedMotion === "reduced");
     } else {
       // Default to reduced motion on mobile for instant snappy responsiveness & battery preservation
       const initialMotion: MotionPref = isMobile ? "reduced" : "full";
@@ -78,36 +78,21 @@ export default function SettingsProvider({ children }: { children: ReactNode }) 
       setReducedMotion(rm || initialMotion === "reduced");
     }
 
-    setSoundState(localStorage.getItem(SOUND_KEY) === "1");
+    setSoundState(getStorageItem<string>(SOUND_KEY, "0") === "1");
   }, []);
 
   useEffect(() => {
     setSoundEnabled(sound);
-    try {
-      localStorage.setItem(SOUND_KEY, sound ? "1" : "0");
-    } catch {
-      /* ignore */
-    }
+    setStorageItem(SOUND_KEY, sound ? "1" : "0");
   }, [sound]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    try {
-      localStorage.setItem(THEME_KEY, theme);
-    } catch {
-      /* private mode */
-    }
+    setStorageItem(THEME_KEY, theme);
   }, [theme]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(MOTION_KEY, motion);
-    } catch {
-      /* private mode */
-    }
-    const isMobile =
-      typeof window !== "undefined" &&
-      (window.innerWidth < 768 || window.matchMedia("(pointer: coarse)").matches);
+    setStorageItem(MOTION_KEY, motion);
     const isReduced =
       motion === "reduced" ||
       (typeof window !== "undefined" &&

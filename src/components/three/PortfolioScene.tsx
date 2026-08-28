@@ -5,6 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Sparkles } from "@react-three/drei";
 import * as THREE from "three";
 import { useSettings } from "@/lib/settings";
+import { isLowPowerDevice, isTouchDevice } from "@/lib/device";
 import { getAudioLevel } from "@/lib/sound";
 
 /* window-level drag so the scene is interactive without blocking clicks */
@@ -239,20 +240,12 @@ export default function PortfolioScene() {
   }, []);
 
   useEffect(() => {
-    const nav = navigator as Navigator & { deviceMemory?: number };
-    const isMobile = typeof window !== "undefined" && (window.innerWidth < 768 || "ontouchstart" in window);
-    const weak =
-      isMobile ||
-      (nav.hardwareConcurrency ?? 8) < 4 ||
-      (nav.deviceMemory ?? 8) < 4 ||
-      reducedMotion;
-    setLowPower(weak);
+    setLowPower(isLowPowerDevice() || reducedMotion);
   }, [reducedMotion]);
 
   // window-level drag → scene rotation (disabled on touch to prevent scroll hijacking)
   useEffect(() => {
-    const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-    if (isTouch) return;
+    if (isTouchDevice()) return;
 
     const down = (e: PointerEvent) => {
       dragState.on = true;

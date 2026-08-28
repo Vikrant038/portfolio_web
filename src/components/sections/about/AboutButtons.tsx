@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Download, ArrowUpRight } from "lucide-react";
 import NeumorphicButton from "@/components/ui/NeumorphicButton";
 import Reveal from "@/components/ui/Reveal";
-import { downloadResume } from "@/lib/utils";
+import { SITE_CONFIG } from "@/lib/constants";
 
 /**
  * Client shell for the About section's action buttons.
@@ -17,8 +17,9 @@ export default function AboutButtons() {
     <Reveal delay={0.45}>
       <div className="mt-9 flex flex-wrap items-center gap-4">
         <NeumorphicButton
+          href={SITE_CONFIG.resumePath}
+          download={SITE_CONFIG.resumeFileName}
           icon={<Download size={16} />}
-          onClick={downloadResume}
         >
           Download Resume
         </NeumorphicButton>

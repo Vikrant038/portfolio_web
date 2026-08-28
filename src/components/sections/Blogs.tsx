@@ -8,6 +8,8 @@ import GlassCard from "@/components/ui/GlassCard";
 import Reveal from "@/components/ui/Reveal";
 import FilterTabs from "@/components/ui/FilterTabs";
 import Modal from "@/components/ui/Modal";
+import AmbientGlow from "@/components/ui/AmbientGlow";
+import NeumorphicButton from "@/components/ui/NeumorphicButton";
 import { ARTICLES, type Article } from "@/data/articles";
 
 const BLOG_TABS = [
@@ -28,10 +30,7 @@ export default function Blogs() {
 
   return (
     <section id="blogs" className="relative scroll-mt-24 py-24 sm:py-32 overflow-hidden">
-      <div
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[140px]"
-        style={{ background: "rgb(var(--neon) / 0.05)" }}
-      />
+      <AmbientGlow className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" size={500} />
       <div className="section-shell">
         <SectionHeading
           eyebrow="Technical Notes"
@@ -95,10 +94,13 @@ export default function Blogs() {
                     ))}
                   </div>
 
-                  <div className="neo inline-flex w-full items-center justify-between rounded-xl bg-ink px-4 py-2.5 text-xs font-semibold text-paper transition-colors group-hover:text-neon active:neo-inset">
-                    <span>Read teardown</span>
-                    <ChevronRight className="h-4 w-4 text-neon transition-transform duration-300 group-hover:translate-x-1" />
-                  </div>
+                  <NeumorphicButton
+                    size="sm"
+                    className="w-full justify-between mt-4"
+                    icon={<ChevronRight className="h-4 w-4 text-neon transition-transform duration-300 group-hover:translate-x-1" />}
+                  >
+                    Read teardown
+                  </NeumorphicButton>
                 </div>
               </GlassCard>
             </Reveal>

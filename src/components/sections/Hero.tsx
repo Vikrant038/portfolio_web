@@ -8,6 +8,7 @@ import NeumorphicButton from "@/components/ui/NeumorphicButton";
 import Magnetic from "@/components/ui/Magnetic";
 import SceneErrorBoundary from "@/components/three/SceneErrorBoundary";
 import CountUp from "@/components/ui/CountUp";
+import AmbientGlow from "@/components/ui/AmbientGlow";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
 import { useAppReady } from "@/lib/app-ready";
 
@@ -150,14 +151,8 @@ export default function Hero() {
         Animated 3D field of floating geometric shapes in the background.
       </span>
       <div className="cyber-grid absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_72%)]" />
-      <div
-        className="absolute -left-40 top-1/4 h-[420px] w-[420px] rounded-full blur-[120px]"
-        style={{ background: "rgb(var(--neon) / 0.09)" }}
-      />
-      <div
-        className="absolute -right-40 bottom-1/4 h-[420px] w-[420px] rounded-full blur-[120px]"
-        style={{ background: "rgb(var(--neon2) / 0.08)" }}
-      />
+      <AmbientGlow color="neon" className="-left-40 top-1/4" size={420} opacity={0.09} blur={120} />
+      <AmbientGlow color="neon2" className="-right-40 bottom-1/4" size={420} opacity={0.08} blur={120} />
 
       <motion.div
         style={{ rotateX: sX, rotateY: sY, transformStyle: "preserve-3d" }}

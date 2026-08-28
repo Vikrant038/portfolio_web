@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabase } from "@/lib/supabase";
 import { SITE_CONFIG } from "@/lib/constants";
+import { sendEmail } from "@/lib/plunk";
 
 export const dynamic = "force-dynamic";
 
@@ -18,10 +19,9 @@ export async function POST(req: Request) {
   }
 
   const supabase = getSupabase();
-  const apiKey = process.env.PLUNK_API_KEY;
-  if (!supabase || !apiKey) {
+  if (!supabase) {
     return NextResponse.json(
-      { error: "Digest needs Supabase + PLUNK_API_KEY configured" },
+      { error: "Digest needs Supabase configured" },
       { status: 501 }
     );
   }
@@ -45,21 +45,13 @@ export async function POST(req: Request) {
         .join("\n")
     : "No new leads this week.";
 
-  const res = await fetch("https://api.useplunk.com/v1/send", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      to: process.env.CONTACT_EMAIL ?? SITE_CONFIG.email,
-      from: `${SITE_CONFIG.name} Portfolio <${process.env.PLUNK_FROM ?? "no-reply@vikrantyadav.dev"}>`,
-      subject: `Weekly digest - ${rows.length} new lead${rows.length === 1 ? "" : "s"}`,
-      body,
-    }),
+  const result = await sendEmail({
+    to: process.env.CONTACT_EMAIL ?? SITE_CONFIG.email,
+    subject: `Weekly digest - ${rows.length} new lead${rows.length === 1 ? "" : "s"}`,
+    body,
   });
 
-  if (!res.ok) {
+  if (!result.ok) {
     return NextResponse.json({ error: "Digest send failed" }, { status: 502 });
   }
 

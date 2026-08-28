@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { markAppReady } from "@/lib/app-ready";
 import { useSettings } from "@/lib/settings";
+import { getStorageItem, setStorageItem } from "@/lib/storage";
 
 import { SITE_CONFIG } from "@/lib/constants";
 
@@ -15,13 +16,9 @@ export default function Preloader() {
   const [returning, setReturning] = useState(false);
 
   useEffect(() => {
-    const visited = window.localStorage.getItem(VISITED_KEY) === "1";
+    const visited = getStorageItem<string>(VISITED_KEY, "0") === "1";
     setReturning(visited);
-    try {
-      window.localStorage.setItem(VISITED_KEY, "1");
-    } catch {
-      /* ignore */
-    }
+    setStorageItem(VISITED_KEY, "1");
     const dur = reducedMotion || visited ? 700 : 1700;
     const t = window.setTimeout(() => {
       markAppReady();

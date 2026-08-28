@@ -1,31 +1,40 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useScrollVelocity } from "@/lib/use-scroll-velocity";
+import { cn } from "@/lib/utils";
 
 interface AmbientGlowProps {
-  color?: "neon" | "neon2";
+  color?: "neon" | "neon2" | "gold";
   className?: string;
-  size?: number;
+  size?: number | string;
+  opacity?: number;
+  blur?: number;
 }
 
+/**
+ * Single canonical background ambient glow orb with GPU texture caching.
+ * Provides soft background glow without mobile frame drops or layout shift.
+ */
 export default function AmbientGlow({
   color = "neon",
   className = "",
-  size = 420,
+  size = 480,
+  opacity = 0.05,
+  blur = 140,
 }: AmbientGlowProps) {
-  const vel = useScrollVelocity();
+  const sizeStyle = typeof size === "number" ? `${size}px` : size;
 
   return (
-    <motion.div
+    <div
       aria-hidden
-      animate={{ x: vel * 40, y: vel * -26, scale: 1 + vel * 0.08 }}
-      transition={{ type: "spring", stiffness: 60, damping: 20 }}
-      className={`pointer-events-none absolute -z-10 rounded-full blur-[130px] ${className}`}
+      className={cn(
+        "pointer-events-none absolute -z-10 rounded-full transform-gpu",
+        className
+      )}
       style={{
-        width: size,
-        height: size,
-        background: `rgb(var(--${color}) / 0.07)`,
+        width: sizeStyle,
+        height: sizeStyle,
+        background: `rgb(var(--${color}) / ${opacity})`,
+        filter: `blur(${blur}px)`,
       }}
     />
   );

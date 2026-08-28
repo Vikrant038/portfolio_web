@@ -21,8 +21,10 @@ import {
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
 import NeumorphicButton from "@/components/ui/NeumorphicButton";
+import AmbientGlow from "@/components/ui/AmbientGlow";
 import FormErrorBoundary from "@/components/sections/contact/FormErrorBoundary";
 import { getSupabase } from "@/lib/supabase";
+import { getStorageItem, setStorageItem, removeStorageItem } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 
 const DRAFT_KEY = "luxe-contact-draft";
@@ -76,21 +78,13 @@ export default function Contact() {
 
   // draft autosave + restore
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(DRAFT_KEY);
-      if (raw) setValues((v) => ({ ...v, ...JSON.parse(raw) }));
-    } catch {
-      /* ignore */
-    }
+    const raw = getStorageItem<Record<string, unknown> | null>(DRAFT_KEY, null);
+    if (raw) setValues((v) => ({ ...v, ...raw }));
   }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      try {
-        window.localStorage.setItem(DRAFT_KEY, JSON.stringify(values));
-      } catch {
-        /* ignore */
-      }
+      setStorageItem(DRAFT_KEY, values);
     }, 400);
     return () => window.clearTimeout(timer);
   }, [values]);
@@ -185,11 +179,7 @@ export default function Contact() {
         budget: BUDGETS[1],
         timeline: TIMELINES[1],
       });
-      try {
-        window.localStorage.removeItem(DRAFT_KEY);
-      } catch {
-        /* ignore */
-      }
+      removeStorageItem(DRAFT_KEY);
       setStep(0);
       setBlurred({});
     } catch (err) {
@@ -213,10 +203,7 @@ export default function Contact() {
 
   return (
     <section id="contact" className="relative scroll-mt-24 py-24 sm:py-32 overflow-hidden">
-      <div
-        className="pointer-events-none absolute left-1/2 top-1/3 -z-10 h-[460px] w-[460px] -translate-x-1/2 rounded-full blur-[130px]"
-        style={{ background: "rgb(var(--neon2) / 0.06)" }}
-      />
+      <AmbientGlow color="neon2" className="left-1/2 top-1/3 -translate-x-1/2" size={460} opacity={0.06} />
       <div className="section-shell">
         <SectionHeading
           eyebrow="Contact"
