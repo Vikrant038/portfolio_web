@@ -119,7 +119,7 @@ export default function Blogs() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setActiveArticle(null)}
-            className="fixed inset-0 z-[90] flex items-start sm:items-center justify-center bg-void/85 p-0 sm:p-4 backdrop-blur-xl overscroll-contain overflow-y-auto"
+            className="fixed inset-0 z-[90] flex items-center justify-center bg-void/85 p-0 sm:p-4 backdrop-blur-xl overflow-hidden"
             role="dialog"
             aria-modal="true"
             aria-label={activeArticle.title}
@@ -132,7 +132,8 @@ export default function Blogs() {
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
               data-lenis-prevent="true"
-              className="glass-strong relative min-h-[100dvh] sm:min-h-0 sm:max-h-[85vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-none sm:rounded-3xl p-6 sm:p-9 shadow-glass pt-8 sm:pt-9 pb-safe"
+              className="glass-strong relative h-full max-h-[100dvh] sm:h-auto sm:max-h-[88vh] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-none sm:rounded-3xl p-6 sm:p-9 shadow-glass pt-10 sm:pt-9 pb-safe"
+              style={{ WebkitOverflowScrolling: "touch" }}
             >
 
               <button

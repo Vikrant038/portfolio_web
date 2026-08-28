@@ -80,7 +80,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
           active={filter}
           onChange={setFilter}
           layoutId="projects-filter-pill"
-          className="justify-center mb-8"
+          className="justify-start sm:justify-center mb-8"
         />
 
         <ProjectToolbar

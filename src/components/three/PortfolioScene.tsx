@@ -284,18 +284,19 @@ export default function PortfolioScene() {
 
   return (
     <Canvas
-      dpr={lowPower ? [1, 1.25] : [1, 1.5]}
+      dpr={lowPower ? [1, 1] : [1, 1.5]}
       frameloop={reducedMotion ? "demand" : activeLoop ? "always" : "never"}
       camera={{ position: [0, 0, 9], fov: 45 }}
       gl={{
         antialias: !lowPower,
         alpha: true,
-        powerPreference: "high-performance",
+        powerPreference: lowPower ? "default" : "high-performance",
+        precision: lowPower ? "lowp" : "highp",
       }}
       style={{ pointerEvents: "none" }}
     >
       <ShapeField lowPower={lowPower} />
-      <Particles count={lowPower ? 260 : 900} />
+      <Particles count={lowPower ? 140 : 900} />
       <FogTint />
     </Canvas>
   );

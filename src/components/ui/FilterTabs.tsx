@@ -27,9 +27,10 @@ export default function FilterTabs<T extends string = string>({
   return (
     <div
       className={cn(
-        "flex w-full overflow-x-auto no-scrollbar scroll-smooth py-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap items-center gap-1.5 sm:gap-2",
+        "flex w-full overflow-x-auto no-scrollbar scroll-smooth py-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap items-center gap-1.5 sm:gap-2 overscroll-x-contain touch-pan-x",
         className
       )}
+      style={{ WebkitOverflowScrolling: "touch" }}
       role="tablist"
       aria-label="Filter options"
     >
