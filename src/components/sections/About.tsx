@@ -1,4 +1,6 @@
-import { Download, MapPin, GraduationCap, Coffee, Award } from "lucide-react";
+"use client";
+
+import { MapPin, GraduationCap, Coffee, Award } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
 import TiltMonogram from "@/components/sections/about/TiltMonogram";

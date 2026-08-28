@@ -29,22 +29,38 @@ export const revalidate = 3600;
 
 async function ProjectsSection() {
   const projects = await getProjects();
-  return <Projects projects={projects} />;
+  return (
+    <SectionErrorBoundary name="Projects">
+      <Projects projects={projects} />
+    </SectionErrorBoundary>
+  );
 }
 
 async function SkillsSection() {
   const [groups, now] = await Promise.all([getSkillGroups(), getNow()]);
-  return <Skills groups={groups} now={now} />;
+  return (
+    <SectionErrorBoundary name="Skills">
+      <Skills groups={groups} now={now} />
+    </SectionErrorBoundary>
+  );
 }
 
 async function ExperienceSection() {
   const experience = await getExperience();
-  return <Experience items={experience} />;
+  return (
+    <SectionErrorBoundary name="Experience">
+      <Experience items={experience} />
+    </SectionErrorBoundary>
+  );
 }
 
 async function TestimonialsSection() {
   const testimonials = await getTestimonials();
-  return <Testimonials items={testimonials} />;
+  return (
+    <SectionErrorBoundary name="Testimonials">
+      <Testimonials items={testimonials} />
+    </SectionErrorBoundary>
+  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -73,22 +89,30 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <SectionErrorBoundary name="Hero"><Hero /></SectionErrorBoundary>
-      <SectionErrorBoundary name="About"><About /></SectionErrorBoundary>
+      <SectionErrorBoundary name="Hero">
+        <Hero />
+      </SectionErrorBoundary>
+      <SectionErrorBoundary name="About">
+        <About />
+      </SectionErrorBoundary>
       <Suspense fallback={<SectionSkeleton />}>
-        <SectionErrorBoundary name="Projects"><ProjectsSection /></SectionErrorBoundary>
+        <ProjectsSection />
       </Suspense>
       <Suspense fallback={<SectionSkeleton />}>
-        <SectionErrorBoundary name="Skills"><SkillsSection /></SectionErrorBoundary>
+        <SkillsSection />
       </Suspense>
       <Suspense fallback={<SectionSkeleton />}>
-        <SectionErrorBoundary name="Experience"><ExperienceSection /></SectionErrorBoundary>
+        <ExperienceSection />
       </Suspense>
-      <SectionErrorBoundary name="Blogs"><Blogs /></SectionErrorBoundary>
+      <SectionErrorBoundary name="Blogs">
+        <Blogs />
+      </SectionErrorBoundary>
       <Suspense fallback={<SectionSkeleton />}>
-        <SectionErrorBoundary name="Testimonials"><TestimonialsSection /></SectionErrorBoundary>
+        <TestimonialsSection />
       </Suspense>
-      <SectionErrorBoundary name="Contact"><Contact /></SectionErrorBoundary>
+      <SectionErrorBoundary name="Contact">
+        <Contact />
+      </SectionErrorBoundary>
     </main>
   );
 }
