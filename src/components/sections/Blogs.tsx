@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Clock, X, Tag, ChevronRight } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import GlassCard from "@/components/ui/GlassCard";
 import Reveal from "@/components/ui/Reveal";
-import { useFocusTrap } from "@/lib/use-focus-trap";
+import FilterTabs from "@/components/ui/FilterTabs";
+import { useModal } from "@/lib/use-modal";
 import { cn } from "@/lib/utils";
 
 export interface Article {
@@ -302,23 +303,21 @@ Every call chipped at a fear I didn't know ran so deep. I learned to lead with t
   },
 ];
 
+const BLOG_TABS = [
+  { key: "all" as const, label: "All Articles" },
+  { key: "systems" as const, label: "Systems Architecture" },
+  { key: "ai" as const, label: "AI & LLMs" },
+  { key: "ops" as const, label: "Leadership & FinOps" },
+];
+
 export default function Blogs() {
   const [filter, setFilter] = useState<"all" | "systems" | "ai" | "ops">("all");
   const [activeArticle, setActiveArticle] = useState<Article | null>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
-  useFocusTrap(modalRef, Boolean(activeArticle));
 
-  useEffect(() => {
-    if (!activeArticle) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setActiveArticle(null);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = prev;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [activeArticle]);
+  const modalRef = useModal<HTMLDivElement>({
+    isOpen: Boolean(activeArticle),
+    onClose: () => setActiveArticle(null),
+  });
 
   const filtered =
     filter === "all"
@@ -340,29 +339,13 @@ export default function Blogs() {
         />
 
         {/* category filters */}
-        <div className="mb-8 flex items-center justify-center">
-          <div className="glass no-scrollbar flex max-w-full overflow-x-auto gap-1.5 rounded-2xl p-1.5 px-2">
-            {[
-              { key: "all", label: "All Articles" },
-              { key: "systems", label: "Systems Architecture" },
-              { key: "ai", label: "AI & LLMs" },
-              { key: "ops", label: "Leadership & FinOps" },
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setFilter(tab.key as typeof filter)}
-                className={cn(
-                  "shrink-0 rounded-full px-4 py-2 sm:px-5 sm:py-2 text-xs font-semibold tracking-wide transition-all duration-300",
-                  filter === tab.key
-                    ? "bg-neon/15 text-neon border border-neon/40 shadow-[0_0_16px_rgb(var(--neon)/0.25)] font-bold"
-                    : "border border-white/10 bg-white/[0.03] text-mist hover:border-white/20 hover:text-paper"
-                )}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <FilterTabs
+          tabs={BLOG_TABS}
+          active={filter}
+          onChange={setFilter}
+          layoutId="blogs-filter-pill"
+          className="justify-center mb-8"
+        />
 
         {/* articles grid */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

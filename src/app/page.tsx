@@ -13,6 +13,7 @@ import {
   getTestimonials,
   getNow,
 } from "@/lib/data";
+import { SITE_CONFIG } from "@/lib/constants";
 
 // ISR - content updates propagate without full rebuilds
 export const revalidate = 3600;
@@ -29,17 +30,17 @@ export default async function Home() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
-    name: "Vikrant Yadav",
-    jobTitle: "AI Systems Engineer",
-    url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://vikrant-yadav.vercel.app",
-    email: "mailto:yadavvikrant3006@gmail.com",
+    name: SITE_CONFIG.name,
+    jobTitle: SITE_CONFIG.title,
+    url: SITE_CONFIG.url,
+    email: `mailto:${SITE_CONFIG.email}`,
     address: { "@type": "PostalAddress", addressLocality: "New Delhi", addressCountry: "IN" },
-    knowsAbout: ["Python", "TypeScript", "RAG", "Large Language Models", "Data Engineering", "Machine Learning"],
-    worksFor: { "@type": "Organization", name: "Deep Thought Analytics" },
+    knowsAbout: SITE_CONFIG.skills,
+    worksFor: { "@type": "Organization", name: SITE_CONFIG.organization },
     sameAs: [
-      "https://github.com/Vikrant038",
-      "https://linkedin.com/in/vikrant-yadav3012",
-      "https://x.com/VikrantY_30",
+      SITE_CONFIG.socials.github,
+      SITE_CONFIG.socials.linkedin,
+      SITE_CONFIG.socials.twitter,
     ],
   };
 

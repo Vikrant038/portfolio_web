@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useSettings } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 
 interface SectionHeadingProps {
@@ -21,6 +22,8 @@ export default function SectionHeading({
   className,
   ghost,
 }: SectionHeadingProps) {
+  const { reducedMotion } = useSettings();
+
   return (
     <div
       className={cn(
@@ -40,8 +43,8 @@ export default function SectionHeading({
 
       {eyebrow && (
         <motion.span
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+          whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5 }}
           className="mb-4 inline-flex items-center gap-2 rounded-full border border-neon/25 bg-neon/[0.06] px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-neon"
@@ -52,8 +55,8 @@ export default function SectionHeading({
       )}
 
       <motion.h2
-        initial={{ opacity: 0, y: 22 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={reducedMotion ? false : { opacity: 0, y: 22 }}
+        whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.6, delay: 0.05 }}
         className="relative font-serif text-4xl font-bold leading-[1.05] tracking-tight text-paper sm:text-5xl md:text-6xl"
@@ -67,8 +70,8 @@ export default function SectionHeading({
       </motion.h2>
 
       <motion.div
-        initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
+        initial={reducedMotion ? false : { scaleX: 0 }}
+        whileInView={reducedMotion ? undefined : { scaleX: 1 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
         className={cn(

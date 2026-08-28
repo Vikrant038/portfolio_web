@@ -7,6 +7,7 @@ import { useSmoothScroll } from "@/components/providers/SmoothScroll";
 import { useSettings } from "@/lib/settings";
 import { SECTIONS, useScrollSpy } from "@/lib/use-scroll-spy";
 import { playTick, playWhoosh } from "@/lib/sound";
+import { downloadResume } from "@/lib/utils";
 
 export default function SiteChrome() {
   const { scrollTo } = useSmoothScroll();
@@ -92,10 +93,7 @@ export default function SiteChrome() {
       }
 
       if (e.key.toLowerCase() === "r" && !e.altKey) {
-        const a = document.createElement("a");
-        a.href = "/Vikrant_Resume_2026.docx";
-        a.download = "Vikrant_Resume_2026.docx";
-        a.click();
+        downloadResume();
       }
     };
     window.addEventListener("keydown", onKey);

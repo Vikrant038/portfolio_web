@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
+import { cn } from "@/lib/utils";
 
 export default function BackToTop() {
   const pathname = usePathname();
@@ -27,20 +27,17 @@ export default function BackToTop() {
   };
 
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.button
-          initial={{ opacity: 0, scale: 0.7, y: 12 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.7, y: 12 }}
-          transition={{ type: "spring", stiffness: 320, damping: 24 }}
-          onClick={handleClick}
-          aria-label="Back to top"
-          className="neo fixed bottom-6 right-5 z-[70] grid h-12 w-12 place-items-center rounded-2xl bg-ink text-mist transition-colors duration-300 hover:text-neon active:neo-inset sm:right-8"
-        >
-          <ArrowUp className="h-5 w-5" />
-        </motion.button>
+    <button
+      onClick={handleClick}
+      aria-label="Back to top"
+      className={cn(
+        "neo fixed bottom-6 right-5 z-[70] grid h-12 w-12 min-h-[44px] min-w-[44px] place-items-center rounded-2xl bg-ink text-mist transition-all duration-300 hover:text-neon active:neo-inset sm:right-8",
+        show
+          ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+          : "pointer-events-none translate-y-4 scale-75 opacity-0"
       )}
-    </AnimatePresence>
+    >
+      <ArrowUp className="h-5 w-5" />
+    </button>
   );
 }

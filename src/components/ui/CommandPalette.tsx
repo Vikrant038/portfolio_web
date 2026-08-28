@@ -8,7 +8,8 @@ import { useSmoothScroll } from "@/components/providers/SmoothScroll";
 import { useSettings } from "@/lib/settings";
 import { useProjectsStore } from "@/lib/palette-store";
 import { useFocusTrap } from "@/lib/use-focus-trap";
-import { cn } from "@/lib/utils";
+import { cn, downloadResume } from "@/lib/utils";
+import { SITE_CONFIG } from "@/lib/constants";
 
 interface Item {
   id: string;
@@ -86,33 +87,28 @@ export default function CommandPalette() {
         label: "Download CV / Resume",
         hint: "Action",
         icon: <FileDown className="h-4 w-4" />,
-        run: () => {
-          const a = document.createElement("a");
-          a.href = "/Vikrant_Resume_2026.docx";
-          a.download = "Vikrant_Resume_2026.docx";
-          a.click();
-        },
+        run: downloadResume,
       },
       {
         id: "act-mail",
         label: "Copy email address",
         hint: "Action",
         icon: <Mail className="h-4 w-4" />,
-        run: () => navigator.clipboard?.writeText("yadavvikrant3006@gmail.com"),
+        run: () => navigator.clipboard?.writeText(SITE_CONFIG.email),
       },
       {
         id: "act-github",
         label: "Open GitHub Profile",
         hint: "Social",
         icon: <Github className="h-4 w-4" />,
-        run: () => window.open("https://github.com/Vikrant038", "_blank"),
+        run: () => window.open(SITE_CONFIG.socials.github, "_blank"),
       },
       {
         id: "act-linkedin",
         label: "Open LinkedIn Profile",
         hint: "Social",
         icon: <Linkedin className="h-4 w-4" />,
-        run: () => window.open("https://linkedin.com/in/vikrant-yadav3012", "_blank"),
+        run: () => window.open(SITE_CONFIG.socials.linkedin, "_blank"),
       },
       {
         id: "act-theme",

@@ -1,3 +1,5 @@
+import { SITE_CONFIG } from "./constants";
+
 /** Join class names. */
 export function cn(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(" ");
@@ -12,4 +14,15 @@ export function formatYear(input?: string | null) {
     month: "short",
     year: "numeric",
   }).format(d);
+}
+
+/** Trigger resume download in the browser. */
+export function downloadResume() {
+  if (typeof window === "undefined") return;
+  const a = document.createElement("a");
+  a.href = SITE_CONFIG.resumePath;
+  a.download = SITE_CONFIG.resumeFileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }

@@ -16,9 +16,9 @@ import CommandPalette from "@/components/ui/CommandPalette";
 import ConsentBanner from "@/components/ui/ConsentBanner";
 import SiteChrome from "@/components/ui/SiteChrome";
 import { Toaster } from "sonner";
+import { SITE_CONFIG } from "@/lib/constants";
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://luxe-portfolio.vercel.app";
+const siteUrl = SITE_CONFIG.url;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -83,6 +83,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@300..700&display=swap"
+        />
         <link rel="preconnect" href="https://vitals.vercel-insights.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://scripts.clarity.ms" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://vitals.vercel-insights.com" />

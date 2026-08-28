@@ -5,15 +5,16 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface NeumorphicButtonProps {
-  children: ReactNode;
+  children?: ReactNode;
   variant?: "primary" | "ghost";
-  size?: "md" | "lg";
+  size?: "icon" | "md" | "lg";
   icon?: ReactNode;
   href?: string;
   onClick?: () => void;
   type?: "button" | "submit";
   className?: string;
   ariaLabel?: string;
+  title?: string;
 }
 
 export default function NeumorphicButton({
@@ -26,10 +27,15 @@ export default function NeumorphicButton({
   type = "button",
   className,
   ariaLabel,
+  title,
 }: NeumorphicButtonProps) {
   const base = cn(
-    "group relative inline-flex select-none items-center justify-center gap-2.5 rounded-2xl font-medium tracking-wide transition-colors duration-300",
-    size === "lg" ? "px-8 py-4 text-[15px]" : "px-6 py-3 text-sm",
+    "group relative inline-flex select-none items-center justify-center tracking-wide transition-colors duration-300",
+    size === "icon"
+      ? "h-10 w-10 min-h-[44px] min-w-[44px] sm:min-h-[40px] sm:min-w-[40px] rounded-xl p-0"
+      : size === "lg"
+      ? "px-8 py-4 text-[15px] rounded-2xl font-medium gap-2.5"
+      : "px-6 py-3 text-sm rounded-2xl font-medium gap-2.5",
     variant === "primary"
       ? "text-paper hover:text-neon"
       : "text-mist hover:text-paper"
@@ -37,7 +43,7 @@ export default function NeumorphicButton({
 
   const inner = (
     <>
-      {variant === "primary" ? (
+      {variant === "primary" && size !== "icon" ? (
         <span
           aria-hidden
           className="absolute inset-0 rounded-2xl opacity-60 transition-opacity duration-300 group-hover:opacity-100"
@@ -47,7 +53,7 @@ export default function NeumorphicButton({
           }}
         />
       ) : null}
-      <span className="relative z-10 flex items-center gap-2.5">
+      <span className={cn("relative z-10 flex items-center", size === "icon" ? "justify-center" : "gap-2.5")}>
         {icon && <span className="transition-transform duration-300 group-hover:scale-110">{icon}</span>}
         {children}
       </span>

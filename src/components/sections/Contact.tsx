@@ -37,6 +37,8 @@ const schema = z.object({
 
 type FieldErrors = Partial<Record<"name" | "email" | "message", string>>;
 
+import { SITE_CONFIG } from "@/lib/constants";
+
 const PROJECT_TYPES = [
   "AI / LLM automation",
   "RAG / chatbot",
@@ -49,10 +51,10 @@ const BUDGETS = ["< $5k", "$5k – $15k", "$15k – $40k", "$40k+"];
 const TIMELINES = ["ASAP", "1–3 months", "3–6 months", "Flexible"];
 
 const SOCIALS = [
-  { icon: Github, label: "GitHub", href: "https://github.com/Vikrant038" },
-  { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com/in/vikrant-yadav3012" },
-  { icon: Twitter, label: "X / Twitter", href: "https://x.com/VikrantY_30" },
-  { icon: Mail, label: "Email", href: "mailto:yadavvikrant3006@gmail.com" },
+  { icon: Github, label: "GitHub", href: SITE_CONFIG.socials.github },
+  { icon: Linkedin, label: "LinkedIn", href: SITE_CONFIG.socials.linkedin },
+  { icon: Twitter, label: "X / Twitter", href: SITE_CONFIG.socials.twitter },
+  { icon: Mail, label: "Email", href: `mailto:${SITE_CONFIG.email}` },
 ];
 
 export default function Contact() {

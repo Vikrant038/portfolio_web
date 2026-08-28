@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -18,10 +18,11 @@ import {
 import SectionHeading from "@/components/ui/SectionHeading";
 import GlassCard from "@/components/ui/GlassCard";
 import Tilt from "@/components/ui/Tilt";
+import FilterTabs from "@/components/ui/FilterTabs";
 import type { Project, ProjectCategory } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { setPaletteProjects } from "@/lib/palette-store";
-import { useFocusTrap } from "@/lib/use-focus-trap";
+import { useModal } from "@/lib/use-modal";
 
 const FILTERS: Array<{ key: ProjectCategory | "all"; label: string }> = [
   { key: "all", label: "All" },
@@ -50,8 +51,11 @@ export default function Projects({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<Project | null>(null);
   const [likes, setLikes] = useState<Record<string, boolean>>({});
   const [slide, setSlide] = useState(0);
-  const modalRef = useRef<HTMLDivElement>(null);
-  useFocusTrap(modalRef, Boolean(active));
+
+  const modalRef = useModal<HTMLDivElement>({
+    isOpen: Boolean(active),
+    onClose: () => setActive(null),
+  });
 
   useEffect(() => setPaletteProjects(projects), [projects]);
   useEffect(() => setLikes(readLikes()), []);
@@ -163,7 +167,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
                     aria-label={`Open live demo for ${p.title}`}
-                    className="grid h-9 w-9 place-items-center rounded-xl border border-neon/40 bg-neon/10 text-neon transition-all hover:bg-neon/20 hover:scale-105"
+                    className="grid h-9 w-9 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-xl border border-neon/40 bg-neon/10 text-neon transition-all hover:bg-neon/20 hover:scale-105"
                     title="Live Demo"
                   >
                     <ExternalLink className="h-4 w-4" />
@@ -173,7 +177,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
                   onClick={(e) => toggleLike(p.id, e)}
                   aria-label="Like project"
                   className={cn(
-                    "grid h-9 w-9 place-items-center rounded-xl border transition-colors",
+                    "grid h-9 w-9 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-xl border transition-colors",
                     likes[p.id]
                       ? "border-rose-400/50 bg-rose-400/10 text-rose-400"
                       : "border-white/10 bg-white/[0.04] text-mist hover:text-rose-400"
@@ -187,7 +191,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
                     openProject(p);
                   }}
                   aria-label={`View details for ${p.title}`}
-                  className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-mist transition-colors hover:border-neon/40 hover:text-neon"
+                  className="grid h-9 w-9 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-mist transition-colors hover:border-neon/40 hover:text-neon"
                 >
                   <ArrowUpRight className="h-4 w-4" />
                 </button>
@@ -208,49 +212,28 @@ export default function Projects({ projects }: { projects: Project[] }) {
       </GlassCard>
     ) : (
       <GlassCard glow={p.accent} className="flex h-full flex-col cursor-pointer transition-transform duration-300 hover:scale-[1.01]" rounded="2xl">
-        <div onClick={() => openProject(p)} className="flex h-full flex-col">
-          <div className="relative aspect-[4/3] overflow-hidden">
+        <div onClick={() => openProject(p)} className="flex h-full flex-col p-6">
+          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl">
             <Image
               src={p.image}
               alt={p.title}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="transition-transform duration-700 group-hover:scale-[1.06]"
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent" />
-            <span
-              className="absolute left-4 top-4 rounded-full px-3 py-1 text-[10.5px] font-bold uppercase tracking-[0.2em] backdrop-blur-md"
-              style={{
-                color: p.accent,
-                background: "rgb(var(--bg) / 0.55)",
-                border: `1px solid ${p.accent}55`,
-                boxShadow: `0 0 18px -4px ${p.accent}90`,
-              }}
-            >
-              {p.category}
-            </span>
-            <button
-              onClick={(e) => toggleLike(p.id, e)}
-              aria-label="Like project"
-              className={cn(
-                "absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-xl backdrop-blur-md transition-all duration-300",
-                likes[p.id]
-                  ? "bg-rose-400/20 text-rose-400"
-                  : "border border-white/15 bg-void/50 text-mist opacity-0 hover:text-rose-400 group-hover:opacity-100"
-              )}
-            >
-              <Heart className={cn("h-4 w-4", likes[p.id] && "fill-rose-400")} />
-            </button>
+            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+              <span className="rounded-md bg-void/80 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-mist backdrop-blur-md">
+                {p.category}
+              </span>
+              <span className="rounded-md bg-void/80 px-2 py-0.5 font-mono text-[10px] text-mist backdrop-blur-md">
+                {p.year}
+              </span>
+            </div>
           </div>
-
-          <div className="flex flex-1 flex-col p-6">
+          <div className="flex flex-1 flex-col pt-5">
             <div className="flex items-start justify-between gap-3">
-              <div>
-                <h3 className="font-serif text-xl font-bold text-paper transition-colors group-hover:text-neon">{p.title}</h3>
-                <p className="mt-0.5 text-xs uppercase tracking-[0.18em] text-mist">
-                  {p.tagline} · {p.year}
-                </p>
-              </div>
+              <h3 className="font-serif text-xl font-bold text-paper transition-colors group-hover:text-neon">{p.title}</h3>
               <div className="flex items-center gap-1.5">
                 {p.url && p.url !== "#" && (
                   <a
@@ -259,57 +242,39 @@ export default function Projects({ projects }: { projects: Project[] }) {
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
                     aria-label={`Open live demo for ${p.title}`}
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-neon/40 bg-neon/10 text-neon transition-all hover:bg-neon/20 hover:scale-105"
+                    className="grid h-8 w-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-lg border border-neon/40 bg-neon/10 text-neon transition-all hover:bg-neon/20 hover:scale-105"
                     title="Live Demo"
                   >
-                    <ExternalLink className="h-4 w-4" />
+                    <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 )}
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openProject(p);
-                  }}
-                  aria-label={`View details for ${p.title}`}
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-mist transition-all duration-300 hover:border-neon/40 hover:text-neon"
-                  title="View Case Study"
+                  onClick={(e) => toggleLike(p.id, e)}
+                  aria-label="Like project"
+                  className={cn(
+                    "grid h-8 w-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-lg border transition-colors",
+                    likes[p.id]
+                      ? "border-rose-400/50 bg-rose-400/10 text-rose-400"
+                      : "border-white/10 bg-white/[0.04] text-mist hover:text-rose-400"
+                  )}
                 >
-                  <ArrowUpRight className="h-4 w-4" />
+                  <Heart className={cn("h-3.5 w-3.5", likes[p.id] && "fill-rose-400")} />
                 </button>
               </div>
             </div>
-
-            {p.metrics && p.metrics.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {p.metrics.map((m) => (
-                  <span
-                    key={m}
-                    className="rounded-full px-2.5 py-1 text-[10.5px] font-bold"
-                    style={{
-                      color: p.accent,
-                      background: `color-mix(in srgb, ${p.accent} 12%, transparent)`,
-                      border: `1px solid ${p.accent}44`,
-                    }}
-                  >
-                    {m}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            <p className="mt-3.5 line-clamp-3 text-[14px] leading-relaxed text-mist">
-              {p.description}
-            </p>
-
-            <div className="mt-5 flex flex-wrap gap-2 pt-1">
-              {p.tech.map((t) => (
-                <span
-                  key={t}
-                  className="rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[10.5px] font-medium text-mist backdrop-blur-md transition-colors duration-300 group-hover:border-white/15 group-hover:text-paper"
-                >
+            <p className="mt-1 text-xs uppercase tracking-[0.16em] text-mist">{p.tagline}</p>
+            <p className="mt-3 line-clamp-2 text-[14.5px] leading-relaxed text-mist">{p.description}</p>
+            <div className="mt-auto flex flex-wrap gap-1.5 pt-5">
+              {p.tech.slice(0, 3).map((t) => (
+                <span key={t} className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 text-[10.5px] font-medium text-mist">
                   {t}
                 </span>
               ))}
+              {p.tech.length > 3 && (
+                <span className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 text-[10.5px] font-medium text-mist">
+                  +{p.tech.length - 3}
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -327,29 +292,13 @@ export default function Projects({ projects }: { projects: Project[] }) {
         />
 
         {/* filter tabs */}
-        <div className="mb-6 flex items-center justify-center">
-          <div className="glass no-scrollbar flex max-w-full overflow-x-auto gap-1 rounded-2xl p-1.5 px-2">
-            {FILTERS.map((f) => (
-              <button
-                key={f.key}
-                onClick={() => setFilter(f.key)}
-                className={cn(
-                  "relative shrink-0 rounded-xl px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-[13px] font-medium transition-colors duration-300",
-                  filter === f.key ? "text-void font-semibold" : "text-mist hover:text-paper"
-                )}
-              >
-                {filter === f.key && (
-                  <motion.span
-                    layoutId="filter-pill"
-                    className="absolute inset-0 rounded-xl bg-gradient-to-r from-[var(--grad-a)] to-[var(--grad-c)]"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-                <span className="relative z-10">{f.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+        <FilterTabs
+          tabs={FILTERS}
+          active={filter}
+          onChange={setFilter}
+          layoutId="projects-filter-pill"
+          className="justify-center mb-8"
+        />
 
         {/* search + sort + view */}
         <div className="mb-10 flex flex-wrap items-center justify-center gap-3">

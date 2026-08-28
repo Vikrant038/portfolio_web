@@ -8,6 +8,7 @@ import { useSmoothScroll } from "@/components/providers/SmoothScroll";
 import { useSettings } from "@/lib/settings";
 import { SECTIONS, useScrollSpy } from "@/lib/use-scroll-spy";
 import { cn } from "@/lib/utils";
+import { useModal } from "@/lib/use-modal";
 
 const LINKS = [
   { label: "About", id: "about" },
@@ -28,6 +29,11 @@ export default function Navbar() {
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
 
+  useModal({
+    isOpen: open,
+    onClose: () => setOpen(false),
+  });
+
   useEffect(() => {
     let lastY = window.scrollY;
     const onScroll = () => {
@@ -47,19 +53,6 @@ export default function Navbar() {
 
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [open]);
-
-  // mobile menu: scroll lock + Esc
-  useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = prev;
-      window.removeEventListener("keydown", onKey);
-    };
   }, [open]);
 
   const go = (id: string) => {

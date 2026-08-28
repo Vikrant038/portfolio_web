@@ -5,10 +5,12 @@ import { getExperience, getSkillGroups, getNow, getProjects } from "@/lib/data";
 import { formatYear } from "@/lib/utils";
 import "./career.css";
 
+import { SITE_CONFIG } from "@/lib/constants";
+
 export const metadata: Metadata = {
   title: "Career & CV",
   description:
-    "Vikrant Yadav - Curriculum Vitae, experience, technical skills, and projects.",
+    `${SITE_CONFIG.name} - Curriculum Vitae, experience, technical skills, and projects.`,
 };
 
 export const revalidate = 3600;
@@ -28,8 +30,8 @@ export default async function CareerPage() {
           ← Back to Portfolio
         </Link>
         <a
-          href="/Vikrant_Resume_2026.docx"
-          download="Vikrant_Resume_2026.docx"
+          href={SITE_CONFIG.resumePath}
+          download={SITE_CONFIG.resumeFileName}
           className="career-download-btn inline-flex items-center gap-2 rounded-xl border border-white/15 bg-ink px-4 py-2 text-xs font-semibold text-paper shadow-sm transition-all hover:border-neon/50 hover:text-neon"
         >
           <FileDown className="h-3.5 w-3.5 text-neon" />
@@ -38,15 +40,15 @@ export default async function CareerPage() {
       </div>
 
       <header className="career-header">
-        <h1>Vikrant Yadav</h1>
-        <p className="career-role">AI Systems Engineer · AI Automation, RAG &amp; Data</p>
+        <h1>{SITE_CONFIG.name}</h1>
+        <p className="career-role">{SITE_CONFIG.title} · {SITE_CONFIG.tagline}</p>
         <p className="career-contact">
-          <a href="mailto:yadavvikrant3006@gmail.com" className="hover:text-neon transition-colors">
-            yadavvikrant3006@gmail.com
+          <a href={`mailto:${SITE_CONFIG.email}`} className="hover:text-neon transition-colors">
+            {SITE_CONFIG.email}
           </a>
-          {" "}· New Delhi, India · Remote Worldwide ·{" "}
+          {" "}· {SITE_CONFIG.location} ·{" "}
           <a
-            href="https://linkedin.com/in/vikrant-yadav3012"
+            href={SITE_CONFIG.socials.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-neon transition-colors"
@@ -55,7 +57,7 @@ export default async function CareerPage() {
           </a>
           {" "}·{" "}
           <a
-            href="https://github.com/Vikrant038"
+            href={SITE_CONFIG.socials.github}
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-neon transition-colors"

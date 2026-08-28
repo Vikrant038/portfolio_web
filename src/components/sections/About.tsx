@@ -6,7 +6,7 @@ import Reveal from "@/components/ui/Reveal";
 import NeumorphicButton from "@/components/ui/NeumorphicButton";
 import Tilt from "@/components/ui/Tilt";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
-import { cn } from "@/lib/utils";
+import { cn, downloadResume } from "@/lib/utils";
 
 const FACTS = [
   { icon: MapPin, label: "Based in", value: "New Delhi, India · Remote Worldwide" },
@@ -174,13 +174,8 @@ export default function About() {
             <Reveal delay={0.45}>
               <div className="mt-9 flex flex-wrap items-center gap-4">
                 <NeumorphicButton
-                  icon={<Download className="h-4 w-4" />}
-                  onClick={() => {
-                    const a = document.createElement("a");
-                    a.href = "/Vikrant_Resume_2026.docx";
-                    a.download = "Vikrant_Resume_2026.docx";
-                    a.click();
-                  }}
+                  icon={<Download size={16} />}
+                  onClick={downloadResume}
                 >
                   Download Resume
                 </NeumorphicButton>

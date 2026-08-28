@@ -5,6 +5,7 @@ import { useSmoothScroll } from "@/components/providers/SmoothScroll";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Reveal from "@/components/ui/Reveal";
+import { downloadResume } from "@/lib/utils";
 
 const LINKS = [
   { label: "About", id: "about" },
@@ -63,12 +64,7 @@ export default function Footer() {
                   <ArrowRight className="h-4 w-4 text-neon" />
                 </motion.button>
                 <button
-                  onClick={() => {
-                    const a = document.createElement("a");
-                    a.href = "/Vikrant_Resume_2026.docx";
-                    a.download = "Vikrant_Resume_2026.docx";
-                    a.click();
-                  }}
+                  onClick={downloadResume}
                   className="glass inline-flex items-center gap-2 rounded-2xl px-7 py-4 text-[15px] font-semibold text-mist transition-colors hover:text-paper"
                 >
                   <FileDown className="h-4 w-4" />
