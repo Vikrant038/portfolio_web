@@ -8,7 +8,6 @@ import Tilt from "@/components/ui/Tilt";
 import type { Project, ProjectCategory } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { setPaletteProjects } from "@/lib/palette-store";
-import { useModal } from "@/lib/use-modal";
 import ProjectCard from "@/components/sections/projects/ProjectCard";
 import ProjectToolbar from "@/components/sections/projects/ProjectToolbar";
 import ProjectModal from "@/components/sections/projects/ProjectModal";
@@ -30,11 +29,6 @@ export default function Projects({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<Project | null>(null);
 
   const { likes, toggleLike } = useLikes();
-
-  const modalRef = useModal<HTMLDivElement>({
-    isOpen: Boolean(active),
-    onClose: () => setActive(null),
-  });
 
   useEffect(() => setPaletteProjects(projects), [projects]);
 
@@ -154,7 +148,6 @@ export default function Projects({ projects }: { projects: Project[] }) {
             onToggleLike={toggleLike}
             onOpen={openProject}
             onClose={() => setActive(null)}
-            modalRef={modalRef}
           />
         )}
       </AnimatePresence>
