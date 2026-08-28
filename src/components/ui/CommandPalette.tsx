@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Search, CornerDownLeft, FileDown, Mail, Github, Sun, Moon } from "lucide-react";
+import { Search, CornerDownLeft, FileDown, Mail, Github, Linkedin, Briefcase, Sun, Moon } from "lucide-react";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
 import { useSettings } from "@/lib/settings";
 import { useProjectsStore } from "@/lib/palette-store";
@@ -18,6 +19,8 @@ interface Item {
 }
 
 export default function CommandPalette() {
+  const pathname = usePathname();
+  const router = useRouter();
   const { scrollTo } = useSmoothScroll();
   const { theme, toggleTheme } = useSettings();
   const projects = useProjectsStore((p) => p);
@@ -27,6 +30,14 @@ export default function CommandPalette() {
   const inputRef = useRef<HTMLInputElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   useFocusTrap(dialogRef, open);
+
+  const navigateToSection = (id: string) => {
+    if (pathname !== "/") {
+      router.push(`/#${id}`);
+      return;
+    }
+    scrollTo(`#${id}`);
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -51,26 +62,34 @@ export default function CommandPalette() {
 
   const items = useMemo<Item[]>(() => {
     const base: Item[] = [
-      { id: "sec-about", label: "About", hint: "Section", run: () => scrollTo("#about") },
-      { id: "sec-projects", label: "Projects", hint: "Section", run: () => scrollTo("#projects") },
-      { id: "sec-skills", label: "Skills", hint: "Section", run: () => scrollTo("#skills") },
-      { id: "sec-experience", label: "Experience", hint: "Section", run: () => scrollTo("#experience") },
-      { id: "sec-contact", label: "Contact", hint: "Section", run: () => scrollTo("#contact") },
+      { id: "sec-about", label: "About", hint: "Section", run: () => navigateToSection("about") },
+      { id: "sec-projects", label: "Projects", hint: "Section", run: () => navigateToSection("projects") },
+      { id: "sec-skills", label: "Skills", hint: "Section", run: () => navigateToSection("skills") },
+      { id: "sec-experience", label: "Experience", hint: "Section", run: () => navigateToSection("experience") },
+      { id: "sec-blogs", label: "Writing & Notes", hint: "Section", run: () => navigateToSection("blogs") },
+      { id: "sec-contact", label: "Contact", hint: "Section", run: () => navigateToSection("contact") },
+      {
+        id: "act-career",
+        label: "View Career / CV Page",
+        hint: "Page",
+        icon: <Briefcase className="h-4 w-4" />,
+        run: () => router.push("/career"),
+      },
       ...projects.map((p) => ({
         id: `proj-${p.id}`,
         label: p.title,
         hint: "Project",
-        run: () => scrollTo("#projects"),
+        run: () => navigateToSection("projects"),
       })),
       {
         id: "act-resume",
-        label: "Download resume",
+        label: "Download CV / Resume",
         hint: "Action",
         icon: <FileDown className="h-4 w-4" />,
         run: () => {
           const a = document.createElement("a");
-          a.href = "/resume.pdf";
-          a.download = "Vikrant-Yadav-Resume.pdf";
+          a.href = "/Vikrant_Resume_2026.docx";
+          a.download = "Vikrant_Resume_2026.docx";
           a.click();
         },
       },
@@ -83,10 +102,17 @@ export default function CommandPalette() {
       },
       {
         id: "act-github",
-        label: "Open GitHub",
-        hint: "Action",
+        label: "Open GitHub Profile",
+        hint: "Social",
         icon: <Github className="h-4 w-4" />,
-        run: () => window.open("https://github.com", "_blank"),
+        run: () => window.open("https://github.com/Vikrant038", "_blank"),
+      },
+      {
+        id: "act-linkedin",
+        label: "Open LinkedIn Profile",
+        hint: "Social",
+        icon: <Linkedin className="h-4 w-4" />,
+        run: () => window.open("https://linkedin.com/in/vikrant-yadav3012", "_blank"),
       },
       {
         id: "act-theme",
@@ -101,7 +127,7 @@ export default function CommandPalette() {
     return base.filter(
       (i) => i.label.toLowerCase().includes(q) || (i.hint ?? "").toLowerCase().includes(q)
     );
-  }, [query, projects, theme, toggleTheme, scrollTo]);
+  }, [query, projects, theme, toggleTheme, pathname, router]);
 
   useEffect(() => setIndex(0), [query]);
   useEffect(() => setIndex((i) => Math.min(i, Math.max(0, items.length - 1))), [items.length]);

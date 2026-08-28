@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useScrollSpy, SECTIONS } from "@/lib/use-scroll-spy";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
@@ -16,10 +17,13 @@ const LABELS: Record<string, string> = {
 };
 
 export default function SectionStepper() {
+  const pathname = usePathname();
   const active = useScrollSpy(SECTIONS);
   const { scrollTo } = useSmoothScroll();
   const { scrollYProgress } = useScroll();
   const scaleY = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
+
+  if (pathname !== "/") return null;
 
   return (
     <div className="fixed right-5 top-1/2 z-[60] hidden -translate-y-1/2 xl:block" aria-hidden>
