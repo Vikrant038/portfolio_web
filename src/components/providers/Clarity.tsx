@@ -25,7 +25,15 @@ export default function Clarity() {
     const id =
       process.env.NEXT_PUBLIC_CLARITY_ID ?? process.env.CLARITY_ID ?? "";
     if (!id) return;
-    clarity.init(id);
+
+    const win = typeof window !== "undefined" ? (window as any) : null;
+    if (!win) return;
+
+    if (typeof win.requestIdleCallback === "function") {
+      win.requestIdleCallback(() => clarity.init(id));
+    } else {
+      win.setTimeout(() => clarity.init(id), 1000);
+    }
   }, [allowed]);
 
   return null;

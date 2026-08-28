@@ -82,11 +82,14 @@ export default function Contact() {
   }, []);
 
   useEffect(() => {
-    try {
-      window.localStorage.setItem(DRAFT_KEY, JSON.stringify(values));
-    } catch {
-      /* ignore */
-    }
+    const timer = window.setTimeout(() => {
+      try {
+        window.localStorage.setItem(DRAFT_KEY, JSON.stringify(values));
+      } catch {
+        /* ignore */
+      }
+    }, 400);
+    return () => window.clearTimeout(timer);
   }, [values]);
 
   function validateField(

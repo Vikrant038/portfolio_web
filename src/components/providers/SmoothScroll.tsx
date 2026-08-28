@@ -32,11 +32,21 @@ export default function SmoothScrollProvider({
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    const isTouch =
+      typeof window !== "undefined" &&
+      (window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768);
+
+    // On mobile touch with reduced motion, use 100% native 120Hz hardware scrolling
+    if (isTouch && motion === "reduced") {
+      setReady(true);
+      return;
+    }
+
     const lenis = new Lenis({
       lerp: motion === "reduced" ? 1 : 0.09,
-      smoothWheel: motion !== "reduced",
+      smoothWheel: motion !== "reduced" && !isTouch,
       wheelMultiplier: 1,
-      touchMultiplier: 1.6,
+      touchMultiplier: 1,
     });
     lenisRef.current = lenis;
     setReady(true);
@@ -62,16 +72,22 @@ export default function SmoothScrollProvider({
     };
   }, [motion]);
 
-  const scrollTo = useCallback(
-    (target: string | HTMLElement, offset = -72) => {
-      if (!lenisRef.current || !ready) return;
-      lenisRef.current.scrollTo(target as any, {
-        offset,
-        duration: motion === "reduced" ? 0.2 : 1.4,
-      });
-    },
-    [ready, motion]
-  );
+  const scrollTo = useCallback((target: string | HTMLElement, offset = -72) => {
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(target, { offset, duration: 1.1 });
+    } else if (typeof window !== "undefined") {
+      if (typeof target === "string") {
+        const el = document.querySelector(target);
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY + offset;
+          window.scrollTo({ top, behavior: "smooth" });
+        }
+      } else if (target instanceof HTMLElement) {
+        const top = target.getBoundingClientRect().top + window.scrollY + offset;
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+    }
+  }, []);
 
   return <Ctx.Provider value={{ scrollTo }}>{children}</Ctx.Provider>;
 }
