@@ -6,6 +6,7 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ArrowDown, Sparkles, Send } from "lucide-react";
 import NeumorphicButton from "@/components/ui/NeumorphicButton";
 import Magnetic from "@/components/ui/Magnetic";
+import SceneErrorBoundary from "@/components/three/SceneErrorBoundary";
 import CountUp from "@/components/ui/CountUp";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
 import { useAppReady } from "@/lib/app-ready";
@@ -141,7 +142,9 @@ export default function Hero() {
     >
       {/* 3D scene + cyber grid + glows */}
       <div className="absolute inset-0" aria-hidden>
-        <PortfolioScene />
+        <SceneErrorBoundary>
+          <PortfolioScene />
+        </SceneErrorBoundary>
       </div>
       <span className="sr-only">
         Animated 3D field of floating geometric shapes in the background.

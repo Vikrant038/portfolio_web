@@ -21,6 +21,7 @@ import {
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
 import NeumorphicButton from "@/components/ui/NeumorphicButton";
+import FormErrorBoundary from "@/components/sections/contact/FormErrorBoundary";
 import { getSupabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
@@ -288,6 +289,7 @@ export default function Contact() {
 
           {/* right - multi-step form */}
           <Reveal delay={0.15} className="lg:col-span-3">
+            <FormErrorBoundary>
             <form
               onSubmit={handleSubmit}
               noValidate
@@ -566,6 +568,7 @@ export default function Contact() {
                 )}
               </div>
             </form>
+            </FormErrorBoundary>
           </Reveal>
         </div>
       </div>

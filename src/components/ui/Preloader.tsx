@@ -11,12 +11,10 @@ const VISITED_KEY = "luxe-visited";
 
 export default function Preloader() {
   const { reducedMotion } = useSettings();
-  const [mounted, setMounted] = useState(false);
   const [done, setDone] = useState(false);
   const [returning, setReturning] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const visited = window.localStorage.getItem(VISITED_KEY) === "1";
     setReturning(visited);
     try {
@@ -31,8 +29,6 @@ export default function Preloader() {
     }, dur);
     return () => window.clearTimeout(t);
   }, [reducedMotion]);
-
-  if (!mounted) return null;
 
   return (
     <AnimatePresence>
