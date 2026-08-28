@@ -70,10 +70,10 @@ export async function sendContactEmail(payload: ContactPayload) {
     <div style="font-family:system-ui,sans-serif;padding:24px;background:#0b0b12;color:#f2f2f5;border-radius:16px">
       <h2 style="margin:0 0 4px;color:#ff8f40">New message from the portfolio</h2>
       <p style="margin:0 0 16px;color:#9b9ba8">${escapeHtml(payload.email)}</p>
-      <p style="margin:0 0 16px;color:#2dd4cd;font-size:13px">${escapeHtml(meta)}</p>
+      ${meta ? `<p style="margin:0 0 16px;color:#2dd4cd;font-size:13px">${escapeHtml(meta)}</p>` : ""}
       <p style="line-height:1.6;white-space:pre-wrap">${escapeHtml(payload.message)}</p>
       <hr style="border-color:rgba(255,255,255,0.1);margin:20px 0"/>
-      <p style="color:#9b9ba8;font-size:12px">Sent via vikrantyadav.dev</p>
+      <p style="color:#9b9ba8;font-size:12px">Sent via vikrant-yadav.vercel.app</p>
     </div>`;
 
   await plunkSend({

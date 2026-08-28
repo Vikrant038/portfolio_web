@@ -30,9 +30,10 @@ export function useScrollSpy(ids: string[] = SECTIONS) {
       observers.push(obs);
     });
 
-    // keep the URL hash in sync (deep-linkable sections)
+    // keep the URL hash in sync (deep-linkable sections on homepage only)
     const onActive = (id: string) => {
       try {
+        if (typeof window === "undefined" || window.location.pathname !== "/") return;
         const url = new URL(window.location.href);
         if (url.hash !== `#${id}`) {
           url.hash = id === ids[0] ? "" : id;
@@ -42,14 +43,21 @@ export function useScrollSpy(ids: string[] = SECTIONS) {
         /* ignore */
       }
     };
-    onActive(ids[0] ?? "");
+
+    if (typeof window !== "undefined" && window.location.pathname === "/") {
+      onActive(ids[0] ?? "");
+    }
 
     // fallback: pick the last section scrolled past + handle bottom of page
     const onScroll = () => {
+      if (typeof window === "undefined" || window.location.pathname !== "/") return;
+
+      const contactEl = document.getElementById("contact");
       const atBottom =
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 100;
-      if (atBottom && ids.includes("contact")) {
+
+      if (atBottom && contactEl && ids.includes("contact")) {
         if (current !== "contact") {
           current = "contact";
           setActive("contact");

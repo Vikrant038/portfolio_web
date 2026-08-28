@@ -105,15 +105,11 @@ export default function Projects({ projects }: { projects: Project[] }) {
   }
 
   const step = (dir: 1 | -1) => {
-    if (activeIndex === -1) return;
-    const next = visible[(activeIndex + dir + visible.length) % visible.length];
-    setActive(next);
-    // record view for analytics (fire-and-forget)
-    fetch("/api/projects/views", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: next.id }),
-    }).catch(() => {});
+    const list = visible.length > 0 && activeIndex !== -1 ? visible : projects;
+    const idx = list.findIndex((p) => p.id === active?.id);
+    if (idx === -1) return;
+    const next = list[(idx + dir + list.length) % list.length];
+    if (next) openProject(next);
   };
 
   const openProject = (p: Project) => {
@@ -512,7 +508,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
                     <ChevronLeft className="h-4 w-4" />
                   </button>
                   <span className="rounded-lg bg-void/80 px-2.5 py-1 text-[11px] font-semibold text-mist backdrop-blur-md">
-                    {activeIndex + 1} / {visible.length}
+                    {(activeIndex !== -1 ? activeIndex : projects.findIndex((p) => p.id === active.id)) + 1} / {activeIndex !== -1 ? visible.length : projects.length}
                   </span>
                   <button
                     onClick={() => step(1)}

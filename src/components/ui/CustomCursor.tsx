@@ -62,8 +62,8 @@ export default function CustomCursor() {
     <div className="pointer-events-none fixed inset-0 z-[9999] hidden md:block" aria-hidden>
       {/* Concentric cursor container locked at exact mouse coordinates */}
       <motion.div
-        style={{ x, y }}
-        className="absolute top-0 left-0 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center pointer-events-none"
+        style={{ x, y, translateX: "-50%", translateY: "-50%" }}
+        className="absolute top-0 left-0 flex items-center justify-center pointer-events-none"
       >
         {/* Outer glowing focus circle */}
         <motion.div

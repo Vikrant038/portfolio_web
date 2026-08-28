@@ -59,23 +59,39 @@ export default function SiteChrome() {
   // keyboard shortcuts
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement)?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || (e.metaKey || e.ctrlKey)) return;
-      if (e.key === "ArrowDown" || e.key === "PageDown") {
-        e.preventDefault();
-        const i = SECTIONS.findIndex(
-          (id) => document.getElementById(id)!.getBoundingClientRect().top > 80
-        );
-        const next = i === -1 ? SECTIONS.length - 1 : Math.max(0, i);
-        scrollTo(`#${SECTIONS[next]}`);
-      } else if (e.key === "ArrowUp" || e.key === "PageUp") {
-        e.preventDefault();
-        const i = SECTIONS.findIndex(
-          (id) => document.getElementById(id)!.getBoundingClientRect().top > 80
-        );
-        const prev = i === -1 ? SECTIONS.length - 1 : Math.max(0, i - 1);
-        scrollTo(`#${SECTIONS[prev]}`);
-      } else if (e.key.toLowerCase() === "r") {
+      const target = e.target as HTMLElement | null;
+      const tag = target?.tagName;
+      if (
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        target?.isContentEditable ||
+        e.metaKey ||
+        e.ctrlKey
+      ) {
+        return;
+      }
+
+      if (window.location.pathname === "/") {
+        if (e.key === "ArrowDown" || e.key === "PageDown") {
+          e.preventDefault();
+          const i = SECTIONS.findIndex((id) => {
+            const el = document.getElementById(id);
+            return el ? el.getBoundingClientRect().top > 80 : false;
+          });
+          const next = i === -1 ? SECTIONS.length - 1 : Math.max(0, i);
+          scrollTo(`#${SECTIONS[next]}`);
+        } else if (e.key === "ArrowUp" || e.key === "PageUp") {
+          e.preventDefault();
+          const i = SECTIONS.findIndex((id) => {
+            const el = document.getElementById(id);
+            return el ? el.getBoundingClientRect().top > 80 : false;
+          });
+          const prev = i === -1 ? SECTIONS.length - 1 : Math.max(0, i - 1);
+          scrollTo(`#${SECTIONS[prev]}`);
+        }
+      }
+
+      if (e.key.toLowerCase() === "r" && !e.altKey) {
         const a = document.createElement("a");
         a.href = "/Vikrant_Resume_2026.docx";
         a.download = "Vikrant_Resume_2026.docx";

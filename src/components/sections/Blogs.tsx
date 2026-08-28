@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Clock, X, Tag, ChevronRight } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import GlassCard from "@/components/ui/GlassCard";
 import Reveal from "@/components/ui/Reveal";
+import { useFocusTrap } from "@/lib/use-focus-trap";
 import { cn } from "@/lib/utils";
 
 export interface Article {
@@ -304,6 +305,8 @@ Every call chipped at a fear I didn't know ran so deep. I learned to lead with t
 export default function Blogs() {
   const [filter, setFilter] = useState<"all" | "systems" | "ai" | "ops">("all");
   const [activeArticle, setActiveArticle] = useState<Article | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(modalRef, Boolean(activeArticle));
 
   useEffect(() => {
     if (!activeArticle) return;
@@ -432,6 +435,7 @@ export default function Blogs() {
             aria-label={activeArticle.title}
           >
             <motion.div
+              ref={modalRef}
               initial={{ opacity: 0, scale: 0.94, y: 32 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.94, y: 24 }}

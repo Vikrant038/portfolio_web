@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useSettings } from "@/lib/settings";
 import type { ReactNode } from "react";
 
 interface TiltProps {
@@ -17,11 +18,16 @@ export default function Tilt({
   className,
   scale = 1.015,
 }: TiltProps) {
+  const { reducedMotion } = useSettings();
   const ref = useRef<HTMLDivElement>(null);
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
   const sX = useSpring(rotateX, { stiffness: 220, damping: 18 });
   const sY = useSpring(rotateY, { stiffness: 220, damping: 18 });
+
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
 
   function handleMove(e: React.MouseEvent<HTMLDivElement>) {
     const el = ref.current;

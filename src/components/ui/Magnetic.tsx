@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useSettings } from "@/lib/settings";
 import type { ReactNode } from "react";
 
 export default function Magnetic({
@@ -11,11 +12,16 @@ export default function Magnetic({
   children: ReactNode;
   strength?: number;
 }) {
+  const { reducedMotion } = useSettings();
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const sx = useSpring(x, { stiffness: 200, damping: 15, mass: 0.4 });
   const sy = useSpring(y, { stiffness: 200, damping: 15, mass: 0.4 });
+
+  if (reducedMotion) {
+    return <div className="inline-block">{children}</div>;
+  }
 
   function handleMove(e: React.MouseEvent<HTMLDivElement>) {
     const el = ref.current;

@@ -74,8 +74,8 @@ export default function Preloader() {
             transition={{ delay: 0.2 }}
             className="absolute bottom-[16%] left-1/2 -translate-x-1/2 text-center"
           >
-            <p className="font-serif text-xl tracking-[0.35em] text-paper/90">
-              LUXE
+            <p className="font-serif text-sm tracking-[0.35em] text-paper/90 uppercase">
+              VIKRANT YADAV
             </p>
             <div className="mx-auto mt-3 h-px w-24 overflow-hidden bg-white/10">
               <motion.div
