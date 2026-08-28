@@ -59,10 +59,25 @@ export default function SettingsProvider({ children }: { children: ReactNode }) 
         ? "light"
         : "dark";
     setTheme((stored as Theme) || sys);
+
     const m = localStorage.getItem(MOTION_KEY);
-    if (m === "full" || m === "reduced") setMotionState(m);
-    const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setReducedMotion(rm || m === "reduced");
+    const isMobile =
+      window.innerWidth < 768 ||
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(max-width: 768px)").matches;
+
+    if (m === "full" || m === "reduced") {
+      setMotionState(m);
+      const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      setReducedMotion(rm || m === "reduced");
+    } else {
+      // Default to reduced motion on mobile for instant snappy responsiveness & battery preservation
+      const initialMotion: MotionPref = isMobile ? "reduced" : "full";
+      setMotionState(initialMotion);
+      const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      setReducedMotion(rm || initialMotion === "reduced");
+    }
+
     setSoundState(localStorage.getItem(SOUND_KEY) === "1");
   }, []);
 
@@ -90,10 +105,18 @@ export default function SettingsProvider({ children }: { children: ReactNode }) 
     } catch {
       /* private mode */
     }
-    setReducedMotion(
+    const isMobile =
+      typeof window !== "undefined" &&
+      (window.innerWidth < 768 || window.matchMedia("(pointer: coarse)").matches);
+    const isReduced =
       motion === "reduced" ||
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    );
+      (typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+    setReducedMotion(isReduced);
+    if (typeof document !== "undefined") {
+      document.documentElement.dataset.motion = motion;
+    }
   }, [motion]);
 
   const toggleTheme = useCallback(

@@ -23,8 +23,8 @@ export default function About() {
       <div className="section-shell">
         <SectionHeading
           eyebrow="About me"
-          title="Craft is the"
-          highlight="discipline."
+          title="Engineering with"
+          highlight="systems focus."
           ghost="01"
         />
 

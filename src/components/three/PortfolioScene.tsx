@@ -267,12 +267,12 @@ export default function PortfolioScene() {
     force((n) => n + 1);
   }, [theme]);
 
-  const activeLoop = visible && inHero;
+  const activeLoop = !reducedMotion && visible && inHero;
 
   return (
     <Canvas
       dpr={lowPower ? [1, 1.25] : [1, 1.5]}
-      frameloop={activeLoop ? "always" : "never"}
+      frameloop={reducedMotion ? "demand" : activeLoop ? "always" : "never"}
       camera={{ position: [0, 0, 9], fov: 45 }}
       gl={{
         antialias: !lowPower,

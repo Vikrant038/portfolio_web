@@ -325,8 +325,8 @@ export default function Projects({ projects }: { projects: Project[] }) {
       <div className="section-shell">
         <SectionHeading
           eyebrow="Selected work"
-          title="Projects with"
-          highlight="intent."
+          title="Featured"
+          highlight="systems & tools."
           ghost="02"
         />
 

@@ -35,11 +35,11 @@ export default function Footer() {
                 Let&apos;s talk
               </p>
               <h2 className="mx-auto mt-4 max-w-2xl font-serif text-4xl font-bold leading-tight text-paper sm:text-5xl">
-                Have a project in mind?{" "}
-                <span className="text-gradient">Let&apos;s make it real.</span>
+                Have a project or opportunity?{" "}
+                <span className="text-gradient">Let&apos;s connect.</span>
               </h2>
               <p className="mx-auto mt-4 max-w-md text-[14px] text-mist">
-                Tell me about your idea and let&apos;s engineer something extraordinary together.
+                Whether you need a RAG pipeline, workflow automation, or an AI engineer on your team.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
                 <motion.button

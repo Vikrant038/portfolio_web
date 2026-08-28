@@ -148,9 +148,9 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
       />
       <div className="section-shell">
         <SectionHeading
-          eyebrow="Kind words"
-          title="What people"
-          highlight="say."
+          eyebrow="Recommendations"
+          title="Feedback from"
+          highlight="collaborators."
           ghost="05"
         />
 

@@ -330,9 +330,9 @@ export default function Blogs() {
       />
       <div className="section-shell">
         <SectionHeading
-          eyebrow="Engineering Journal"
-          title="Writing &"
-          highlight="systems teardowns."
+          eyebrow="Technical Notes"
+          title="Systems breakdowns &"
+          highlight="engineering notes."
           ghost="05"
         />
 

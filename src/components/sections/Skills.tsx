@@ -44,8 +44,8 @@ export default function Skills({ groups, now }: SkillsProps) {
       <div className="section-shell">
         <SectionHeading
           eyebrow="Capabilities"
-          title="A stack built for"
-          highlight="velocity."
+          title="Technical skills &"
+          highlight="stack."
           ghost="03"
         />
 

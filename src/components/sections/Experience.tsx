@@ -22,8 +22,8 @@ export default function Experience({ items }: { items: ExperienceItem[] }) {
       <div className="section-shell">
         <SectionHeading
           eyebrow="Career"
-          title="A timeline of"
-          highlight="compound growth."
+          title="Work experience &"
+          highlight="track record."
           ghost="04"
         />
 

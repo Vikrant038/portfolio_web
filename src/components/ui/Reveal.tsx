@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
+import { useSettings } from "@/lib/settings";
 
 interface RevealProps {
   children: ReactNode;
@@ -18,6 +19,12 @@ export default function Reveal({
   className,
   once = true,
 }: RevealProps) {
+  const { reducedMotion } = useSettings();
+
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y, filter: "blur(8px)" }}

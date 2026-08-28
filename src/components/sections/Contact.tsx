@@ -214,8 +214,8 @@ export default function Contact() {
       <div className="section-shell">
         <SectionHeading
           eyebrow="Contact"
-          title="Let's build something"
-          highlight="extraordinary."
+          title="Get in touch or"
+          highlight="discuss a project."
           ghost="06"
         />
 
@@ -412,7 +412,7 @@ export default function Contact() {
                           inputMode="text"
                           autoComplete="name"
                           autoCapitalize="words"
-                          placeholder="Jane Doe"
+                          placeholder="Your name"
                           className="glass-input"
                           value={values.name}
                           onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
@@ -435,7 +435,7 @@ export default function Contact() {
                           autoComplete="email"
                           autoCapitalize="none"
                           spellCheck={false}
-                          placeholder="jane@company.com"
+                          placeholder="your.email@example.com"
                           className="glass-input"
                           value={values.email}
                           onChange={(e) => setValues((v) => ({ ...v, email: e.target.value }))}
