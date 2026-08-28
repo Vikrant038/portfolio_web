@@ -2,6 +2,7 @@
 
 import { ArrowUp, FileDown, ArrowRight } from "lucide-react";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
+import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Reveal from "@/components/ui/Reveal";
 
@@ -15,7 +16,17 @@ const LINKS = [
 ];
 
 export default function Footer() {
+  const pathname = usePathname();
+  const router = useRouter();
   const { scrollTo } = useSmoothScroll();
+
+  const go = (id: string) => {
+    if (pathname !== "/") {
+      router.push(id === "top" ? "/" : `/#${id}`);
+      return;
+    }
+    scrollTo(id === "top" ? "#top" : `#${id}`);
+  };
   return (
     <>
       {/* end card */}
@@ -80,7 +91,7 @@ export default function Footer() {
             {LINKS.map((l) => (
               <button
                 key={l.id}
-                onClick={() => scrollTo(`#${l.id}`)}
+                onClick={() => go(l.id)}
                 className="text-[12px] text-mist transition-colors hover:text-neon"
               >
                 {l.label}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Sparkles, Sun, Moon } from "lucide-react";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
@@ -18,6 +19,8 @@ const LINKS = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
+  const router = useRouter();
   const { scrollTo } = useSmoothScroll();
   const { theme, toggleTheme } = useSettings();
   const active = useScrollSpy(SECTIONS);
@@ -64,7 +67,13 @@ export default function Navbar() {
     if (typeof navigator !== "undefined" && navigator.vibrate) {
       try { navigator.vibrate(10); } catch {}
     }
-    requestAnimationFrame(() => scrollTo(`#${id}`));
+
+    if (pathname !== "/") {
+      router.push(id === "top" ? "/" : `/#${id}`);
+      return;
+    }
+
+    requestAnimationFrame(() => scrollTo(id === "top" ? "#top" : `#${id}`));
   };
 
   return (
