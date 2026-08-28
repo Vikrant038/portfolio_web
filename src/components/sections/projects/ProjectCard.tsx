@@ -38,8 +38,8 @@ function GridCard({ project: p, liked, onToggleLike, onOpen }: Omit<ProjectCardP
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover transition-transform duration-700 group-hover:scale-[1.05]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent" />
-          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+          <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent pointer-events-none" />
+          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none">
             <span className="rounded-md bg-void/80 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-mist backdrop-blur-md">
               {p.category}
             </span>
@@ -53,7 +53,7 @@ function GridCard({ project: p, liked, onToggleLike, onOpen }: Omit<ProjectCardP
             <h3 className="font-serif text-xl font-bold text-paper transition-colors group-hover:text-neon">
               {p.title}
             </h3>
-            <div className="flex items-center gap-1.5">
+            <div className="relative z-30 flex items-center gap-1.5 pointer-events-auto">
               {p.url && p.url !== "#" && (
                 <a
                   href={p.url}
@@ -61,17 +61,18 @@ function GridCard({ project: p, liked, onToggleLike, onOpen }: Omit<ProjectCardP
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   aria-label={`Open live demo for ${p.title}`}
-                  className="grid h-8 w-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-lg border border-neon/40 bg-neon/10 text-neon transition-all hover:bg-neon/20 hover:scale-105"
+                  className="grid h-8 w-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-lg border border-neon/40 bg-neon/10 text-neon transition-all hover:bg-neon/20 hover:scale-105 active:scale-95"
                   title="Live Demo"
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               )}
               <button
+                type="button"
                 onClick={(e) => onToggleLike(p.id, e)}
                 aria-label="Like project"
                 className={cn(
-                  "grid h-8 w-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-lg border transition-colors",
+                  "grid h-8 w-8 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-lg border transition-colors active:scale-95",
                   liked
                     ? "border-rose-400/50 bg-rose-400/10 text-rose-400"
                     : "border-white/10 bg-white/[0.04] text-mist hover:text-rose-400",
@@ -128,7 +129,7 @@ function ListCard({ project: p, liked, onToggleLike, onOpen }: Omit<ProjectCardP
                 {p.tagline} · {p.year}
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="relative z-30 flex items-center gap-2 pointer-events-auto">
               {p.url && p.url !== "#" && (
                 <a
                   href={p.url}
@@ -136,17 +137,18 @@ function ListCard({ project: p, liked, onToggleLike, onOpen }: Omit<ProjectCardP
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   aria-label={`Open live demo for ${p.title}`}
-                  className="grid h-9 w-9 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-xl border border-neon/40 bg-neon/10 text-neon transition-all hover:bg-neon/20 hover:scale-105"
+                  className="grid h-9 w-9 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-xl border border-neon/40 bg-neon/10 text-neon transition-all hover:bg-neon/20 hover:scale-105 active:scale-95"
                   title="Live Demo"
                 >
                   <ExternalLink className="h-4 w-4" />
                 </a>
               )}
               <button
+                type="button"
                 onClick={(e) => onToggleLike(p.id, e)}
                 aria-label="Like project"
                 className={cn(
-                  "grid h-9 w-9 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-xl border transition-colors",
+                  "grid h-9 w-9 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-xl border transition-colors active:scale-95",
                   liked
                     ? "border-rose-400/50 bg-rose-400/10 text-rose-400"
                     : "border-white/10 bg-white/[0.04] text-mist hover:text-rose-400",
@@ -155,12 +157,13 @@ function ListCard({ project: p, liked, onToggleLike, onOpen }: Omit<ProjectCardP
                 <Heart className={cn("h-4 w-4", liked && "fill-rose-400")} />
               </button>
               <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onOpen(p);
                 }}
                 aria-label={`View details for ${p.title}`}
-                className="grid h-9 w-9 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-mist transition-colors hover:border-neon/40 hover:text-neon"
+                className="grid h-9 w-9 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-mist transition-colors hover:border-neon/40 hover:text-neon active:scale-95"
               >
                 <ArrowUpRight className="h-4 w-4" />
               </button>

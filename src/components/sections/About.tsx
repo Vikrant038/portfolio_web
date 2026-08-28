@@ -1,4 +1,3 @@
-"use client";
 
 import { MapPin, GraduationCap, Coffee, Award } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";

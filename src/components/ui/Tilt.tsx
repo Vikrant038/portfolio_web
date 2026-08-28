@@ -14,16 +14,16 @@ interface TiltProps {
 
 export default function Tilt({
   children,
-  max = 8,
+  max = 6,
   className,
-  scale = 1.015,
+  scale = 1.01,
 }: TiltProps) {
   const { reducedMotion } = useSettings();
   const ref = useRef<HTMLDivElement>(null);
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
-  const sX = useSpring(rotateX, { stiffness: 220, damping: 18 });
-  const sY = useSpring(rotateY, { stiffness: 220, damping: 18 });
+  const sX = useSpring(rotateX, { stiffness: 300, damping: 25 });
+  const sY = useSpring(rotateY, { stiffness: 300, damping: 25 });
 
   if (reducedMotion) {
     return <div className={className}>{children}</div>;
@@ -50,7 +50,11 @@ export default function Tilt({
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
       whileHover={{ scale }}
-      style={{ rotateX: sX, rotateY: sY, transformStyle: "preserve-3d" }}
+      style={{
+        rotateX: sX,
+        rotateY: sY,
+        transformPerspective: 1000,
+      }}
       className={className}
     >
       {children}
