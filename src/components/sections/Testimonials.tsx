@@ -118,11 +118,20 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(fb),
       });
-      if (!res.ok) throw new Error();
-      toast.success("Thank you! Feedback submitted for review.");
+      // Always parse JSON — even errors return JSON now
+      const json = await res.json().catch(() => null);
+      if (!res.ok) {
+        const msg = json?.error ?? `Server error (${res.status})`;
+        throw new Error(msg);
+      }
+      toast.success("Thank you! Your feedback has been submitted for review.");
       setFb({ name: "", quote: "" });
-    } catch {
-      toast.error("Couldn't submit feedback right now.");
+    } catch (err) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Couldn't submit feedback right now — please try again.";
+      toast.error(msg);
     } finally {
       setSending(false);
     }

@@ -162,8 +162,8 @@ export default function Contact() {
           source,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Request failed");
+      const data = await res.json().catch(() => ({} as Record<string, unknown>));
+      if (!res.ok) throw new Error((data.error as string | undefined) ?? `Request failed (${res.status})`);
       toast.success(
         data.mock
           ? "Message captured (add PLUNK_API_KEY to send email)"

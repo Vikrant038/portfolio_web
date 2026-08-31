@@ -108,13 +108,18 @@ export async function sendContactEmail(payload: ContactPayload) {
       <p style="color:#9b9ba8;font-size:12px">Sent via vikrant-yadav.vercel.app</p>
     </div>`;
 
-  await plunkSend({
-    to: recipient,
-    from: `Vikrant Yadav Portfolio <${process.env.PLUNK_FROM ?? "no-reply@vikrantyadav.dev"}>`,
-    subject,
-    body,
-    html,
-  });
+  try {
+    await plunkSend({
+      to: recipient,
+      from: `Vikrant Yadav Portfolio <${process.env.PLUNK_FROM ?? "no-reply@vikrantyadav.dev"}>`,
+      subject,
+      body,
+      html,
+    });
+  } catch (err) {
+    console.error("[plunk] main send failed:", err);
+    return { ok: false, mock: false, error: "Email delivery failed" };
+  }
 
   // auto-reply to the visitor
   try {

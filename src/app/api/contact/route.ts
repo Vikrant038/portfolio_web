@@ -45,9 +45,16 @@ export async function POST(req: Request) {
     return apiError("Too many messages - please try again in a few minutes.", 429);
   }
 
-  const result = await sendContactEmail(parsed.data);
+  let result: { ok: boolean; mock?: boolean; error?: string };
+  try {
+    result = await sendContactEmail(parsed.data);
+  } catch (err) {
+    console.error("[contact] sendContactEmail threw:", err);
+    result = { ok: false };
+  }
+
   if (!result.ok) {
-    return apiError("Failed to send message", 502);
+    return apiError("Failed to send message — please email me directly.", 502);
   }
 
   // store the lead for the admin dashboard when Supabase is configured
@@ -68,5 +75,5 @@ export async function POST(req: Request) {
     }
   }
 
-  return apiSuccess({ mock: result.mock });
+  return apiSuccess({ mock: result.mock ?? false });
 }
