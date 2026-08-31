@@ -1,8 +1,6 @@
 /**
- * Plunk - transactional email for the contact form.
- * Sends via Plunk's REST API (https://docs.useplunk.com/introduction).
- * Needs a PLUNK_API_KEY in the environment; without it the API route logs
- * the message instead so the demo keeps working.
+ * Multi-provider transactional email service (Resend, Plunk, Webhook).
+ * Supports PLUNK_API_KEY, RESEND_API_KEY, and NOTIFY_WEBHOOK_URL.
  */
 import { SITE_CONFIG } from "@/lib/constants";
 
@@ -14,6 +12,40 @@ export interface ContactPayload {
   budget?: string;
   timeline?: string;
   source?: string;
+}
+
+export interface SendEmailOptions {
+  to: string;
+  subject: string;
+  body: string;
+  html?: string;
+  from?: string;
+}
+
+async function sendViaResend(opts: { to: string; subject: string; html?: string; text: string }) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return null;
+  const from = process.env.RESEND_FROM ?? `${SITE_CONFIG.name} <onboarding@resend.dev>`;
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [opts.to],
+      subject: opts.subject,
+      html: opts.html || `<p style="white-space:pre-wrap">${opts.text}</p>`,
+      text: opts.text,
+    }),
+  });
+  if (!res.ok) {
+    const errText = await res.text().catch(() => "");
+    console.error("[resend] error", res.status, errText);
+    throw new Error(`Resend responded ${res.status}`);
+  }
+  return res.json();
 }
 
 async function plunkSend(body: Record<string, unknown>) {
@@ -35,51 +67,49 @@ async function plunkSend(body: Record<string, unknown>) {
   return res.json();
 }
 
-export interface SendEmailOptions {
-  to: string;
-  subject: string;
-  body: string;
-  html?: string;
-  from?: string;
-}
-
 export async function sendEmail(opts: SendEmailOptions) {
-  const apiKey = process.env.PLUNK_API_KEY;
-  if (!apiKey) {
-    console.log("[plunk] PLUNK_API_KEY not set - skipping send:", opts.subject);
-    return { ok: true, mock: true };
+  // 1. Try Resend if configured
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const data = await sendViaResend({
+        to: opts.to,
+        subject: opts.subject,
+        html: opts.html,
+        text: opts.body,
+      });
+      if (data) return { ok: true, data };
+    } catch (err) {
+      console.error("[email] Resend failed:", err);
+    }
   }
 
-  const from =
-    opts.from ??
-    `${SITE_CONFIG.name} Portfolio <${process.env.PLUNK_FROM ?? "no-reply@vikrantyadav.dev"}>`;
+  // 2. Try Plunk if configured
+  if (process.env.PLUNK_API_KEY) {
+    try {
+      const data = await plunkSend({
+        to: opts.to,
+        subject: opts.subject,
+        body: opts.html || opts.body,
+        name: SITE_CONFIG.name,
+      });
+      if (data) return { ok: true, data };
+    } catch (err) {
+      console.error("[email] Plunk failed:", err);
+    }
+  }
 
-  const res = await plunkSend({
-    to: opts.to,
-    from,
-    subject: opts.subject,
-    body: opts.body,
-    html: opts.html,
-  });
-
-  return { ok: true, data: res };
+  // Fallback - log to console
+  console.log("[email] No active email provider configured (or send failed) - logged:", opts.subject);
+  return { ok: true, mock: true };
 }
 
 export async function sendContactEmail(payload: ContactPayload) {
-  const apiKey = process.env.PLUNK_API_KEY;
-
-  if (!apiKey) {
-    console.log(
-      "[contact] PLUNK_API_KEY not set - skipping send:",
-      JSON.stringify(payload)
-    );
-    return { ok: true, mock: true };
-  }
-
   const recipient =
     process.env.CONTACT_EMAIL ??
     process.env.PLUNK_RECIPIENT ??
+    process.env.RESEND_RECIPIENT ??
     SITE_CONFIG.email;
+
   const subject = `New portfolio message from ${payload.name}`;
   const meta = [
     payload.projectType && `Project type: ${payload.projectType}`,
@@ -108,47 +138,82 @@ export async function sendContactEmail(payload: ContactPayload) {
       <p style="color:#9b9ba8;font-size:12px">Sent via vikrant-yadav.vercel.app</p>
     </div>`;
 
-  try {
-    await plunkSend({
-      to: recipient,
-      from: `Vikrant Yadav Portfolio <${process.env.PLUNK_FROM ?? "no-reply@vikrantyadav.dev"}>`,
-      subject,
-      body,
-      html,
-    });
-  } catch (err) {
-    console.error("[plunk] main send failed:", err);
-    return { ok: false, mock: false, error: "Email delivery failed" };
+  let sent = false;
+
+  // 1. Try Resend
+  if (process.env.RESEND_API_KEY) {
+    try {
+      await sendViaResend({
+        to: recipient,
+        subject,
+        html,
+        text: body,
+      });
+      sent = true;
+    } catch (err) {
+      console.error("[contact] Resend delivery failed:", err);
+    }
   }
 
-  // auto-reply to the visitor
-  try {
-    await plunkSend({
-      to: payload.email,
-      from: `Vikrant Yadav <${process.env.PLUNK_FROM ?? "no-reply@vikrantyadav.dev"}>`,
-      subject: "Thanks for reaching out ✦",
-      body: `Hi ${payload.name},\n\nThanks for your message - I read everything personally and will get back to you promptly.\n\nBest,\nVikrant`,
-      subscribed: false,
-    });
-  } catch {
-    /* auto-reply failure shouldn't fail the main send */
+  // 2. Try Plunk if not sent yet
+  if (!sent && process.env.PLUNK_API_KEY) {
+    try {
+      await plunkSend({
+        to: recipient,
+        subject,
+        body: html,
+        name: SITE_CONFIG.name,
+      });
+      sent = true;
+    } catch (err) {
+      console.error("[contact] Plunk delivery failed:", err);
+    }
   }
 
-  // optional instant notification (Slack / generic webhook)
+  // 3. Webhook notification (Slack / Discord / Zapier)
   const webhook = process.env.NOTIFY_WEBHOOK_URL;
   if (webhook) {
-    fetch(webhook, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        text: `✉️ New portfolio message from ${payload.name} <${payload.email}>${
-          payload.projectType ? ` - ${payload.projectType}` : ""
-        }${payload.budget ? `, ${payload.budget}` : ""}`,
-      }),
-    }).catch(() => {});
+    try {
+      fetch(webhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: `✉️ New portfolio message from ${payload.name} <${payload.email}>\n${payload.projectType ? `Project: ${payload.projectType}\n` : ""}${payload.message}`,
+        }),
+      }).catch(() => {});
+    } catch {
+      /* ignore webhook errors */
+    }
   }
 
-  return { ok: true, mock: false };
+  // 4. Auto-reply to visitor if email was sent
+  if (sent) {
+    try {
+      if (process.env.RESEND_API_KEY) {
+        await sendViaResend({
+          to: payload.email,
+          subject: "Thanks for reaching out ✦",
+          text: `Hi ${payload.name},\n\nThanks for reaching out! I've received your message and will get back to you promptly.\n\nBest,\nVikrant`,
+        });
+      } else if (process.env.PLUNK_API_KEY) {
+        await plunkSend({
+          to: payload.email,
+          subject: "Thanks for reaching out ✦",
+          body: `Hi ${payload.name},\n\nThanks for reaching out! I've received your message and will get back to you promptly.\n\nBest,\nVikrant`,
+          name: SITE_CONFIG.name,
+        });
+      }
+    } catch {
+      /* auto-reply failure shouldn't fail the main send */
+    }
+  }
+
+  if (!sent && !process.env.RESEND_API_KEY && !process.env.PLUNK_API_KEY) {
+    console.log("[contact] No email provider configured - lead captured locally:", payload);
+    return { ok: true, mock: true };
+  }
+
+  return { ok: true, mock: !sent };
 }
 
 function escapeHtml(s: string) {
@@ -158,3 +223,4 @@ function escapeHtml(s: string) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
+

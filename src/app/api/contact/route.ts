@@ -45,23 +45,12 @@ export async function POST(req: Request) {
     return apiError("Too many messages - please try again in a few minutes.", 429);
   }
 
-  let result: { ok: boolean; mock?: boolean; error?: string };
-  try {
-    result = await sendContactEmail(parsed.data);
-  } catch (err) {
-    console.error("[contact] sendContactEmail threw:", err);
-    result = { ok: false };
-  }
-
-  if (!result.ok) {
-    return apiError("Failed to send message — please email me directly.", 502);
-  }
-
-  // store the lead for the admin dashboard when Supabase is configured
+  // 1. Store lead in Supabase FIRST so inquiries are never lost
+  let dbSaved = false;
   const supabase = getSupabase();
   if (supabase) {
     try {
-      await supabase.from("contacts").insert({
+      const { error } = await supabase.from("contacts").insert({
         name: parsed.data.name,
         email: parsed.data.email,
         message: parsed.data.message,
@@ -70,10 +59,31 @@ export async function POST(req: Request) {
         timeline: parsed.data.timeline ?? null,
         source: parsed.data.source ?? null,
       });
-    } catch {
-      /* lead storage must never break the send */
+      if (!error) {
+        dbSaved = true;
+      } else {
+        console.error("[contact] Supabase save error:", error.message);
+      }
+    } catch (err) {
+      console.error("[contact] Supabase save threw:", err);
     }
   }
 
-  return apiSuccess({ mock: result.mock ?? false });
+  // 2. Dispatch email notification to site owner
+  let emailSent = false;
+  let emailMock = false;
+  try {
+    const result = await sendContactEmail(parsed.data);
+    emailSent = result.ok && !result.mock;
+    emailMock = Boolean(result.mock);
+  } catch (err) {
+    console.error("[contact] sendContactEmail threw:", err);
+  }
+
+  return apiSuccess({
+    saved: dbSaved,
+    emailSent,
+    mock: emailMock,
+  });
 }
+

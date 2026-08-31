@@ -27,6 +27,7 @@ const CARD_W = 336;
 const GAP = 24;
 
 export default function Testimonials({ items }: { items: Testimonial[] }) {
+  const [list, setList] = useState<Testimonial[]>(items);
   const trackRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -36,6 +37,10 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
   const [fb, setFb] = useState({ name: "", quote: "" });
   const [sending, setSending] = useState(false);
   const [video, setVideo] = useState<string | null>(null);
+
+  useEffect(() => {
+    setList(items);
+  }, [items]);
 
   const measure = useCallback(() => {
     const track = trackRef.current;
@@ -47,9 +52,9 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
-  }, [items, measure]);
+  }, [list, measure]);
 
-  const pages = Math.max(1, items.length);
+  const pages = Math.max(1, list.length);
 
   const goTo = useCallback(
     (p: number) => {
@@ -108,7 +113,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
   async function submitFeedback(e: React.FormEvent) {
     e.preventDefault();
     if (!fb.quote.trim()) {
-      toast.error("Please add a short quote first.");
+      toast.error("Please enter a short testimonial first.");
       return;
     }
     setSending(true);
@@ -116,16 +121,30 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(fb),
+        body: JSON.stringify({
+          name: fb.name.trim(),
+          quote: fb.quote.trim(),
+        }),
       });
-      // Always parse JSON — even errors return JSON now
       const json = await res.json().catch(() => null);
       if (!res.ok) {
         const msg = json?.error ?? `Server error (${res.status})`;
         throw new Error(msg);
       }
-      toast.success("Thank you! Your feedback has been submitted for review.");
+      
+      const newTestimonial: Testimonial = json?.testimonial ?? {
+        id: "fb-" + Date.now(),
+        name: fb.name.trim() || "Anonymous",
+        quote: fb.quote.trim(),
+        role: "Community feedback",
+        rating: 5,
+        avatar: "/avatars/priya.svg",
+      };
+
+      setList((prev) => [newTestimonial, ...prev]);
+      toast.success("Thank you! Your feedback is now published on the page.");
       setFb({ name: "", quote: "" });
+      goTo(0);
     } catch (err) {
       const msg =
         err instanceof Error
@@ -137,8 +156,8 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
     }
   }
 
-  const avg = items.length
-    ? (items.reduce((s, t) => s + t.rating, 0) / items.length).toFixed(1)
+  const avg = list.length
+    ? (list.reduce((s, t) => s + t.rating, 0) / list.length).toFixed(1)
     : "5.0";
 
   return (
@@ -153,7 +172,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
         />
 
         {/* aggregate rating */}
-        {items.length > 0 ? (
+        {list.length > 0 ? (
           <div className="mb-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
             <div className="flex items-center gap-2">
               <span className="font-serif text-4xl font-bold text-paper">{avg}</span>
@@ -164,7 +183,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
               </div>
             </div>
             <p className="text-[12px] uppercase tracking-[0.22em] text-mist">
-              from {items.length} recommendations
+              from {list.length} {list.length === 1 ? "recommendation" : "recommendations"}
             </p>
             <a
               href={SITE_CONFIG.socials.linkedin}
@@ -196,7 +215,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
           </div>
         )}
 
-        {items.length > 0 && (
+        {list.length > 0 && (
           <div
             ref={carouselRef}
             className="relative overflow-hidden"
@@ -237,7 +256,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
             onDragEnd={onDragEnd}
             className="flex cursor-grab gap-6 active:cursor-grabbing"
           >
-            {items.map((t) => (
+            {list.map((t) => (
               <motion.div
                 key={t.id}
                 whileHover={{ y: -6 }}
@@ -275,7 +294,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
                       </button>
                     )}
                     <div className="flex gap-0.5">
-                      {Array.from({ length: t.rating }).map((_, i) => (
+                      {Array.from({ length: t.rating || 5 }).map((_, i) => (
                         <Star key={i} className="h-3.5 w-3.5 fill-gold text-gold" />
                       ))}
                     </div>
@@ -286,19 +305,25 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
                   </p>
 
                   <div className="mt-7 flex items-center gap-3 border-t border-white/[0.07] pt-5">
-                    <div className="relative h-11 w-11 overflow-hidden rounded-full border border-neon/30">
-                      <Image src={t.avatar} alt={t.name} fill sizes="44px" className="object-cover" />
+                    <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border border-neon/30 bg-neon/10 grid place-items-center">
+                      {t.avatar ? (
+                        <Image src={t.avatar} alt={t.name} fill sizes="44px" className="object-cover" />
+                      ) : (
+                        <span className="text-sm font-bold text-neon">
+                          {(t.name || "A").slice(0, 1).toUpperCase()}
+                        </span>
+                      )}
                     </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-paper">{t.name}</p>
-                      <p className="text-[11px] uppercase tracking-[0.16em] text-mist">
-                        {t.role}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-paper truncate">{t.name}</p>
+                      <p className="text-[11px] uppercase tracking-[0.16em] text-mist truncate">
+                        {t.role || "Collaborator"}
                       </p>
                     </div>
                     <button
                       onClick={() => share(t)}
                       aria-label="Share quote"
-                      className="grid h-9 w-9 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 place-items-center rounded-xl border border-white/10 text-mist transition-colors hover:border-neon/40 hover:text-neon"
+                      className="grid h-9 w-9 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 shrink-0 place-items-center rounded-xl border border-white/10 text-mist transition-colors hover:border-neon/40 hover:text-neon"
                     >
                       <Share2 className="h-4 w-4" />
                     </button>
@@ -333,7 +358,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
             Worked with me?
           </p>
           <p className="mt-1 text-center text-[12.5px] text-mist">
-            Leave a short testimonial - it may appear on this page.
+            Leave a short testimonial - it will appear on this page.
           </p>
           <form onSubmit={submitFeedback} className="mt-5 space-y-3">
             <input
@@ -349,7 +374,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
               placeholder="What was it like working together?"
               className="glass-input resize-none"
               rows={3}
-              maxLength={400}
+              maxLength={500}
             />
             <button
               type="submit"

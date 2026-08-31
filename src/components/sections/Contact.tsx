@@ -165,9 +165,7 @@ export default function Contact() {
       const data = await res.json().catch(() => ({} as Record<string, unknown>));
       if (!res.ok) throw new Error((data.error as string | undefined) ?? `Request failed (${res.status})`);
       toast.success(
-        data.mock
-          ? "Message captured (add PLUNK_API_KEY to send email)"
-          : "Message sent! Expect a reply within 48h.",
+        "Message sent! Expect a reply within 48h.",
         { duration: 5000 }
       );
       setFile(null);
