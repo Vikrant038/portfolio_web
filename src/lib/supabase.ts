@@ -24,13 +24,15 @@ export interface Project {
 
 export interface Skill {
   name: string;
-  level: number; // 0-100
+  tag?: string;
   blurb?: string;
+  level?: number;
 }
 
 export interface SkillGroup {
   category: string;
-  icon: "code" | "server" | "wrench";
+  tagline?: string;
+  icon: "code" | "server" | "wrench" | "terminal" | "shield" | "sparkles";
   accent: "neon" | "neon2" | "gold";
   items: Skill[];
 }

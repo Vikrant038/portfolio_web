@@ -23,11 +23,21 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { SITE_CONFIG } from "@/lib/constants";
 
+import { getStorageItem, setStorageItem } from "@/lib/storage";
+
 const CARD_W = 336;
 const GAP = 24;
+const STORAGE_KEY = "luxe-community-testimonials";
 
 export default function Testimonials({ items }: { items: Testimonial[] }) {
-  const [list, setList] = useState<Testimonial[]>(items);
+  const [list, setList] = useState<Testimonial[]>(() => {
+    const local = getStorageItem<Testimonial[]>(STORAGE_KEY, []);
+    const merged = new Map<string, Testimonial>();
+    for (const t of [...local, ...items]) {
+      if (t.id) merged.set(t.id, t);
+    }
+    return Array.from(merged.values());
+  });
   const trackRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -38,8 +48,30 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
   const [sending, setSending] = useState(false);
   const [video, setVideo] = useState<string | null>(null);
 
+  // Synchronize on items prop change and hydrate from localStorage + API
   useEffect(() => {
-    setList(items);
+    const local = getStorageItem<Testimonial[]>(STORAGE_KEY, []);
+    const merged = new Map<string, Testimonial>();
+    for (const t of [...local, ...items]) {
+      if (t.id) merged.set(t.id, t);
+    }
+    setList(Array.from(merged.values()));
+
+    // Background fetch to sync any fresh testimonials from the database
+    fetch("/api/feedback")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.testimonials && Array.isArray(data.testimonials) && data.testimonials.length > 0) {
+          setList((current) => {
+            const freshMap = new Map<string, Testimonial>();
+            for (const t of [...data.testimonials, ...current]) {
+              if (t.id) freshMap.set(t.id, t);
+            }
+            return Array.from(freshMap.values());
+          });
+        }
+      })
+      .catch(() => {});
   }, [items]);
 
   const measure = useCallback(() => {
@@ -141,7 +173,11 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
         avatar: "/avatars/priya.svg",
       };
 
-      setList((prev) => [newTestimonial, ...prev]);
+      // Persist locally so it survives browser reloads
+      const existing = getStorageItem<Testimonial[]>(STORAGE_KEY, []);
+      setStorageItem(STORAGE_KEY, [newTestimonial, ...existing.filter((e) => e.id !== newTestimonial.id)]);
+
+      setList((prev) => [newTestimonial, ...prev.filter((p) => p.id !== newTestimonial.id)]);
       toast.success("Thank you! Your feedback is now published on the page.");
       setFb({ name: "", quote: "" });
       goTo(0);

@@ -148,36 +148,143 @@ export const localProjects: Project[] = [
 
 export const localSkillGroups: SkillGroup[] = [
   {
-    category: "AI, LLM & RAG",
+    category: "Agentic Workflows & Multi-Agent Systems",
+    tagline: "Stateful agents, cyclical graphs & autonomous swarms",
     icon: "code",
     accent: "neon",
     items: [
-      { name: "RAG / Corrective RAG", level: 90, blurb: "Hybrid retrieval, reranking, self-grading relevance gates" },
-      { name: "Python", level: 92, blurb: "Data pipelines, automation, ML - daily driver since IIT Madras" },
-      { name: "TypeScript", level: 85, blurb: "Strict typing across the orchestrator and lead-scoring engine" },
-      { name: "LLM APIs & Prompting", level: 90, blurb: "Gemini, Vertex AI, Groq, Perplexity - production pipelines, not demos" },
+      {
+        name: "LangGraph",
+        tag: "Orchestration",
+        blurb: "Stateful cyclical graphs, human-in-the-loop checkpoints, and branching decision logic",
+      },
+      {
+        name: "LangChain & LCEL",
+        tag: "Composition",
+        blurb: "Declarative chain composition, document loaders, prompt schemas, and output parsers",
+      },
+      {
+        name: "Multi-Agent Swarms",
+        tag: "Autonomous",
+        blurb: "Supervisor-worker hierarchies, contract-driven code execution, and parallel agent flows",
+      },
+      {
+        name: "Tool Calling & Structured Output",
+        tag: "Deterministic",
+        blurb: "Function calling with strict Pydantic/Zod schemas, JSON mode, and dynamic retry gates",
+      },
     ],
   },
   {
-    category: "Data & Backend",
-    icon: "server",
+    category: "AI-Native Engineering & Dev Tools",
+    tagline: "Modern agentic IDEs & accelerated workflows",
+    icon: "terminal",
     accent: "neon2",
     items: [
-      { name: "SQL / Data Warehousing", level: 88, blurb: "Star schema, Bronze/Silver/Gold ETL, CTEs & window functions" },
-      { name: "Node.js / Express", level: 82, blurb: "REST APIs, webhooks (HMAC-SHA256), batch processing" },
-      { name: "scikit-learn / pandas", level: 85, blurb: "Feature engineering, model evaluation, EDA" },
-      { name: "PostgreSQL / Supabase", level: 80, blurb: "pgvector, RLS, migrations for production RAG apps" },
+      {
+        name: "Claude Code",
+        tag: "CLI Agent",
+        blurb: "Terminal agent for deep codebase exploration, autonomous multi-file edits, and test-driven fixes",
+      },
+      {
+        name: "Cursor (Composer & Agents)",
+        tag: "Daily Driver",
+        blurb: "Multi-file contextual generation, composer loop, semantic codebase indexing, and fast prototyping",
+      },
+      {
+        name: "Windsurf & Agentic IDEs",
+        tag: "Accelerated",
+        blurb: "Cascade flows, deep repo context mapping, and prompt-driven rapid iteration",
+      },
+      {
+        name: "Git Worktrees & CI Gates",
+        tag: "Workflows",
+        blurb: "Parallel agent branch development with tamper-proof automated testing gates",
+      },
     ],
   },
   {
-    category: "Systems & Leadership",
-    icon: "wrench",
+    category: "RAG & Retrieval Architecture",
+    tagline: "Accurate, grounded, production-grade retrieval systems",
+    icon: "server",
     accent: "gold",
     items: [
-      { name: "Team Leadership", level: 88, blurb: "Led a 6-person team across two labs at Deep Thought Analytics" },
-      { name: "Systems Thinking", level: 90, blurb: "People-vs-system problems, P&L-first prioritization (PDGMS/TPM)" },
-      { name: "Docker / Git / CI", level: 78, blurb: "GitHub Actions, git worktrees, containerized data pipelines" },
-      { name: "Tableau / Streamlit", level: 85, blurb: "Dashboards used to make real business decisions, not demos" },
+      {
+        name: "Corrective RAG (CRAG)",
+        tag: "Architecture",
+        blurb: "Self-grading relevance gates, document transform fallbacks, and web search augmentation",
+      },
+      {
+        name: "Hybrid Retrieval",
+        tag: "Dense + Sparse",
+        blurb: "Combining dense vector embeddings (BGE-M3, OpenAI) with sparse BM25 keyword matching",
+      },
+      {
+        name: "pgvector & Supabase",
+        tag: "Vector DB",
+        blurb: "High-scale HNSW indexing, Cosine/L2 distance search, and metadata pre-filtering",
+      },
+      {
+        name: "Cohere Rerank & Chunking",
+        tag: "Relevance",
+        blurb: "Semantic chunking, parent-document retrieval, and cross-encoder rerankers",
+      },
+    ],
+  },
+  {
+    category: "Evaluation, Observability & Guardrails",
+    tagline: "Rigorous quality gates, metrics & production safety",
+    icon: "shield",
+    accent: "neon",
+    items: [
+      {
+        name: "RAG Triad (Ragas & TruLens)",
+        tag: "Evaluation",
+        blurb: "Automated scoring of Faithfulness, Answer Relevance, and Context Precision",
+      },
+      {
+        name: "LangSmith",
+        tag: "Observability",
+        blurb: "Distributed LLM execution tracing, latency/token usage monitoring, and regression benchmarking",
+      },
+      {
+        name: "Guardrails & Safety",
+        tag: "Defense",
+        blurb: "Prompt injection detection, PII masking, schema validation, and hallucination gating",
+      },
+      {
+        name: "Golden Datasets & Benchmarks",
+        tag: "Testing",
+        blurb: "Ground-truth test suites for regression testing prompt changes and model upgrades",
+      },
+    ],
+  },
+  {
+    category: "Production Backend & Systems",
+    tagline: "Scalable data engineering & microservice infrastructure",
+    icon: "wrench",
+    accent: "neon2",
+    items: [
+      {
+        name: "Python (FastAPI, Pydantic v2)",
+        tag: "Backend",
+        blurb: "High-throughput asynchronous APIs, strict data validation, and data pipelines",
+      },
+      {
+        name: "TypeScript & Next.js 14/15",
+        tag: "Fullstack",
+        blurb: "Strict typing across client/server boundaries, Server Components, and streaming UI",
+      },
+      {
+        name: "PostgreSQL & Supabase",
+        tag: "Database",
+        blurb: "Relational data modeling, Row Level Security (RLS), ACID transactions, and pgvector",
+      },
+      {
+        name: "Docker & Linux",
+        tag: "DevOps",
+        blurb: "Containerized microservices, reproducible runtime environments, and CI/CD pipelines",
+      },
     ],
   },
 ];
@@ -309,8 +416,8 @@ export async function getTestimonials(): Promise<Testimonial[]> {
         .select(
           "id, name, role, company, quote, rating, avatar, project, linkedin, video, status, created_at"
         )
-        .eq("status", "approved")
-        .order("created_at", { ascending: true });
+        .in("status", ["approved", "pending"])
+        .order("created_at", { ascending: false });
       if (!error && data && data.length > 0) return data as Testimonial[];
     } catch {
       /* fall through */

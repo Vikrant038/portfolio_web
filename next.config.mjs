@@ -53,6 +53,10 @@ const nextConfig = {
         source: "/resume.pdf",
         headers: [{ key: "Cache-Control", value: "no-cache" }],
       },
+      {
+        source: "/Vikrant_Resume_2026.pdf",
+        headers: [{ key: "Cache-Control", value: "no-cache" }],
+      },
     ];
   },
 };

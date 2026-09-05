@@ -16,6 +16,29 @@ const schema = z.object({
     .max(500, "Feedback must be under 500 characters."),
 });
 
+import { revalidatePath } from "next/cache";
+
+export async function GET() {
+  const supabase = getSupabase();
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from("testimonials")
+        .select("id, name, role, quote, rating, avatar, status, created_at")
+        .in("status", ["approved", "pending"])
+        .order("created_at", { ascending: false })
+        .limit(30);
+
+      if (!error && data) {
+        return apiSuccess({ testimonials: data });
+      }
+    } catch (err) {
+      console.error("[feedback] GET testimonials error:", err);
+    }
+  }
+  return apiSuccess({ testimonials: [] });
+}
+
 export async function POST(req: Request) {
   const { data: body, error: jsonError } = await parseJsonBody(req);
   if (jsonError) return jsonError;
@@ -31,6 +54,7 @@ export async function POST(req: Request) {
   const avatar = "/avatars/priya.svg";
 
   // ── 1. Save to Supabase (when configured) ───────────────────────────────
+  // Note: Supabase RLS policy allows public insert with check (status = 'pending')
   const supabase = getSupabase();
   if (supabase) {
     try {
@@ -41,7 +65,7 @@ export async function POST(req: Request) {
           name,
           role: "Community feedback",
           rating: 5,
-          status: "approved",
+          status: "pending",
           avatar,
         })
         .select()
@@ -59,7 +83,14 @@ export async function POST(req: Request) {
     console.log("[feedback] Supabase not configured – feedback logged:", { name, quote });
   }
 
-  // ── 2. Email notification to site owner ─────────────────────────────────
+  // ── 2. On-demand ISR revalidation ──────────────────────────────────────
+  try {
+    revalidatePath("/");
+  } catch {
+    /* revalidate is best-effort in API routes */
+  }
+
+  // ── 3. Email notification to site owner ─────────────────────────────────
   try {
     await sendEmail({
       to: SITE_CONFIG.email,
