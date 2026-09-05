@@ -495,11 +495,122 @@ export default function Skills({ now }: SkillsProps) {
         />
 
         {/* ------------------------------------------------------------- */}
+        {/* Top Control Bar: Filter Dropdown & Spotlight Indicator        */}
+        {/* Positioned at the top, right below the main topic             */}
+        {/* ------------------------------------------------------------- */}
+        <Reveal delay={0.06}>
+          <div className="my-6 sm:my-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/[0.08] pb-5">
+            {/* Active Skill Spotlight / Guide Notice */}
+            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-neon/10 text-neon border border-neon/20">
+                <Info size={15} />
+              </span>
+              <div className="min-w-0">
+                {hoveredSkill ? (
+                  <p className="text-xs sm:text-sm text-paper truncate">
+                    <strong className="text-neon font-semibold">{hoveredSkill.name}</strong>:{" "}
+                    <span className="text-mist">{hoveredSkill.blurb}</span>
+                  </p>
+                ) : (
+                  <p className="text-xs sm:text-sm text-mist/80">
+                    Hover or tap any skill box to inspect its practical production engineering role.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Top Dropdown Filter Option */}
+            <div className="relative shrink-0 w-full sm:w-auto" ref={dropdownRef}>
+              <button
+                type="button"
+                onClick={() => setIsDropdownOpen((prev) => !prev)}
+                aria-haspopup="listbox"
+                aria-expanded={isDropdownOpen}
+                className="flex items-center justify-between sm:justify-start gap-3 w-full sm:w-auto rounded-2xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] px-4 py-2.5 text-xs sm:text-sm font-medium text-paper transition-all duration-200 backdrop-blur-xl hover:border-white/20 focus-visible:ring-2 focus-visible:ring-neon select-none"
+              >
+                <div className="flex items-center gap-2">
+                  <DropdownIcon size={16} className="text-neon" />
+                  <span className="font-semibold">{activeOption.label}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-mono text-mist">
+                    {activeOption.count}
+                  </span>
+                  <motion.span
+                    animate={{ rotate: isDropdownOpen ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-mist"
+                  >
+                    <ChevronDown size={14} />
+                  </motion.span>
+                </div>
+              </button>
+
+              {/* Luxury Glass Dropdown Menu (opens downward) */}
+              <AnimatePresence>
+                {isDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6, scale: 0.96 }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                    className="absolute right-0 top-full mt-2 z-50 w-full sm:w-80 rounded-2xl border border-white/15 bg-[#0e101c]/95 p-2 backdrop-blur-2xl shadow-2xl"
+                    style={{
+                      boxShadow: "0 24px 60px -15px rgba(0, 0, 0, 0.9), 0 0 30px -10px rgba(255, 143, 64, 0.25)",
+                    }}
+                    role="listbox"
+                  >
+                    <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-mist/60 border-b border-white/[0.06] mb-1">
+                      Filter Capabilities
+                    </div>
+
+                    {DROPDOWN_OPTIONS.map((opt) => {
+                      const isSelected = opt.key === selectedDomain;
+                      const Icon = opt.icon;
+
+                      return (
+                        <button
+                          key={opt.key}
+                          type="button"
+                          role="option"
+                          aria-selected={isSelected}
+                          onClick={() => {
+                            setSelectedDomain(opt.key);
+                            setIsDropdownOpen(false);
+                          }}
+                          className={`flex items-center justify-between w-full rounded-xl px-3 py-2.5 text-left text-xs sm:text-sm font-medium transition-all duration-200 ${
+                            isSelected
+                              ? "bg-neon/15 text-neon font-semibold"
+                              : "text-mist hover:text-paper hover:bg-white/[0.05]"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <Icon size={16} className={isSelected ? "text-neon" : "text-mist"} />
+                            <span className="truncate">{opt.label}</span>
+                          </div>
+
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="rounded-md bg-white/[0.06] px-1.5 py-0.5 text-[10px] font-mono text-mist">
+                              {opt.count}
+                            </span>
+                            {isSelected && <Check size={14} className="text-neon" />}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* ------------------------------------------------------------- */}
         {/* Full-Page Skills Canvas (No Enclosing Box)                    */}
         {/* Staggered Alternating Line Pattern with Hover One-Liner Reveal*/}
         {/* ------------------------------------------------------------- */}
         <Reveal delay={0.08}>
-          <div className="relative my-6 sm:my-8 w-full">
+          <div className="relative my-4 sm:my-6 w-full">
             <motion.div
               layout
               className="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 md:gap-4.5"
@@ -635,112 +746,6 @@ export default function Skills({ now }: SkillsProps) {
                 ))}
               </AnimatePresence>
             </motion.div>
-          </div>
-        </Reveal>
-
-        {/* ------------------------------------------------------------- */}
-        {/* Bottom Corner Area: Dropdown Filter + Active Skill Spotlight  */}
-        {/* ------------------------------------------------------------- */}
-        <Reveal delay={0.12}>
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/[0.08] pt-6">
-            {/* Active Skill Spotlight / Guide Notice */}
-            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-white/[0.04] text-neon">
-                <Info size={14} />
-              </span>
-              <div className="min-w-0">
-                {hoveredSkill ? (
-                  <p className="text-xs sm:text-sm text-paper truncate">
-                    <strong className="text-neon font-semibold">{hoveredSkill.name}</strong>:{" "}
-                    <span className="text-mist">{hoveredSkill.blurb}</span>
-                  </p>
-                ) : (
-                  <p className="text-xs sm:text-sm text-mist/75">
-                    Hover or tap any skill pill to inspect its practical production engineering role.
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Corner Dropdown Option Selector */}
-            <div className="relative shrink-0" ref={dropdownRef}>
-              <button
-                type="button"
-                onClick={() => setIsDropdownOpen((prev) => !prev)}
-                aria-haspopup="listbox"
-                aria-expanded={isDropdownOpen}
-                className="flex items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.07] px-4 py-2.5 text-xs sm:text-sm font-medium text-paper transition-all duration-200 backdrop-blur-xl hover:border-white/20 focus-visible:ring-2 focus-visible:ring-neon select-none"
-              >
-                <DropdownIcon size={16} className="text-neon" />
-                <span className="font-semibold">{activeOption.shortLabel}</span>
-                <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-mono text-mist">
-                  {activeOption.count}
-                </span>
-                <motion.span
-                  animate={{ rotate: isDropdownOpen ? 180 : 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="text-mist"
-                >
-                  <ChevronDown size={14} />
-                </motion.span>
-              </button>
-
-              {/* Luxury Glass Dropdown Menu */}
-              <AnimatePresence>
-                {isDropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 6, scale: 0.96 }}
-                    transition={{ duration: 0.18, ease: "easeOut" }}
-                    className="absolute right-0 bottom-full mb-2 z-50 w-72 sm:w-80 rounded-2xl border border-white/15 bg-[#0e101c]/95 p-2 backdrop-blur-2xl shadow-2xl"
-                    style={{
-                      boxShadow: "0 24px 60px -15px rgba(0, 0, 0, 0.9), 0 0 30px -10px rgba(255, 143, 64, 0.25)",
-                    }}
-                    role="listbox"
-                  >
-                    <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-mist/60 border-b border-white/[0.06] mb-1">
-                      Filter Capabilities
-                    </div>
-
-                    {DROPDOWN_OPTIONS.map((opt) => {
-                      const isSelected = opt.key === selectedDomain;
-                      const Icon = opt.icon;
-
-                      return (
-                        <button
-                          key={opt.key}
-                          type="button"
-                          role="option"
-                          aria-selected={isSelected}
-                          onClick={() => {
-                            setSelectedDomain(opt.key);
-                            setIsDropdownOpen(false);
-                          }}
-                          className={`flex items-center justify-between w-full rounded-xl px-3 py-2.5 text-left text-xs sm:text-sm font-medium transition-all duration-200 ${
-                            isSelected
-                              ? "bg-neon/15 text-neon font-semibold"
-                              : "text-mist hover:text-paper hover:bg-white/[0.05]"
-                          }`}
-                        >
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <Icon size={16} className={isSelected ? "text-neon" : "text-mist"} />
-                            <span className="truncate">{opt.label}</span>
-                          </div>
-
-                          <div className="flex items-center gap-2 shrink-0">
-                            <span className="rounded-md bg-white/[0.06] px-1.5 py-0.5 text-[10px] font-mono text-mist">
-                              {opt.count}
-                            </span>
-                            {isSelected && <Check size={14} className="text-neon" />}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
           </div>
         </Reveal>
 
