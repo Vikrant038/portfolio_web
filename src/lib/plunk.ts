@@ -104,11 +104,16 @@ export async function sendEmail(opts: SendEmailOptions) {
 }
 
 export async function sendContactEmail(payload: ContactPayload) {
-  const recipient =
-    process.env.CONTACT_EMAIL ??
-    process.env.PLUNK_RECIPIENT ??
+  // Resend targets main email by default; Plunk targets secondary email as requested
+  const resendRecipient =
     process.env.RESEND_RECIPIENT ??
-    SITE_CONFIG.email;
+    process.env.CONTACT_EMAIL ??
+    SITE_CONFIG.email; // yadavvikrant3006@gmail.com
+
+  const plunkRecipient =
+    process.env.PLUNK_RECIPIENT ??
+    process.env.CONTACT_EMAIL ??
+    "aryan4763.0@gmail.com";
 
   const subject = `New portfolio message from ${payload.name}`;
   const meta = [
@@ -140,11 +145,11 @@ export async function sendContactEmail(payload: ContactPayload) {
 
   let sent = false;
 
-  // 1. Try Resend
+  // 1. Try Resend (Primary Provider for main email)
   if (process.env.RESEND_API_KEY) {
     try {
       await sendViaResend({
-        to: recipient,
+        to: resendRecipient,
         subject,
         html,
         text: body,
@@ -155,11 +160,11 @@ export async function sendContactEmail(payload: ContactPayload) {
     }
   }
 
-  // 2. Try Plunk if not sent yet
+  // 2. Try Plunk if Resend is not configured or failed
   if (!sent && process.env.PLUNK_API_KEY) {
     try {
       await plunkSend({
-        to: recipient,
+        to: plunkRecipient,
         subject,
         body: html,
         name: SITE_CONFIG.name,
