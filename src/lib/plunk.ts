@@ -104,16 +104,12 @@ export async function sendEmail(opts: SendEmailOptions) {
 }
 
 export async function sendContactEmail(payload: ContactPayload) {
-  // Resend targets main email by default; Plunk targets secondary email as requested
-  const resendRecipient =
+  // Main recipient email: strictly Vikrant's main account
+  const recipient =
+    process.env.CONTACT_EMAIL ??
     process.env.RESEND_RECIPIENT ??
-    process.env.CONTACT_EMAIL ??
-    SITE_CONFIG.email; // yadavvikrant3006@gmail.com
-
-  const plunkRecipient =
     process.env.PLUNK_RECIPIENT ??
-    process.env.CONTACT_EMAIL ??
-    "aryan4763.0@gmail.com";
+    SITE_CONFIG.email; // yadavvikrant3006@gmail.com
 
   const subject = `New portfolio message from ${payload.name}`;
   const meta = [
@@ -140,16 +136,16 @@ export async function sendContactEmail(payload: ContactPayload) {
       ${meta ? `<p style="margin:0 0 16px;color:#2dd4cd;font-size:13px">${escapeHtml(meta)}</p>` : ""}
       <p style="line-height:1.6;white-space:pre-wrap">${escapeHtml(payload.message)}</p>
       <hr style="border-color:rgba(255,255,255,0.1);margin:20px 0"/>
-      <p style="color:#9b9ba8;font-size:12px">Sent via vikrant-yadav.vercel.app</p>
+      <p style="color:#9b9ba8;font-size:12px">Sent to ${escapeHtml(recipient)} via vikrant-yadav.vercel.app</p>
     </div>`;
 
   let sent = false;
 
-  // 1. Try Resend (Primary Provider for main email)
+  // 1. Try Resend (Primary Provider -> Main account)
   if (process.env.RESEND_API_KEY) {
     try {
       await sendViaResend({
-        to: resendRecipient,
+        to: recipient,
         subject,
         html,
         text: body,
@@ -160,11 +156,11 @@ export async function sendContactEmail(payload: ContactPayload) {
     }
   }
 
-  // 2. Try Plunk if Resend is not configured or failed
+  // 2. Try Plunk (Secondary/Fallback Provider -> Main account only)
   if (!sent && process.env.PLUNK_API_KEY) {
     try {
       await plunkSend({
-        to: plunkRecipient,
+        to: recipient,
         subject,
         body: html,
         name: SITE_CONFIG.name,
