@@ -65,16 +65,14 @@ export default function Skills({ groups, now }: SkillsProps) {
           ghost="03"
         />
 
-        {/* Bento Grid */}
-        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-6">
+        {/* Bento Grid: 3 cards per row on desktop, 2 on tablet, 1 on mobile */}
+        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {groups.map((group, gi) => {
             const Icon = (ICONS as any)[group.icon] ?? Code2;
             const color = COLORS[group.accent] ?? "var(--neon)";
-            // First 2 cards take 3 columns each on desktop; next 3 cards take 2 columns each
-            const colSpan = gi < 2 ? "lg:col-span-3" : "lg:col-span-2";
 
             return (
-              <Reveal key={group.category} delay={gi * 0.1} className={colSpan}>
+              <Reveal key={group.category} delay={gi * 0.08} className="h-full">
                 <GlassCard glow={color} className="group flex h-full flex-col justify-between p-6 sm:p-7">
                   <div>
                     {/* Card Header */}
@@ -115,7 +113,7 @@ export default function Skills({ groups, now }: SkillsProps) {
                     </div>
 
                     {/* Skill items capsules */}
-                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                    <div className="grid gap-2.5 grid-cols-1">
                       {group.items.map((s) => (
                         <div
                           key={s.name}

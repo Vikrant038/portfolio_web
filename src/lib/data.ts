@@ -148,7 +148,7 @@ export const localProjects: Project[] = [
 
 export const localSkillGroups: SkillGroup[] = [
   {
-    category: "Agentic Workflows & Multi-Agent Systems",
+    category: "Agentic AI & Multi-Agent Swarms",
     tagline: "Stateful agents, cyclical graphs & autonomous swarms",
     icon: "code",
     accent: "neon",
@@ -161,30 +161,68 @@ export const localSkillGroups: SkillGroup[] = [
       {
         name: "LangChain & LCEL",
         tag: "Composition",
-        blurb: "Declarative chain composition, document loaders, prompt schemas, and output parsers",
+        blurb: "Declarative chain composition, document loaders, schema validation, and output parsers",
       },
       {
         name: "Multi-Agent Swarms",
         tag: "Autonomous",
-        blurb: "Supervisor-worker hierarchies, contract-driven code execution, and parallel agent flows",
+        blurb: "Supervisor-worker hierarchies, contract-driven code execution, and autonomous agent loops",
       },
       {
         name: "Tool Calling & Structured Output",
         tag: "Deterministic",
         blurb: "Function calling with strict Pydantic/Zod schemas, JSON mode, and dynamic retry gates",
       },
+      {
+        name: "Model Routing & Failover",
+        tag: "Resilience",
+        blurb: "LiteLLM, Groq, Claude 3.5, Gemini 2.0, and OpenAI dynamic fallback chains",
+      },
     ],
   },
   {
-    category: "AI-Native Engineering & Dev Tools",
-    tagline: "Modern agentic IDEs & accelerated workflows",
+    category: "Prompt Engineering & Context Design",
+    tagline: "High-precision prompt schemas, reasoning & token optimization",
+    icon: "sparkles",
+    accent: "gold",
+    items: [
+      {
+        name: "Chain-of-Thought & Reasoning",
+        tag: "Reasoning",
+        blurb: "Structured step-by-step reasoning prompts, self-consistency sampling, and reflection loops",
+      },
+      {
+        name: "Few-Shot In-Context Learning",
+        tag: "Optimization",
+        blurb: "Optimal exemplar selection, dynamic example retrieval, and edge-case priming",
+      },
+      {
+        name: "System Prompt Architecture",
+        tag: "Architecture",
+        blurb: "Defensive role conditioning, output schema contract definition, and anti-jailbreak constraints",
+      },
+      {
+        name: "Context Window Optimization",
+        tag: "Efficiency",
+        blurb: "Token compression, context pruning, parent-child context stacking, and lost-in-the-middle mitigation",
+      },
+      {
+        name: "Deterministic JSON Schemas",
+        tag: "Structured",
+        blurb: "Zero-shot Pydantic models, JSON mode enforcement, and programmatic schema validation",
+      },
+    ],
+  },
+  {
+    category: "AI-Native Dev Tools & Terminal Agents",
+    tagline: "Modern agentic IDEs, terminal workflows & accelerated iteration",
     icon: "terminal",
     accent: "neon2",
     items: [
       {
-        name: "Claude Code",
+        name: "Claude Code CLI",
         tag: "CLI Agent",
-        blurb: "Terminal agent for deep codebase exploration, autonomous multi-file edits, and test-driven fixes",
+        blurb: "Terminal autonomous coding agent for deep codebase exploration, multi-file refactoring, and test fixes",
       },
       {
         name: "Cursor (Composer & Agents)",
@@ -192,7 +230,7 @@ export const localSkillGroups: SkillGroup[] = [
         blurb: "Multi-file contextual generation, composer loop, semantic codebase indexing, and fast prototyping",
       },
       {
-        name: "Windsurf & Agentic IDEs",
+        name: "Windsurf & Cascade",
         tag: "Accelerated",
         blurb: "Cascade flows, deep repo context mapping, and prompt-driven rapid iteration",
       },
@@ -201,13 +239,18 @@ export const localSkillGroups: SkillGroup[] = [
         tag: "Workflows",
         blurb: "Parallel agent branch development with tamper-proof automated testing gates",
       },
+      {
+        name: "Linux & Shell Automation",
+        tag: "Automation",
+        blurb: "Advanced Bash scripting, server environment orchestration, and container process control",
+      },
     ],
   },
   {
-    category: "RAG & Retrieval Architecture",
-    tagline: "Accurate, grounded, production-grade retrieval systems",
+    category: "RAG & Advanced Information Retrieval",
+    tagline: "Accurate, grounded, production-grade retrieval architectures",
     icon: "server",
-    accent: "gold",
+    accent: "neon",
     items: [
       {
         name: "Corrective RAG (CRAG)",
@@ -229,13 +272,18 @@ export const localSkillGroups: SkillGroup[] = [
         tag: "Relevance",
         blurb: "Semantic chunking, parent-document retrieval, and cross-encoder rerankers",
       },
+      {
+        name: "ChromaDB & Vector Stores",
+        tag: "Storage",
+        blurb: "Partitioned collections, embedding pipelines, and semantic similarity indexing",
+      },
     ],
   },
   {
     category: "Evaluation, Observability & Guardrails",
     tagline: "Rigorous quality gates, metrics & production safety",
     icon: "shield",
-    accent: "neon",
+    accent: "gold",
     items: [
       {
         name: "RAG Triad (Ragas & TruLens)",
@@ -248,7 +296,7 @@ export const localSkillGroups: SkillGroup[] = [
         blurb: "Distributed LLM execution tracing, latency/token usage monitoring, and regression benchmarking",
       },
       {
-        name: "Guardrails & Safety",
+        name: "Guardrails AI & Safety",
         tag: "Defense",
         blurb: "Prompt injection detection, PII masking, schema validation, and hallucination gating",
       },
@@ -257,11 +305,16 @@ export const localSkillGroups: SkillGroup[] = [
         tag: "Testing",
         blurb: "Ground-truth test suites for regression testing prompt changes and model upgrades",
       },
+      {
+        name: "Cost & Token Optimization",
+        tag: "Cost Control",
+        blurb: "Semantic response caching, prompt token budgets, and LLMOps performance tracking",
+      },
     ],
   },
   {
-    category: "Production Backend & Systems",
-    tagline: "Scalable data engineering & microservice infrastructure",
+    category: "Backend Systems & Technical Leadership",
+    tagline: "Scalable data engineering, microservices & team direction",
     icon: "wrench",
     accent: "neon2",
     items: [
@@ -276,14 +329,24 @@ export const localSkillGroups: SkillGroup[] = [
         blurb: "Strict typing across client/server boundaries, Server Components, and streaming UI",
       },
       {
-        name: "PostgreSQL & Supabase",
-        tag: "Database",
-        blurb: "Relational data modeling, Row Level Security (RLS), ACID transactions, and pgvector",
+        name: "PostgreSQL & Data Warehousing",
+        tag: "Data Eng",
+        blurb: "Star schema, Bronze/Silver/Gold ETL, CTEs & window functions, and ACID transactions",
       },
       {
-        name: "Docker & Linux",
+        name: "Docker & CI/CD Pipelines",
         tag: "DevOps",
-        blurb: "Containerized microservices, reproducible runtime environments, and CI/CD pipelines",
+        blurb: "Containerized microservices, reproducible runtime environments, and automated deployment",
+      },
+      {
+        name: "Technical Team Leadership",
+        tag: "Leadership",
+        blurb: "Led 6-person team across two labs at Deep Thought Analytics, moderating LDI sessions for 27 people",
+      },
+      {
+        name: "Systems Thinking & TPM",
+        tag: "Systems",
+        blurb: "PDGMS/TPM frameworks, removing team bottlenecks, and P&L-first prioritization",
       },
     ],
   },
@@ -376,7 +439,8 @@ export async function getSkillGroups(): Promise<SkillGroup[]> {
         .from("skills")
         .select("category, icon, accent, items, sort")
         .order("sort", { ascending: true });
-      if (!error && data && data.length > 0) {
+      // Only use database rows if they have been updated to the full 6-group modern schema
+      if (!error && data && data.length >= 6) {
         return data.map((row: any) => ({
           category: row.category,
           icon: row.icon,
