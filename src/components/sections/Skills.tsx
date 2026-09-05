@@ -1,35 +1,388 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Bot,
-  Terminal,
-  Database,
-  ShieldCheck,
-  Layers,
   Sparkles,
-  Code2,
+  Bot,
+  Database,
+  Users,
   ChevronDown,
-  Play,
-  Pause,
-  Maximize2,
-  Minimize2,
+  Check,
   Info,
+  Layers,
+  Cpu,
 } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
 import AmbientGlow from "@/components/ui/AmbientGlow";
 import type { SkillGroup } from "@/lib/supabase";
 
-const ICONS = {
-  code: Bot,
-  sparkles: Sparkles,
-  terminal: Terminal,
-  server: Database,
-  shield: ShieldCheck,
-  wrench: Layers,
-} as const;
+export type DomainCategory = "all" | "ai" | "backend" | "leadership";
+
+interface SkillItem {
+  id: string;
+  name: string;
+  tag: string;
+  blurb: string;
+  domain: "ai" | "backend" | "leadership";
+  accent: "neon" | "neon2" | "gold";
+}
+
+const ALL_SKILLS_DATA: SkillItem[] = [
+  // -------------------------------------------------------------
+  // 1. AI-Related Skills
+  // -------------------------------------------------------------
+  {
+    id: "langgraph",
+    name: "LangGraph",
+    tag: "Orchestration",
+    blurb: "Stateful cyclical graphs, human-in-the-loop checkpoints, and branching decision logic",
+    domain: "ai",
+    accent: "neon",
+  },
+  {
+    id: "langchain",
+    name: "LangChain & LCEL",
+    tag: "Composition",
+    blurb: "Declarative chain composition, document loaders, schema validation, and output parsers",
+    domain: "ai",
+    accent: "neon",
+  },
+  {
+    id: "multi-agent",
+    name: "Multi-Agent Swarms",
+    tag: "Autonomous",
+    blurb: "Supervisor-worker hierarchies, contract-driven code execution, and autonomous agent loops",
+    domain: "ai",
+    accent: "neon",
+  },
+  {
+    id: "tool-calling",
+    name: "Tool Calling & Structured Output",
+    tag: "Deterministic",
+    blurb: "Function calling with strict Pydantic/Zod schemas, JSON mode, and dynamic retry gates",
+    domain: "ai",
+    accent: "neon",
+  },
+  {
+    id: "model-routing",
+    name: "Model Routing & Failover",
+    tag: "Resilience",
+    blurb: "LiteLLM, Groq, Claude 3.5, Gemini 2.0, and OpenAI dynamic fallback chains",
+    domain: "ai",
+    accent: "neon",
+  },
+  {
+    id: "cot-reasoning",
+    name: "Chain-of-Thought & Reasoning",
+    tag: "Reasoning",
+    blurb: "Structured step-by-step reasoning prompts, self-consistency sampling, and reflection loops",
+    domain: "ai",
+    accent: "gold",
+  },
+  {
+    id: "few-shot",
+    name: "Few-Shot In-Context Learning",
+    tag: "Optimization",
+    blurb: "Optimal exemplar selection, dynamic example retrieval, and edge-case priming",
+    domain: "ai",
+    accent: "gold",
+  },
+  {
+    id: "system-prompts",
+    name: "System Prompt Architecture",
+    tag: "Architecture",
+    blurb: "Defensive role conditioning, output schema contract definition, and anti-jailbreak constraints",
+    domain: "ai",
+    accent: "gold",
+  },
+  {
+    id: "context-window",
+    name: "Context Window Optimization",
+    tag: "Efficiency",
+    blurb: "Token compression, context pruning, parent-child context stacking, and lost-in-the-middle mitigation",
+    domain: "ai",
+    accent: "gold",
+  },
+  {
+    id: "json-schemas",
+    name: "Deterministic JSON Schemas",
+    tag: "Structured",
+    blurb: "Zero-shot Pydantic models, JSON mode enforcement, and programmatic schema validation",
+    domain: "ai",
+    accent: "gold",
+  },
+  {
+    id: "claude-code",
+    name: "Claude Code CLI",
+    tag: "CLI Agent",
+    blurb: "Terminal autonomous coding agent for deep codebase exploration, multi-file refactoring, and test fixes",
+    domain: "ai",
+    accent: "neon2",
+  },
+  {
+    id: "cursor-composer",
+    name: "Cursor (Composer & Agents)",
+    tag: "Daily Driver",
+    blurb: "Multi-file contextual generation, composer loop, semantic codebase indexing, and fast prototyping",
+    domain: "ai",
+    accent: "neon2",
+  },
+  {
+    id: "windsurf",
+    name: "Windsurf & Cascade",
+    tag: "Accelerated",
+    blurb: "Cascade flows, deep repo context mapping, and prompt-driven rapid iteration",
+    domain: "ai",
+    accent: "neon2",
+  },
+  {
+    id: "crag",
+    name: "Corrective RAG (CRAG)",
+    tag: "Active RAG",
+    blurb: "Self-grading relevance gates, document transform fallbacks, and web search augmentation",
+    domain: "ai",
+    accent: "neon",
+  },
+  {
+    id: "hybrid-retrieval",
+    name: "Hybrid Retrieval",
+    tag: "Dense + Sparse",
+    blurb: "Combining dense vector embeddings (BGE-M3, OpenAI) with sparse BM25 keyword matching",
+    domain: "ai",
+    accent: "neon",
+  },
+  {
+    id: "pgvector",
+    name: "pgvector & Supabase",
+    tag: "Vector DB",
+    blurb: "High-scale HNSW indexing, Cosine/L2 distance search, and metadata pre-filtering",
+    domain: "ai",
+    accent: "neon",
+  },
+  {
+    id: "cohere-rerank",
+    name: "Cohere Rerank & Chunking",
+    tag: "Relevance",
+    blurb: "Semantic chunking, parent-document retrieval, and cross-encoder rerankers",
+    domain: "ai",
+    accent: "neon",
+  },
+  {
+    id: "chromadb",
+    name: "ChromaDB & Vector Stores",
+    tag: "Storage",
+    blurb: "Partitioned collections, embedding pipelines, and semantic similarity indexing",
+    domain: "ai",
+    accent: "neon",
+  },
+  {
+    id: "ragas-trulens",
+    name: "RAG Triad (Ragas & TruLens)",
+    tag: "Evaluation",
+    blurb: "Automated scoring of Faithfulness, Answer Relevance, and Context Precision",
+    domain: "ai",
+    accent: "gold",
+  },
+  {
+    id: "langsmith",
+    name: "LangSmith",
+    tag: "Observability",
+    blurb: "Distributed LLM execution tracing, latency/token usage monitoring, and regression benchmarking",
+    domain: "ai",
+    accent: "gold",
+  },
+  {
+    id: "guardrails-ai",
+    name: "Guardrails AI & Safety",
+    tag: "Defense",
+    blurb: "Prompt injection detection, PII masking, schema validation, and hallucination gating",
+    domain: "ai",
+    accent: "gold",
+  },
+  {
+    id: "golden-datasets",
+    name: "Golden Datasets & Benchmarks",
+    tag: "Testing",
+    blurb: "Ground-truth test suites for regression testing prompt changes and model upgrades",
+    domain: "ai",
+    accent: "gold",
+  },
+  {
+    id: "cost-optimization",
+    name: "Cost & Token Optimization",
+    tag: "Cost Control",
+    blurb: "Semantic response caching, prompt token budgets, and LLMOps performance tracking",
+    domain: "ai",
+    accent: "gold",
+  },
+
+  // -------------------------------------------------------------
+  // 2. Technical Skills & Backend System Design
+  // -------------------------------------------------------------
+  {
+    id: "fastapi",
+    name: "Python (FastAPI, Pydantic v2)",
+    tag: "Backend",
+    blurb: "High-throughput asynchronous APIs, strict data validation, and automated OpenAPI contracts",
+    domain: "backend",
+    accent: "neon2",
+  },
+  {
+    id: "nextjs-ts",
+    name: "TypeScript & Next.js 14/15",
+    tag: "Fullstack",
+    blurb: "Strict typing across client/server boundaries, React Server Components, and streaming UI",
+    domain: "backend",
+    accent: "neon2",
+  },
+  {
+    id: "postgres-dwh",
+    name: "PostgreSQL & Data Warehousing",
+    tag: "Data Eng",
+    blurb: "Star schema, Bronze/Silver/Gold ETL, CTEs & window functions, and ACID transactions",
+    domain: "backend",
+    accent: "neon2",
+  },
+  {
+    id: "docker",
+    name: "Docker & Containerization",
+    tag: "DevOps",
+    blurb: "Reproducible container environments, multi-stage builds, and microservices orchestration",
+    domain: "backend",
+    accent: "neon2",
+  },
+  {
+    id: "git-worktrees",
+    name: "Git Worktrees & CI/CD Gates",
+    tag: "Workflows",
+    blurb: "Parallel agent branch development with tamper-proof automated testing pipelines",
+    domain: "backend",
+    accent: "neon2",
+  },
+  {
+    id: "linux-bash",
+    name: "Linux & Shell Automation",
+    tag: "Automation",
+    blurb: "Advanced Bash scripting, server environment orchestration, and container process control",
+    domain: "backend",
+    accent: "neon2",
+  },
+  {
+    id: "medallion-etl",
+    name: "Medallion Data Architecture",
+    tag: "ETL Pipeline",
+    blurb: "Raw source extraction to clean Silver enrichment and aggregated Gold analytics mart",
+    domain: "backend",
+    accent: "neon2",
+  },
+  {
+    id: "rest-sse",
+    name: "REST & Streaming Endpoints",
+    tag: "Architecture",
+    blurb: "SSE (Server-Sent Events) for real-time LLM token streaming and responsive client feeds",
+    domain: "backend",
+    accent: "neon2",
+  },
+  {
+    id: "query-opt",
+    name: "Query Optimization & Indexing",
+    tag: "Performance",
+    blurb: "EXPLAIN ANALYZE query planning, partial indexes, and connection pool scaling",
+    domain: "backend",
+    accent: "neon2",
+  },
+
+  // -------------------------------------------------------------
+  // 3. Leadership and Communication
+  // -------------------------------------------------------------
+  {
+    id: "team-lead",
+    name: "Technical Team Leadership",
+    tag: "Leadership",
+    blurb: "Led 6-person team across MarTech & ICP labs at Deep Thought Analytics, setting direction and velocity",
+    domain: "leadership",
+    accent: "gold",
+  },
+  {
+    id: "systems-thinking",
+    name: "Systems Thinking & TPM",
+    tag: "Frameworks",
+    blurb: "PDGMS/TPM frameworks, identifying and eliminating team bottlenecks, and P&L prioritization",
+    domain: "leadership",
+    accent: "gold",
+  },
+  {
+    id: "ldi-training",
+    name: "LDI Training & Mentorship",
+    tag: "Mentoring",
+    blurb: "Moderated Leadership Development Initiative for 27 people, upskilling teammates on AI workflows",
+    domain: "leadership",
+    accent: "gold",
+  },
+  {
+    id: "founder-outreach",
+    name: "Founder Outreach & Relations",
+    tag: "Strategy",
+    blurb: "Executive communication initiative that converted 5 founders to business roundtables within one month",
+    domain: "leadership",
+    accent: "gold",
+  },
+  {
+    id: "cross-functional",
+    name: "Cross-Functional Direction",
+    tag: "Execution",
+    blurb: "Bridged business analyst interns and engineering squads to translate ambiguous goals into software",
+    domain: "leadership",
+    accent: "gold",
+  },
+  {
+    id: "high-ownership",
+    name: "0-to-1 Technical Ownership",
+    tag: "Accountability",
+    blurb: "Autonomous execution from raw idea to production architecture with rigorous test coverage",
+    domain: "leadership",
+    accent: "gold",
+  },
+];
+
+const DROPDOWN_OPTIONS: {
+  key: DomainCategory;
+  label: string;
+  shortLabel: string;
+  icon: any;
+  count: number;
+}[] = [
+  {
+    key: "all",
+    label: "All Capabilities & Skills",
+    shortLabel: "All Skills",
+    icon: Layers,
+    count: ALL_SKILLS_DATA.length,
+  },
+  {
+    key: "ai",
+    label: "AI-Related Skills",
+    shortLabel: "AI & Agentic Skills",
+    icon: Bot,
+    count: ALL_SKILLS_DATA.filter((s) => s.domain === "ai").length,
+  },
+  {
+    key: "backend",
+    label: "Technical & Backend System Design",
+    shortLabel: "Backend & Systems",
+    icon: Database,
+    count: ALL_SKILLS_DATA.filter((s) => s.domain === "backend").length,
+  },
+  {
+    key: "leadership",
+    label: "Leadership & Communication",
+    shortLabel: "Leadership & Comm",
+    icon: Users,
+    count: ALL_SKILLS_DATA.filter((s) => s.domain === "leadership").length,
+  },
+];
 
 const COLORS = {
   neon: "var(--neon)",
@@ -55,119 +408,81 @@ const STACK_MARQUEE = [
 ];
 
 interface SkillsProps {
-  groups: SkillGroup[];
+  groups?: SkillGroup[];
   now?: { role: string; focus: string; learning: string };
 }
 
-interface FlattenedSkill {
-  name: string;
-  tag?: string;
-  blurb?: string;
-  categoryName: string;
-  categoryIcon: "code" | "server" | "wrench" | "terminal" | "shield" | "sparkles";
-  accent: "neon" | "neon2" | "gold";
-}
+export default function Skills({ now }: SkillsProps) {
+  const [selectedDomain, setSelectedDomain] = useState<DomainCategory>("all");
+  const [hoveredSkill, setHoveredSkill] = useState<SkillItem | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-export default function Skills({ groups, now }: SkillsProps) {
-  // -1 indicates "All Technologies" selected
-  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<number>(-1);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isManualPaused, setIsManualPaused] = useState(false);
-  const [expandedMap, setExpandedMap] = useState<Record<string, boolean>>({});
-  const tabsContainerRef = useRef<HTMLDivElement>(null);
-
-  // Flatten all skills with category metadata for the "All" view
-  const allSkills = useMemo<FlattenedSkill[]>(() => {
-    return groups.flatMap((group) =>
-      group.items.map((item) => ({
-        ...item,
-        categoryName: group.category,
-        categoryIcon: group.icon,
-        accent: group.accent,
-      }))
-    );
-  }, [groups]);
-
-  // Current active skills list based on selected category
-  const activeSkills = useMemo<FlattenedSkill[]>(() => {
-    if (selectedCategoryIndex === -1) {
-      return allSkills;
-    }
-    const group = groups[selectedCategoryIndex];
-    if (!group) return allSkills;
-    return group.items.map((item) => ({
-      ...item,
-      categoryName: group.category,
-      categoryIcon: group.icon,
-      accent: group.accent,
-    }));
-  }, [selectedCategoryIndex, groups, allSkills]);
-
-  // Ensure minimum number of items so the infinite loop never runs short on 4K/wide screens
-  const infiniteTrackItems = useMemo(() => {
-    if (activeSkills.length === 0) return [];
-    let base = [...activeSkills];
-    while (base.length < 10) {
-      base = [...base, ...activeSkills];
-    }
-    // Duplicate exactly once for seamless left-to-right infinite loop:
-    // translateX(-50%) to translateX(0%)
-    return [...base, ...base];
-  }, [activeSkills]);
-
-  // Active theme color
-  const activeGroup = selectedCategoryIndex >= 0 ? groups[selectedCategoryIndex] : null;
-  const activeColor = activeGroup ? COLORS[activeGroup.accent] ?? "var(--neon)" : "var(--neon)";
-  const ActiveHeaderIcon = activeGroup ? (ICONS as any)[activeGroup.icon] ?? Sparkles : Sparkles;
-
-  // Track whether the marquee is paused
-  const isPaused = isHovered || isManualPaused;
-
-  // Toggle card expansion
-  const toggleSkill = (name: string) => {
-    setExpandedMap((prev) => ({
-      ...prev,
-      [name]: !prev[name],
-    }));
-  };
-
-  // Check if all current active items are expanded
-  const areAllExpanded =
-    activeSkills.length > 0 && activeSkills.every((s) => expandedMap[s.name]);
-
-  const toggleExpandAll = () => {
-    const newState = !areAllExpanded;
-    setExpandedMap((prev) => {
-      const next = { ...prev };
-      activeSkills.forEach((s) => {
-        next[s.name] = newState;
-      });
-      return next;
-    });
-  };
-
-  const selectCategory = (index: number) => {
-    setSelectedCategoryIndex(index);
-    if (tabsContainerRef.current) {
-      const tabButton = tabsContainerRef.current.children[index + 1] as HTMLElement;
-      if (tabButton) {
-        tabButton.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-          inline: "center",
-        });
+  // Close dropdown on click outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsDropdownOpen(false);
       }
     }
-  };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-  // Adjust animation duration depending on total count to maintain steady visual speed
-  const animationDuration = selectedCategoryIndex === -1 ? "60s" : "30s";
+  // Filter skills based on selected domain
+  const filteredSkills = useMemo(() => {
+    if (selectedDomain === "all") return ALL_SKILLS_DATA;
+    return ALL_SKILLS_DATA.filter((s) => s.domain === selectedDomain);
+  }, [selectedDomain]);
+
+  // Dynamically break skills into alternating, aesthetically patterned lines
+  // Some lines have more skills, some have fewer, creating a balanced organic tapestry
+  const skillLines = useMemo(() => {
+    const total = filteredSkills.length;
+    if (total === 0) return [];
+
+    // Line distribution patterns for different counts
+    let lineSizes: number[] = [];
+    if (selectedDomain === "leadership") {
+      // 6 items -> 3, 3
+      lineSizes = [3, 3];
+    } else if (selectedDomain === "backend") {
+      // 9 items -> 4, 5
+      lineSizes = [4, 5];
+    } else if (selectedDomain === "ai") {
+      // 23 items -> 5, 6, 4, 5, 3
+      lineSizes = [5, 6, 4, 5, 3];
+    } else {
+      // All (38 items) -> 5, 6, 4, 6, 5, 6, 6
+      lineSizes = [5, 6, 4, 6, 5, 6, 6];
+    }
+
+    const lines: SkillItem[][] = [];
+    let currentIndex = 0;
+    let sizeIndex = 0;
+
+    while (currentIndex < total) {
+      const size = lineSizes[sizeIndex % lineSizes.length] || 5;
+      const chunk = filteredSkills.slice(currentIndex, currentIndex + size);
+      if (chunk.length > 0) {
+        lines.push(chunk);
+      }
+      currentIndex += size;
+      sizeIndex++;
+    }
+
+    return lines;
+  }, [filteredSkills, selectedDomain]);
+
+  const activeOption =
+    DROPDOWN_OPTIONS.find((opt) => opt.key === selectedDomain) ?? DROPDOWN_OPTIONS[0];
+  const DropdownIcon = activeOption.icon;
 
   return (
     <section id="skills" className="relative scroll-mt-24 py-24 sm:py-32 overflow-hidden">
       <AmbientGlow
-        color={activeGroup?.accent === "neon2" ? "neon2" : activeGroup?.accent === "gold" ? "gold" : "neon"}
-        className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-700"
+        color={selectedDomain === "backend" ? "neon2" : selectedDomain === "leadership" ? "gold" : "neon"}
+        className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-700 pointer-events-none"
         size={540}
       />
 
@@ -180,357 +495,251 @@ export default function Skills({ groups, now }: SkillsProps) {
         />
 
         {/* ------------------------------------------------------------- */}
-        {/* Horizontal Category Filter Pills                              */}
+        {/* Full-Page Skills Canvas (No Enclosing Box)                    */}
+        {/* Staggered Alternating Line Pattern with Hover One-Liner Reveal*/}
         {/* ------------------------------------------------------------- */}
-        <Reveal delay={0.05}>
-          <div className="relative mb-6">
-            <div className="overflow-hidden rounded-2xl p-1.5 sm:p-2 border border-white/[0.08] bg-black/40 backdrop-blur-xl">
-              <div
-                ref={tabsContainerRef}
-                className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1 px-1 snap-x snap-mandatory"
-                role="tablist"
-                aria-label="Filter technology categories"
-              >
-                {/* "All Technologies" Tab */}
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={selectedCategoryIndex === -1}
-                  onClick={() => selectCategory(-1)}
-                  className={`relative flex items-center gap-2 whitespace-nowrap rounded-xl px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-medium transition-all duration-300 snap-start select-none outline-none focus-visible:ring-2 focus-visible:ring-neon ${
-                    selectedCategoryIndex === -1
-                      ? "text-paper font-semibold shadow-sm"
-                      : "text-mist/80 hover:text-paper hover:bg-white/[0.04]"
-                  }`}
-                >
-                  {selectedCategoryIndex === -1 && (
-                    <motion.div
-                      layoutId="activeCategoryPill"
-                      transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                      className="absolute inset-0 rounded-xl"
-                      style={{
-                        background: "color-mix(in srgb, var(--neon) 14%, rgba(255, 255, 255, 0.04))",
-                        border: "1px solid color-mix(in srgb, var(--neon) 45%, transparent)",
-                        boxShadow: "0 0 24px -6px color-mix(in srgb, var(--neon) 50%, transparent)",
-                      }}
-                    />
-                  )}
-                  <span className="relative z-10 grid h-6 w-6 place-items-center text-neon">
-                    <Sparkles size={16} />
-                  </span>
-                  <span className="relative z-10">All Tech Stack</span>
-                  <span
-                    className="relative z-10 rounded-md px-1.5 py-0.5 text-[10px] font-mono font-medium"
-                    style={{
-                      background: selectedCategoryIndex === -1 ? "color-mix(in srgb, var(--neon) 20%, transparent)" : "rgba(255, 255, 255, 0.06)",
-                      color: selectedCategoryIndex === -1 ? "var(--neon)" : "rgb(var(--mist))",
-                    }}
+        <Reveal delay={0.08}>
+          <div className="relative my-6 sm:my-8 w-full">
+            <motion.div
+              layout
+              className="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 md:gap-4.5"
+            >
+              <AnimatePresence mode="popLayout">
+                {skillLines.map((line, lineIdx) => (
+                  <motion.div
+                    key={`line-${selectedDomain}-${lineIdx}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.25, delay: lineIdx * 0.04 }}
+                    className="flex items-center justify-center flex-wrap gap-2.5 sm:gap-3.5 md:gap-4 w-full"
                   >
-                    {allSkills.length}
-                  </span>
-                </button>
+                    {line.map((skill) => {
+                      const skillColor = COLORS[skill.accent] ?? "var(--neon)";
+                      const isHovered = hoveredSkill?.id === skill.id;
 
-                {/* Individual Category Tabs */}
-                {groups.map((group, index) => {
-                  const Icon = (ICONS as any)[group.icon] ?? Code2;
-                  const isCurrent = index === selectedCategoryIndex;
-                  const groupColor = COLORS[group.accent] ?? "var(--neon)";
+                      return (
+                        <div
+                          key={skill.id}
+                          className="relative"
+                          onMouseEnter={() => setHoveredSkill(skill)}
+                          onMouseLeave={() => setHoveredSkill(null)}
+                          onClick={() => setHoveredSkill(isHovered ? null : skill)}
+                        >
+                          {/* Small Rectangular Box */}
+                          <motion.div
+                            whileHover={{ y: -3, scale: 1.03 }}
+                            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                            className={`relative flex items-center gap-2 sm:gap-2.5 rounded-xl border px-3.5 py-2 sm:px-4 sm:py-2.5 cursor-pointer select-none transition-all duration-300 backdrop-blur-md ${
+                              isHovered
+                                ? "bg-white/[0.08] shadow-lg"
+                                : "bg-white/[0.025] hover:bg-white/[0.05]"
+                            }`}
+                            style={{
+                              borderColor: isHovered
+                                ? `color-mix(in srgb, ${skillColor} 60%, rgba(255, 255, 255, 0.2))`
+                                : "rgba(255, 255, 255, 0.08)",
+                              boxShadow: isHovered
+                                ? `0 10px 24px -6px rgba(0,0,0,0.5), 0 0 20px -6px color-mix(in srgb, ${skillColor} 40%, transparent)`
+                                : undefined,
+                            }}
+                          >
+                            {/* Color Dot Indicator */}
+                            <span
+                              className="h-2 w-2 shrink-0 rounded-full transition-all duration-300"
+                              style={{
+                                background: isHovered ? skillColor : `color-mix(in srgb, ${skillColor} 65%, white)`,
+                                boxShadow: isHovered ? `0 0 10px ${skillColor}` : "none",
+                              }}
+                            />
 
-                  return (
-                    <button
-                      key={group.category}
-                      type="button"
-                      role="tab"
-                      aria-selected={isCurrent}
-                      onClick={() => selectCategory(index)}
-                      className={`relative flex items-center gap-2 whitespace-nowrap rounded-xl px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-medium transition-all duration-300 snap-start select-none outline-none focus-visible:ring-2 focus-visible:ring-neon ${
-                        isCurrent
-                          ? "text-paper font-semibold shadow-sm"
-                          : "text-mist/80 hover:text-paper hover:bg-white/[0.04]"
-                      }`}
-                    >
-                      {isCurrent && (
-                        <motion.div
-                          layoutId="activeCategoryPill"
-                          transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                          className="absolute inset-0 rounded-xl"
-                          style={{
-                            background: `color-mix(in srgb, ${groupColor} 14%, rgba(255, 255, 255, 0.04))`,
-                            border: `1px solid color-mix(in srgb, ${groupColor} 45%, transparent)`,
-                            boxShadow: `0 0 24px -6px color-mix(in srgb, ${groupColor} 50%, transparent)`,
-                          }}
-                        />
-                      )}
+                            {/* Skill Name */}
+                            <span className="text-[13px] sm:text-[14px] font-semibold tracking-tight text-paper transition-colors duration-200">
+                              {skill.name}
+                            </span>
 
-                      <span
-                        className="relative z-10 grid h-6 w-6 place-items-center transition-transform duration-300"
-                        style={{
-                          color: isCurrent ? groupColor : "inherit",
-                        }}
-                      >
-                        <Icon size={16} />
-                      </span>
+                            {/* Domain / Specialty Tag */}
+                            {skill.tag && (
+                              <span
+                                className="rounded-md px-1.5 py-0.5 text-[9.5px] sm:text-[10px] font-mono font-medium tracking-wide uppercase transition-colors"
+                                style={{
+                                  border: `1px solid color-mix(in srgb, ${skillColor} 30%, transparent)`,
+                                  background: `color-mix(in srgb, ${skillColor} 10%, transparent)`,
+                                  color: skillColor,
+                                }}
+                              >
+                                {skill.tag}
+                              </span>
+                            )}
+                          </motion.div>
 
-                      <span className="relative z-10">{group.category}</span>
+                          {/* Floating Luxury Glass Tooltip (Revealed on Hover/Tap) */}
+                          <AnimatePresence>
+                            {isHovered && (
+                              <motion.div
+                                initial={{ opacity: 0, y: 8, scale: 0.94 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 4, scale: 0.96 }}
+                                transition={{ duration: 0.18, ease: "easeOut" }}
+                                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 z-50 w-72 sm:w-80 pointer-events-none"
+                              >
+                                <div
+                                  className="relative rounded-2xl border border-white/[0.15] bg-[#0c0e18]/95 p-3.5 sm:p-4 backdrop-blur-2xl shadow-2xl"
+                                  style={{
+                                    boxShadow: `0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 0 24px -6px color-mix(in srgb, ${skillColor} 35%, transparent)`,
+                                    borderColor: `color-mix(in srgb, ${skillColor} 45%, rgba(255, 255, 255, 0.15))`,
+                                  }}
+                                >
+                                  {/* Tooltip Header */}
+                                  <div className="flex items-center justify-between gap-2 border-b border-white/[0.08] pb-2 mb-2">
+                                    <div className="flex items-center gap-2">
+                                      <span
+                                        className="h-1.5 w-1.5 rounded-full"
+                                        style={{ background: skillColor }}
+                                      />
+                                      <span className="text-xs font-bold text-white tracking-tight">
+                                        {skill.name}
+                                      </span>
+                                    </div>
+                                    <span
+                                      className="text-[9.5px] font-mono uppercase px-1.5 py-0.5 rounded"
+                                      style={{
+                                        color: skillColor,
+                                        background: `color-mix(in srgb, ${skillColor} 12%, transparent)`,
+                                      }}
+                                    >
+                                      {skill.tag}
+                                    </span>
+                                  </div>
 
-                      <span
-                        className="relative z-10 rounded-md px-1.5 py-0.5 text-[10px] font-mono font-medium"
-                        style={{
-                          background: isCurrent
-                            ? `color-mix(in srgb, ${groupColor} 20%, transparent)`
-                            : "rgba(255, 255, 255, 0.06)",
-                          color: isCurrent ? groupColor : "rgb(var(--mist))",
-                        }}
-                      >
-                        {group.items.length}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                                  {/* Tooltip One-Liner Description */}
+                                  <p className="text-xs sm:text-[12.5px] leading-relaxed text-paper/95 font-normal">
+                                    {skill.blurb}
+                                  </p>
+
+                                  {/* Downward Pointer Arrow */}
+                                  <div
+                                    className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 h-3 w-3 rotate-45 bg-[#0c0e18] border-r border-b"
+                                    style={{
+                                      borderColor: `color-mix(in srgb, ${skillColor} 45%, rgba(255, 255, 255, 0.15))`,
+                                    }}
+                                  />
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      );
+                    })}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
           </div>
         </Reveal>
 
         {/* ------------------------------------------------------------- */}
-        {/* The Movable Skills Box (Left-to-Right Scrolling Stream)        */}
+        {/* Bottom Corner Area: Dropdown Filter + Active Skill Spotlight  */}
         {/* ------------------------------------------------------------- */}
-        <Reveal delay={0.1}>
-          <div
-            className="group relative rounded-3xl border border-white/[0.09] bg-gradient-to-b from-white/[0.04] to-white/[0.01] backdrop-blur-2xl shadow-2xl overflow-hidden p-5 sm:p-7 md:p-8 transition-colors duration-500"
-            style={{
-              boxShadow: `0 24px 60px -20px rgba(0, 0, 0, 0.6), 0 0 40px -15px color-mix(in srgb, ${activeColor} 20%, transparent)`,
-            }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onTouchStart={() => setIsHovered(true)}
-            onTouchEnd={() => {
-              // On mobile touch, resume after a gentle pause
-              setTimeout(() => setIsHovered(false), 1800);
-            }}
-          >
-            {/* Box Header: Title, Live Motion State Badge & Controls */}
-            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-white/[0.07] pb-5">
-              <div className="flex items-center gap-3.5">
-                <span
-                  className="grid h-11 w-11 sm:h-12 sm:w-12 shrink-0 place-items-center rounded-2xl transition-all duration-300"
-                  style={{
-                    border: `1px solid ${activeColor}44`,
-                    background: `color-mix(in srgb, ${activeColor} 12%, transparent)`,
-                    color: activeColor,
-                    boxShadow: `0 0 24px -6px ${activeColor}88`,
-                  }}
-                >
-                  <ActiveHeaderIcon size={22} />
-                </span>
-                <div>
-                  <div className="flex items-center gap-2.5">
-                    <h3 className="font-serif text-lg sm:text-xl font-bold tracking-tight text-paper">
-                      {activeGroup ? activeGroup.category : "Full Agentic & Production Stack"}
-                    </h3>
-                    <span className="text-[11px] font-mono text-mist/60">
-                      {activeSkills.length} technologies
-                    </span>
-                  </div>
-                  <p className="mt-0.5 text-xs text-mist/85">
-                    {activeGroup?.tagline ?? "Movable left-to-right stream · Hover to halt motion · Click card to reveal one-liner"}
+        <Reveal delay={0.12}>
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/[0.08] pt-6">
+            {/* Active Skill Spotlight / Guide Notice */}
+            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-white/[0.04] text-neon">
+                <Info size={14} />
+              </span>
+              <div className="min-w-0">
+                {hoveredSkill ? (
+                  <p className="text-xs sm:text-sm text-paper truncate">
+                    <strong className="text-neon font-semibold">{hoveredSkill.name}</strong>:{" "}
+                    <span className="text-mist">{hoveredSkill.blurb}</span>
                   </p>
-                </div>
-              </div>
-
-              {/* Controls & Live Motion Status Pill */}
-              <div className="flex items-center flex-wrap gap-2.5">
-                {/* Live Status Pill */}
-                <div
-                  className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-medium border transition-colors duration-300 select-none ${
-                    isPaused
-                      ? "border-amber-500/40 bg-amber-500/10 text-amber-200"
-                      : "border-neon/40 bg-neon/10 text-neon"
-                  }`}
-                >
-                  <span
-                    className={`h-2 w-2 rounded-full transition-all duration-300 ${
-                      isPaused
-                        ? "bg-amber-400"
-                        : "bg-neon animate-ping"
-                    }`}
-                  />
-                  <span>
-                    {isPaused ? "Motion Paused (Hover / Touch)" : "Scrolling Left → Right"}
-                  </span>
-                </div>
-
-                {/* Manual Play / Pause Toggle Button */}
-                <button
-                  type="button"
-                  onClick={() => setIsManualPaused((prev) => !prev)}
-                  aria-label={isManualPaused ? "Resume scrolling motion" : "Pause scrolling motion"}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-medium text-paper transition-all duration-200 hover:border-white/20 hover:bg-white/[0.08]"
-                >
-                  {isManualPaused ? (
-                    <>
-                      <Play size={12} className="text-neon" />
-                      <span>Resume</span>
-                    </>
-                  ) : (
-                    <>
-                      <Pause size={12} className="text-mist" />
-                      <span>Pause</span>
-                    </>
-                  )}
-                </button>
-
-                {/* Expand / Collapse All */}
-                <button
-                  type="button"
-                  onClick={toggleExpandAll}
-                  aria-label={areAllExpanded ? "Collapse all details" : "Expand all details"}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-medium text-paper transition-all duration-200 hover:border-white/20 hover:bg-white/[0.08]"
-                >
-                  {areAllExpanded ? (
-                    <>
-                      <Minimize2 size={12} />
-                      <span className="hidden sm:inline">Collapse All</span>
-                    </>
-                  ) : (
-                    <>
-                      <Maximize2 size={12} />
-                      <span className="hidden sm:inline">Expand All</span>
-                    </>
-                  )}
-                </button>
+                ) : (
+                  <p className="text-xs sm:text-sm text-mist/75">
+                    Hover or tap any skill pill to inspect its practical production engineering role.
+                  </p>
+                )}
               </div>
             </div>
 
-            {/* ----------------------------------------------------------- */}
-            {/* The Infinite Movable Track: Left-to-Right Scrolling Motion  */}
-            {/* ----------------------------------------------------------- */}
-            <div className="relative overflow-hidden w-full py-2 -mx-2 px-2 [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
-              <div
-                key={`${selectedCategoryIndex}-${animationDuration}`}
-                className="flex items-start gap-4 w-max animate-scroll-ltr group-hover:[animation-play-state:paused]"
-                style={{
-                  animationDuration,
-                  animationPlayState: isPaused ? "paused" : "running",
-                }}
+            {/* Corner Dropdown Option Selector */}
+            <div className="relative shrink-0" ref={dropdownRef}>
+              <button
+                type="button"
+                onClick={() => setIsDropdownOpen((prev) => !prev)}
+                aria-haspopup="listbox"
+                aria-expanded={isDropdownOpen}
+                className="flex items-center gap-2.5 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.07] px-4 py-2.5 text-xs sm:text-sm font-medium text-paper transition-all duration-200 backdrop-blur-xl hover:border-white/20 focus-visible:ring-2 focus-visible:ring-neon select-none"
               >
-                {infiniteTrackItems.map((s, idx) => {
-                  const isExpanded = !!expandedMap[s.name];
-                  const itemColor = COLORS[s.accent] ?? "var(--neon)";
+                <DropdownIcon size={16} className="text-neon" />
+                <span className="font-semibold">{activeOption.shortLabel}</span>
+                <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-mono text-mist">
+                  {activeOption.count}
+                </span>
+                <motion.span
+                  animate={{ rotate: isDropdownOpen ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="text-mist"
+                >
+                  <ChevronDown size={14} />
+                </motion.span>
+              </button>
 
-                  return (
-                    <div
-                      key={`${s.name}-${idx}`}
-                      role="button"
-                      tabIndex={0}
-                      aria-expanded={isExpanded}
-                      onClick={() => toggleSkill(s.name)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          toggleSkill(s.name);
-                        }
-                      }}
-                      className={`group/card relative w-[280px] sm:w-[320px] md:w-[350px] shrink-0 rounded-2xl border transition-all duration-300 p-4 sm:p-4.5 cursor-pointer outline-none select-none text-left ${
-                        isExpanded
-                          ? "bg-white/[0.07] shadow-xl"
-                          : "bg-white/[0.025] hover:bg-white/[0.05] hover:-translate-y-1"
-                      }`}
-                      style={{
-                        borderColor: isExpanded
-                          ? `color-mix(in srgb, ${itemColor} 50%, rgba(255, 255, 255, 0.15))`
-                          : "rgba(255, 255, 255, 0.08)",
-                        boxShadow: isExpanded
-                          ? `0 12px 30px -10px rgba(0, 0, 0, 0.6), 0 0 24px -8px color-mix(in srgb, ${itemColor} 35%, transparent)`
-                          : undefined,
-                      }}
-                    >
-                      {/* Category Micro-tag */}
-                      {selectedCategoryIndex === -1 && (
-                        <div className="mb-2 flex items-center justify-between">
-                          <span
-                            className="text-[10px] font-mono uppercase tracking-wider text-mist/70 truncate max-w-[200px]"
-                          >
-                            {s.categoryName.split("&")[0].trim()}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Top Header Row (Always Visible) */}
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <span
-                            className="h-2 w-2 shrink-0 rounded-full transition-all duration-300"
-                            style={{
-                              background: isExpanded ? itemColor : `color-mix(in srgb, ${itemColor} 55%, white)`,
-                              boxShadow: isExpanded ? `0 0 8px ${itemColor}` : "none",
-                            }}
-                          />
-                          <span className="truncate text-sm sm:text-[14.5px] font-semibold tracking-tight text-paper group-hover/card:text-white">
-                            {s.name}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-2 shrink-0">
-                          {s.tag && (
-                            <span
-                              className="rounded-md px-2 py-0.5 text-[10px] font-mono font-medium tracking-wide uppercase"
-                              style={{
-                                border: `1px solid color-mix(in srgb, ${itemColor} 30%, transparent)`,
-                                background: `color-mix(in srgb, ${itemColor} 10%, transparent)`,
-                                color: itemColor,
-                              }}
-                            >
-                              {s.tag}
-                            </span>
-                          )}
-
-                          {/* Animated Chevron Indicator */}
-                          <motion.span
-                            animate={{ rotate: isExpanded ? 180 : 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="grid h-6 w-6 place-items-center rounded-lg bg-white/[0.04] text-mist group-hover/card:text-paper group-hover/card:bg-white/[0.08]"
-                          >
-                            <ChevronDown size={14} />
-                          </motion.span>
-                        </div>
-                      </div>
-
-                      {/* Expandable One-Liner Detail (Revealed on Click) */}
-                      <AnimatePresence initial={false}>
-                        {isExpanded && s.blurb && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.22, ease: "easeInOut" }}
-                            className="overflow-hidden"
-                          >
-                            <div className="mt-3 pt-2.5 border-t border-white/[0.08] flex items-start gap-2 text-xs sm:text-[12.5px] leading-relaxed text-mist">
-                              <span
-                                className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full"
-                                style={{ background: itemColor }}
-                              />
-                              <p className="font-normal text-paper/90">{s.blurb}</p>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+              {/* Luxury Glass Dropdown Menu */}
+              <AnimatePresence>
+                {isDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                    className="absolute right-0 bottom-full mb-2 z-50 w-72 sm:w-80 rounded-2xl border border-white/15 bg-[#0e101c]/95 p-2 backdrop-blur-2xl shadow-2xl"
+                    style={{
+                      boxShadow: "0 24px 60px -15px rgba(0, 0, 0, 0.9), 0 0 30px -10px rgba(255, 143, 64, 0.25)",
+                    }}
+                    role="listbox"
+                  >
+                    <div className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider text-mist/60 border-b border-white/[0.06] mb-1">
+                      Filter Capabilities
                     </div>
-                  );
-                })}
-              </div>
-            </div>
 
-            {/* Footer Interaction Guide */}
-            <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-mist/70">
-              <span className="flex items-center gap-1.5">
-                <Info size={13} className="text-mist/50" />
-                <span>Hovering over this box pauses motion immediately · Moving mouse away resumes</span>
-              </span>
-              <span className="hidden sm:inline font-mono text-[10px] text-mist/50">
-                Direction: Left → Right
-              </span>
+                    {DROPDOWN_OPTIONS.map((opt) => {
+                      const isSelected = opt.key === selectedDomain;
+                      const Icon = opt.icon;
+
+                      return (
+                        <button
+                          key={opt.key}
+                          type="button"
+                          role="option"
+                          aria-selected={isSelected}
+                          onClick={() => {
+                            setSelectedDomain(opt.key);
+                            setIsDropdownOpen(false);
+                          }}
+                          className={`flex items-center justify-between w-full rounded-xl px-3 py-2.5 text-left text-xs sm:text-sm font-medium transition-all duration-200 ${
+                            isSelected
+                              ? "bg-neon/15 text-neon font-semibold"
+                              : "text-mist hover:text-paper hover:bg-white/[0.05]"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <Icon size={16} className={isSelected ? "text-neon" : "text-mist"} />
+                            <span className="truncate">{opt.label}</span>
+                          </div>
+
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="rounded-md bg-white/[0.06] px-1.5 py-0.5 text-[10px] font-mono text-mist">
+                              {opt.count}
+                            </span>
+                            {isSelected && <Check size={14} className="text-neon" />}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </Reveal>
@@ -540,7 +749,7 @@ export default function Skills({ groups, now }: SkillsProps) {
         {/* ------------------------------------------------------------- */}
         {now && (
           <Reveal delay={0.15}>
-            <div className="glass mt-8 flex flex-col items-start gap-4 rounded-3xl p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
+            <div className="glass mt-12 flex flex-col items-start gap-4 rounded-3xl p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
               <div className="flex items-center gap-4">
                 <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-neon/10 text-neon">
                   <Sparkles className="h-5 w-5" />

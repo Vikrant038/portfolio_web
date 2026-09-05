@@ -23,7 +23,7 @@ export interface SendEmailOptions {
 }
 
 async function sendViaResend(opts: { to: string; subject: string; html?: string; text: string }) {
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = process.env.RESEND_API_KEY?.trim();
   if (!apiKey) return null;
   const from = process.env.RESEND_FROM ?? `${SITE_CONFIG.name} <onboarding@resend.dev>`;
   const res = await fetch("https://api.resend.com/emails", {
@@ -49,7 +49,7 @@ async function sendViaResend(opts: { to: string; subject: string; html?: string;
 }
 
 async function plunkSend(body: Record<string, unknown>) {
-  const apiKey = process.env.PLUNK_API_KEY;
+  const apiKey = process.env.PLUNK_API_KEY?.trim();
   if (!apiKey) return null;
   const res = await fetch("https://api.useplunk.com/v1/send", {
     method: "POST",
