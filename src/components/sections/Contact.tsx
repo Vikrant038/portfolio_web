@@ -164,10 +164,11 @@ export default function Contact() {
       });
       const data = await res.json().catch(() => ({} as Record<string, unknown>));
       if (!res.ok) throw new Error((data.error as string | undefined) ?? `Request failed (${res.status})`);
-      toast.success(
-        "Message sent! Expect a reply within 48h.",
-        { duration: 5000 }
-      );
+      if (data.emailSent) {
+        toast.success("Message sent! Email delivered to Vikrant.", { duration: 5000 });
+      } else {
+        toast.success("Message received & saved to database!", { duration: 5000 });
+      }
       setFile(null);
       setValues({
         name: "",
