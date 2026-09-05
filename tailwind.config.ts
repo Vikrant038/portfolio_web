@@ -43,6 +43,10 @@ const config: Config = {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
         },
+        "marquee-reverse": {
+          "0%": { transform: "translateX(-50%)" },
+          "100%": { transform: "translateX(0)" },
+        },
         burst: {
           "0%": { transform: "translate(var(--bx), var(--by)) scale(1)", opacity: "1" },
           "100%": { transform: "translate(calc(var(--bx) * 3), calc(var(--by) * 3)) scale(0)", opacity: "0" },
@@ -53,6 +57,7 @@ const config: Config = {
         "pulse-ring": "pulse-ring 2.6s cubic-bezier(0.2,0.6,0.4,1) infinite",
         shimmer: "shimmer 6s linear infinite",
         marquee: "marquee 30s linear infinite",
+        "marquee-reverse": "marquee-reverse 35s linear infinite",
       },
     },
   },

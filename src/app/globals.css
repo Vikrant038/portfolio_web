@@ -288,3 +288,23 @@ select,
     display: none !important;
   }
 }
+
+/* Continuous left-to-right scrolling ticker */
+@keyframes scroll-left-to-right {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0%, 0, 0);
+  }
+}
+
+.animate-scroll-ltr {
+  animation: scroll-left-to-right 45s linear infinite;
+  will-change: transform;
+}
+
+.pause-animation {
+  animation-play-state: paused !important;
+}
+
